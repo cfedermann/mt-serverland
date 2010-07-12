@@ -27,7 +27,8 @@ def dashboard(request):
     LOGGER.info('Rendering dashboard for user "{0}".'.format(
       request.user.username))
     
-    requests = [r for r in TranslationRequest.objects.all() if not r.deleted]
+    ordered = TranslationRequest.objects.all().order_by('-created')
+    requests = [r for r in ordered if not r.deleted]
     finished = [r for r in requests if r.is_ready()]
     invalid = [r for r in requests if not r.is_valid() and not r in finished]
     active = [r for r in requests if not r in finished and not r in invalid]
