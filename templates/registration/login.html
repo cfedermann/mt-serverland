@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div id="summary">
+  <h1>User Authentication</h1>
+  <h2>Please tell us your username and password to access the MT Server Land...</h2>
+</div>
+
+<div id="instructions">
+  
+  {% if form.errors %}
+  <div id="errors">Your username and password didn't match. Please try again.</div><br/>
+  {% endif %}
+
+  <img src="/site_media/keychain.png" style="float: right; padding-right: 20px;" />
+
+  <form method="post" action="{% url serverland.views.login %}">
+  {% csrf_token %}
+  <table>
+  {{ form.as_table }}
+  <tr><th></th><td><input type="submit" value="login" /></td></tr>
+  </table>
+  
+  <input type="hidden" name="next" value="{{ next }}" />
+  
+  </form>
+
+  <br/><br/><br/><br/><br/>
+</div>
+
+<div id="explanation">
+  <p>
+    This is a <code>BETA</code> version of the MT Server Land software. &copy; DFKI GmbH 2010, all rights reserved.
+  </p>
+</div>
+{% endblock %}

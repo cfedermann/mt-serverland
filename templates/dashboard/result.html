@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div id="summary">
+  <h1>Translation Result</h1>
+  <h2>For request &raquo;{{ request.shortname }}&laquo; created at {{ request.created|date:"Y/m/d" }}</h2>
+</div>
+
+<div id="instructions">
+  <img src="/site_media/search.png" style="float: right; padding-right: 20px;" />
+  
+  <h2>User actions</h2>
+  <p>You are logged in as <b>{{ user.username }}</b>. You can <a href="/dashboard/">return to your dashboard</a> or logout by <a href="/logout/">clicking here</a>.</p>
+  <br/>
+
+  <h2>Request Result</h2>
+  <div id="result">{{ result|linebreaks }}</div>
+  <br/><br/><br/><br/><br/>
+</div>
+
+<div id="explanation">
+  <p>
+    This is a <code>BETA</code> version of the MT Server Land software. &copy; DFKI GmbH 2010, all rights reserved.
+  </p>
+</div>
+{% endblock %}

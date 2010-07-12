@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en"><head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>{{title}}</title>
+  <style type="text/css">
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+    body { font:small sans-serif; }
+    body>div { border-bottom:1px solid #ddd; }
+    h1 { font-weight:normal; }
+    h2 { margin-bottom:.8em; }
+    h2 span { font-size:80%; color:#666; font-weight:normal; }
+    h3 { margin:1em 0 .5em 0; }
+    h4 { margin:0 0 .5em 0; font-weight: normal; }
+    img.actions { max-width: 20px; padding-right: 5px; border: 0px; }
+    table { border:1px solid #ccc; border-collapse: collapse; background:white; }
+    table.dashboard { width: 500px; }
+    thead th.shortname { width: 300px; }
+    thead th.created { width: 100px; }
+    thead th.actions { width: 100px; }
+    tbody td, tbody th { vertical-align:middle; padding:5px 5px; }
+    thead th { padding:1px 6px 1px 3px; background:#efefef; text-align:left; font-weight:bold; font-size:11px; border:1px solid #ddd; }
+    tbody th { text-align:right; color:#666; padding-right:.5em; }
+    ul { margin-left: 2em; margin-top: 1em; }
+    input { background: #f7f7f7; border:1px solid #ddd; padding: 2px;}
+    ul.errorlist { background: #e07b7b; border:1px solid #e06b6b; padding: 2px; list-style-type: none; margin: 0em; }
+    ul.errorlist li { padding: 0px;}
+    #result { background: white; border:1px solid #ccc; padding: 2px;  width: 80%;}
+    #errors { background: #e07b7b; border:1px solid #e06b6b; padding: 2px; }
+    #summary { background: #e0ebff; }
+    #summary h2 { font-weight: normal; color: #666; }
+    #explanation { background:#eee; }
+    #instructions { background:#f6f6f6; }
+    #instructions img { width: 128px; border: 0px; }
+    #summary table { border:none; background:transparent; }
+    #messages { background: #606077; color: #efefef; font-weight: bold;}
+    ul.messages { padding: 2px; list-style-type: none; margin: 0em; }
+    /* TODO: list-style-type icons for different message tags */
+  </style>
+</head>
+
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>
