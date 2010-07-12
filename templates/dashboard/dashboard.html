@@ -1,5 +1,18 @@
 {% extends "base.html" %}
 
+{% block head %}
+<script type="text/javascript">
+
+function confirm_delete(name, url) {
+  check = confirm('Really delete "' + name + '"?');
+  if (check) {
+    location.href = url;
+  }
+}
+
+</script>
+{% endblock %}
+
 {% block body %}
 <div id="summary">
   <h1>{{ user.username }}'s Dashboard</h1>
@@ -39,7 +52,7 @@
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
-    <a href="/dashboard/delete/{{request.request_id}}/"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
+    <a href="javascript:confirm_delete('{{request.shortname}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
     <a href="/dashboard/result/{{request.request_id}}/"><img src="/site_media/search_small.png" class="actions" alt="View" /></a>
     <a href="/dashboard/download/{{request.request_id}}/"><img src="/site_media/download_small.png" class="actions" alt="Download" /></a>
   </td>
@@ -68,7 +81,7 @@
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
-    <a href="/dashboard/delete/{{request.request_id}}/"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
+    <a href="javascript:confirm_delete('{{request.shortname}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
   </td>
   </tr>
   {% endfor %}
@@ -94,7 +107,7 @@
   <tr>
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
-  <td><a href="/dashboard/delete/{{request.request_id}}/"><img src="/site_media/delete_small.png" class="actions" /></a>
+  <td><a href="javascript:confirm_delete('{{request.shortname}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" /></a>
   </td>
   </tr>
   {% endfor %}

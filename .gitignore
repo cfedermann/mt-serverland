@@ -1,2 +1,3 @@
 *.pyc
 development.db
+media/requests/
