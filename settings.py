@@ -3,7 +3,8 @@
 Project: MT Server Land prototype code
  Author: Christian Federmann <cfedermann@dfki.de>
 """
-ROOT_PATH = '/Users/cfedermann/Desktop'
+import os
+ROOT_PATH = os.getcwd()
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -55,7 +56,7 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '{0}/workspace/mt-serverland/serverland/media/'.format(ROOT_PATH)
+MEDIA_ROOT = '{0}/media/'.format(ROOT_PATH)
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -90,7 +91,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '{0}/workspace/mt-serverland/serverland/templates'.format(ROOT_PATH),
+    '{0}/templates'.format(ROOT_PATH),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
