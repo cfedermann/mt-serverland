@@ -16,12 +16,12 @@ You can find a dummy worker implementation within @workers/@. The dummy worker w
 A sample session with the dummy worker is shown below:
 
 pre. longint:workers cfedermann$ ./start-worker.py 
-
+pre. 
 pre.     usage: ./start-worker.py <worker> <host> <port>
-
+pre. 
 pre.     registered worker servers:
     - DummyWorker
-
+pre. 
 pre. longint:workers cfedermann$ ./start-worker.py DummyWorker localhost 1234
 INFO:DummyWorker:DummyWorker listening on localhost:1234
 INFO:DummyWorker:Started DummyWorker instance, serving via XML-RPC.
@@ -31,9 +31,9 @@ INFO:DummyWorker:Started DummyWorker instance, serving via XML-RPC.
 longint:workers cfedermann$ bg
 [1]+ ./start-worker.py DummyWorker localhost 1234 &
 longint:workers cfedermann$ ./stop-worker.py 
-
+pre. 
 pre.     usage: ./stop-worker.py <host> <port>
-
+pre. 
 pre. longint:workers cfedermann$ ./stop-worker.py localhost 1234
 INFO:DummyWorker:Stopped DummyWorker instance.
 localhost - - [20/Jul/2010 11:18:33] "POST / HTTP/1.0" 200 -
