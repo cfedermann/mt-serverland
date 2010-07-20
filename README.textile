@@ -8,8 +8,7 @@ h2. Quick Setup Guide
 3. @python manage.py runserver@
 4. Point your browser to @http://127.0.0.1:8000@
 
-More details to be added soon, in case of problems, drop me an email:
- @cfedermann@dfki.de@.
+More details to be added soon, in case of problems, drop me an email at @cfedermann@dfki.de@.
 
 h2. Setting Up Development Database
 
