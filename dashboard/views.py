@@ -108,7 +108,7 @@ def delete(request, request_id):
         LOGGER.warning('Illegal delete request from user "{0}".'.format(
           request.user.username or "Anonymous"))
         
-        return HttpResponseRedirect('/dashboard/error')
+        return HttpResponseRedirect('/dashboard/')
     
     LOGGER.info('Deleting translation request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
@@ -129,7 +129,7 @@ def result(request, request_id):
         LOGGER.warning('Illegal result request from user "{0}".'.format(
           request.user.username or "Anonymous"))
         
-        return HttpResponseRedirect('/dashboard/error')
+        return HttpResponseRedirect('/dashboard/')
 
     LOGGER.info('Fetching request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
@@ -151,7 +151,7 @@ def download(request, request_id):
         LOGGER.warning('Illegal download request from user "{0}".'.format(
           request.user.username or "Anonymous"))
         
-        return HttpResponseRedirect('/dashboard/error')
+        return HttpResponseRedirect('/dashboard/')
 
     LOGGER.info('Downloading request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
