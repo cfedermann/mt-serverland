@@ -1,0 +1,10 @@
+h1. MT Server Land Software Package
+
+h2. Quick Setup Guide
+
+0. Install django 1.2.x, Python 2.6.x
+1. @python manage.py runserver@
+2. Point your browser to @http://127.0.0.1:8000@
+
+More details to be added soon, in case of problems, drop me an email:
+ @cfedermann@dfki.de@.
