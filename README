@@ -8,3 +8,35 @@ h2. Quick Setup Guide
 
 More details to be added soon, in case of problems, drop me an email:
  @cfedermann@dfki.de@.
+
+h2. Setting Up Worker Servers
+
+You can find a dummy worker implementation within @workers/@. The dummy worker will block for a certain amount of seconds and then return an all-uppercase version of the input text it received.
+
+A sample session with the dummy worker is shown below:
+
+pre. longint:workers cfedermann$ ./start-worker.py 
+
+pre.     usage: ./start-worker.py <worker> <host> <port>
+
+pre.     registered worker servers:
+    - DummyWorker
+
+pre. longint:workers cfedermann$ ./start-worker.py DummyWorker localhost 1234
+INFO:DummyWorker:DummyWorker listening on localhost:1234
+INFO:DummyWorker:Started DummyWorker instance, serving via XML-RPC.
+...
+^Z
+[1]+  Stopped                 ./start-worker.py DummyWorker localhost 1234
+longint:workers cfedermann$ bg
+[1]+ ./start-worker.py DummyWorker localhost 1234 &
+longint:workers cfedermann$ ./stop-worker.py 
+
+pre.     usage: ./stop-worker.py <host> <port>
+
+pre. longint:workers cfedermann$ ./stop-worker.py localhost 1234
+INFO:DummyWorker:Stopped DummyWorker instance.
+localhost - - [20/Jul/2010 11:18:33] "POST / HTTP/1.0" 200 -
+longint:workers cfedermann$ 
+[1]+  Done                    ./start-worker.py DummyWorker localhost 1234
+longint:workers cfedermann$
