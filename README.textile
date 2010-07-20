@@ -9,6 +9,10 @@ h2. Quick Setup Guide
 More details to be added soon, in case of problems, drop me an email:
  @cfedermann@dfki.de@.
 
+h2. Setting Up Development Database
+
+Use @python manage.py syncdb@ to create the necessary database file.
+
 h2. Setting Up Worker Servers
 
 You can find a dummy worker implementation within @workers/@. The dummy worker will block for a certain amount of seconds and then return an all-uppercase version of the input text it received.
@@ -40,3 +44,23 @@ localhost - - [20/Jul/2010 11:18:33] "POST / HTTP/1.0" 200 -
 longint:workers cfedermann$ 
 [1]+  Done                    ./start-worker.py DummyWorker localhost 1234
 longint:workers cfedermann$
+
+Before you can actually use a worker server inside the MT Server Land application, you have to create a corresponding @WorkerServer@ instance inside the django admin backend at @http://127.0.0.1:8000/admin/dashboard/workerserver/@.
+
+*Important:* make sure you enter the hostname *including* the @http://@ prefix!
+
+h2. Sample Dummy Worker Logfile
+
+pre. longint:tmp cfedermann$ tail -f workerserver-dummy.log 
+[07/20/2010 @ 11:18:13] DummyWorker::INFO DummyWorker listening on localhost:1234
+[07/20/2010 @ 11:18:13] DummyWorker::INFO Started DummyWorker instance, serving via XML-RPC.
+[07/20/2010 @ 11:18:22] DummyWorker::INFO DummyWorker listening on localhost:1234
+[07/20/2010 @ 11:18:22] DummyWorker::INFO Started DummyWorker instance, serving via XML-RPC.
+[07/20/2010 @ 11:18:33] DummyWorker::INFO Stopped DummyWorker instance.
+[07/20/2010 @ 11:32:47] DummyWorker::INFO DummyWorker listening on localhost:1234
+[07/20/2010 @ 11:32:47] DummyWorker::INFO Started DummyWorker instance, serving via XML-RPC.
+[07/20/2010 @ 11:36:58] DummyWorker::INFO Created new translation request "0e97c0226c2f40b7b86583c1664ca2c3".
+[07/20/2010 @ 11:36:58] DummyWorker::INFO Started translation job "<Process(Process-1, started)>"
+[07/20/2010 @ 11:36:58] DummyWorker::INFO Sleeping for 110 seconds...
+[07/20/2010 @ 11:38:48] DummyWorker::DEBUG Finalizing result for request 0e97c0226c2f40b7b86583c1664ca2c3
+[07/20/2010 @ 11:39:04] DummyWorker::DEBUG Translation requests: {'0e97c0226c2f40b7b86583c1664ca2c3': <Process(Process-1, stopped)>}
