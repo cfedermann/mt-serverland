@@ -1,5 +1,9 @@
 h1. MT Server Land Software Package
 
+h2. Important Remarks
+
+* do *NOT* create translation requests from within the django admin backend as this currently causes an @IntegrityError@, see "issue #1":http://github.com/cfedermann/mt-serverland/issues#issue/1 for more information.
+
 h2. Quick Setup Guide
 
 0. Install django 1.2.x, Python 2.6.x, do *NOT* use django-svn as this is *NOT TESTED* and likely to break things
