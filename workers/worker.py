@@ -4,16 +4,12 @@ Baseline implementation for a MT Server Land "worker" server.
 Implements the basic "worker" interface.
 """
 import logging
-import signal
-import sys
 import uuid
-import xmlrpclib
 
 from base64 import b64encode, b64decode
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process
 from os import remove
-from threading import Thread
 from time import sleep
 from random import random
 from SimpleXMLRPCServer import SimpleXMLRPCServer
@@ -70,6 +66,9 @@ class AbstractWorkerServer(object):
           "delete_translation")
 
     def start_worker(self):
+        """
+        Starts the event handler of the worker server instance.
+        """
         self.LOGGER.info("Started {0} instance, serving via XML-RPC.".format(
           self.__name__))
         
@@ -77,13 +76,16 @@ class AbstractWorkerServer(object):
             self.server.handle_request()
     
     def stop_worker(self):
+        """
+        Stops the event handler terminating all pending translation processes.
+        """
         self.LOGGER.info('Stopped {0} instance.'.format(self.__name__))
         if not self.finished:
             self.finished = True
             
-            for p in self.jobs.values():
-                if p.is_alive():
-                    p.terminate()
+            for proc in self.jobs.values():
+                if proc.is_alive():
+                    proc.terminate()
 
     def list_requests(self):
         """Returns a list of all registered translation requests."""
@@ -113,15 +115,7 @@ class AbstractWorkerServer(object):
             
             return False
 
-        try:
-            return not self.jobs[request_id].is_alive()
-
-        except:
-            self.LOGGER.error('Exception for request id "{0}".'.format(
-              request_id))
-            return False
-
-        return False
+        return not self.jobs[request_id].is_alive()
     
     def is_valid(self, request_id):
         """
@@ -147,12 +141,12 @@ class AbstractWorkerServer(object):
             source.write(b64decode(text))
             source.close()
             
-            p = Process(target=self.handle_translation, args=(request_id,))
-            p.start()
-            self.jobs[request_id] = p
-            self.LOGGER.info('Started translation job "{0}"'.format(p))
+            proc = Process(target=self.handle_translation, args=(request_id,))
+            proc.start()
+            self.jobs[request_id] = proc
+            self.LOGGER.info('Started translation job "{0}"'.format(proc))
 
-        except:
+        except IOError:
             self.LOGGER.error('Could not start translation job!')
             
             if request_id in self.jobs.keys():
@@ -208,7 +202,7 @@ class AbstractWorkerServer(object):
         try:
             remove('/tmp/{0}.target'.format(request_id))
         
-        except:
+        except IOError:
             pass
 
         return True

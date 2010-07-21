@@ -1,6 +1,9 @@
 #!/usr/bin/python
-import subprocess
+"""
+Startup script to create a worker server instance at host:port.
+"""
 import sys
+
 from worker import DummyWorker
 
 # Make configurable:
@@ -27,8 +30,8 @@ if __name__ == "__main__":
     assert(sys.argv[1] in REGISTERED_WORKERS.keys())
 
     # Prepare XML-RPC server instance running on host:port.
-    WorkerImplementation, LogFile = REGISTERED_WORKERS[sys.argv[1]]
-    server = WorkerImplementation(sys.argv[2], int(sys.argv[3]), LogFile)
+    WORKER_IMPLEMENTATION, LOGFILE = REGISTERED_WORKERS[sys.argv[1]]
+    SERVER = WORKER_IMPLEMENTATION(sys.argv[2], int(sys.argv[3]), LOGFILE)
 
     # Start server and serve forever.
-    server.start_worker()
+    SERVER.start_worker()

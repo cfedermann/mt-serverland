@@ -3,24 +3,15 @@ Implementation of a worker server that connects to Google Translate.
 
 Currently translates from German->English only.
 """
-import logging
 import re
 import sys
 import urllib
 import urllib2
-import xmlrpclib
 
-from base64 import b64encode, b64decode
-from multiprocessing import Process
-from os import remove
-from time import sleep
-from random import random
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-
-from worker import WorkerServer
+from worker import AbstractWorkerServer
 
 
-class GoogleWorkerServer(WorkerServer):
+class GoogleWorkerServer(AbstractWorkerServer):
     """
     Implementation of a worker server that connects to Google Translate.
     """
@@ -49,8 +40,8 @@ class GoogleWorkerServer(WorkerServer):
         handle.close()
         #raw_result = unicode(content, 'utf-8')
         
-        result_exp = re.compile('<textarea name=utrans wrap=SOFT dir="ltr" id=suggestion.*>(.*?)</textarea>',
-          re.I|re.U)
+        result_exp = re.compile('<textarea name=utrans wrap=SOFT ' \
+          'dir="ltr" id=suggestion.*>(.*?)</textarea>', re.I|re.U)
         
         result = result_exp.search(content)
         
@@ -66,8 +57,8 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     # Prepare XML-RPC server instance running on localhost:6666.
-    server = GoogleWorkerServer(sys.argv[1], int(sys.argv[2]),
+    SERVER = GoogleWorkerServer(sys.argv[1], int(sys.argv[2]),
       '/tmp/workerserver-google.log')
 
     # Start server and serve forever.
-    server.start()
+    SERVER.start_worker()
