@@ -19,9 +19,10 @@ class GoogleWorker(AbstractWorkerServer):
     
     def handle_translation(self, request_id):
         """
-        Dummy translation handler that blocks for a random amount of time.
+        Translation handler that obtains a translation via the Google translation web front end.
 
-        Returns all-uppercase version of Text as translation.
+        Currently hard-coded to the language pair DE -> EN.
+
         """
         source = open('/tmp/{0}.source'.format(request_id), 'r')
         text = source.read()
