@@ -11,7 +11,7 @@ import urllib2
 from worker import AbstractWorkerServer
 
 
-class GoogleWorkerServer(AbstractWorkerServer):
+class GoogleWorker(AbstractWorkerServer):
     """
     Implementation of a worker server that connects to Google Translate.
     """
