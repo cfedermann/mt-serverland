@@ -15,7 +15,7 @@ class GoogleWorker(AbstractWorkerServer):
     """
     Implementation of a worker server that connects to Google Translate.
     """
-    __name__ = 'GoogleWorkerServer'
+    __name__ = 'GoogleWorker'
     
     def handle_translation(self, request_id):
         """
@@ -38,7 +38,6 @@ class GoogleWorker(AbstractWorkerServer):
         handle = opener.open(request)
         content = handle.read()
         handle.close()
-        #raw_result = unicode(content, 'utf-8')
         
         result_exp = re.compile('<textarea name=utrans wrap=SOFT ' \
           'dir="ltr" id=suggestion.*>(.*?)</textarea>', re.I|re.U)
