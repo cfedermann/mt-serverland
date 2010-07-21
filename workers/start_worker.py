@@ -5,6 +5,7 @@ Startup script to create a worker server instance at host:port.
 import sys
 
 from worker import DummyWorker
+from worker_bing import BingWorker
 from worker_google import GoogleWorker
 
 # Make configurable:
@@ -16,6 +17,7 @@ from worker_google import GoogleWorker
 
 REGISTERED_WORKERS = {
   'DummyWorker': (DummyWorker, '/tmp/workerserver-dummy.log'),
+  'BingWorker': (BingWorker, '/tmp/workerserver-bing.log'),
   'GoogleWorker': (GoogleWorker, '/tmp/workerserver-google.log'),
 }
 
