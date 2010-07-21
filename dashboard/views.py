@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from serverland.dashboard.models import TranslationRequest
+from serverland.dashboard.models import TranslationRequest, WorkerServer
 from serverland.dashboard.forms import TranslationRequestForm
 from serverland.settings import LOG_LEVEL, LOG_HANDLER
 
@@ -63,7 +63,8 @@ def create(request):
 
             new = TranslationRequest()
             new.shortname = request.POST['shortname']
-            new.worker_id = request.POST['worker']
+            new.worker = WorkerServer.objects.get(
+              pk=int(request.POST['worker']))
             new.source_text = request.FILES['source_text']
             
             text = ''
@@ -78,7 +79,7 @@ def create(request):
                   'Could not start translation request!')
                 return HttpResponseRedirect('/dashboard/')
             
-            new.owner_id = request.user.id
+            new.owner = request.user
             new.save()
             
             messages.add_message(request, messages.SUCCESS,
