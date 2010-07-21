@@ -56,7 +56,7 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     # Prepare XML-RPC server instance running on localhost:6666.
-    SERVER = GoogleWorkerServer(sys.argv[1], int(sys.argv[2]),
+    SERVER = GoogleWorker(sys.argv[1], int(sys.argv[2]),
       '/tmp/workerserver-google.log')
 
     # Start server and serve forever.
