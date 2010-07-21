@@ -2,7 +2,7 @@ h1. MT Server Land Software Package
 
 h2. Quick Setup Guide
 
-0. Install django 1.2.x, Python 2.6.x
+0. Install django 1.2.x, Python 2.6.x, do *NOT* use django-svn as this is *NOT TESTED* and likely to break things
 1. Extract data to a folder named @serverland@, do *NOT* name the folder @mt-serverland@ as this does not work with Python!
 2. Prepare development database (See next section)
 3. @python manage.py runserver@
@@ -23,14 +23,14 @@ You can find a dummy worker implementation within @workers/@. The dummy worker w
 
 A sample session with the dummy worker is shown below:
 
-pre. longint:workers cfedermann$ ./start-worker.py 
-pre. 
-pre.     usage: ./start-worker.py <worker> <host> <port>
-pre. 
-pre.     registered worker servers:
+pre.. longint:workers cfedermann$ ./start-worker.py 
+
+    usage: ./start-worker.py <worker> <host> <port>
+
+    registered worker servers:
     - DummyWorker
-pre. 
-pre. longint:workers cfedermann$ ./start-worker.py DummyWorker localhost 1234
+
+longint:workers cfedermann$ ./start-worker.py DummyWorker localhost 1234
 INFO:DummyWorker:DummyWorker listening on localhost:1234
 INFO:DummyWorker:Started DummyWorker instance, serving via XML-RPC.
 ...
@@ -39,23 +39,23 @@ INFO:DummyWorker:Started DummyWorker instance, serving via XML-RPC.
 longint:workers cfedermann$ bg
 [1]+ ./start-worker.py DummyWorker localhost 1234 &
 longint:workers cfedermann$ ./stop-worker.py 
-pre. 
-pre.     usage: ./stop-worker.py <host> <port>
-pre. 
-pre. longint:workers cfedermann$ ./stop-worker.py localhost 1234
+
+    usage: ./stop-worker.py <host> <port>
+
+longint:workers cfedermann$ ./stop-worker.py localhost 1234
 INFO:DummyWorker:Stopped DummyWorker instance.
 localhost - - [20/Jul/2010 11:18:33] "POST / HTTP/1.0" 200 -
 longint:workers cfedermann$ 
 [1]+  Done                    ./start-worker.py DummyWorker localhost 1234
 longint:workers cfedermann$
 
-Before you can actually use a worker server inside the MT Server Land application, you have to create a corresponding @WorkerServer@ instance inside the django admin backend at @http://127.0.0.1:8000/admin/dashboard/workerserver/@.
+p. Before you can actually use a worker server inside the MT Server Land application, you have to create a corresponding @WorkerServer@ instance inside the django admin backend at @http://127.0.0.1:8000/admin/dashboard/workerserver/@.
 
 *Important:* make sure you enter the hostname *including* the @http://@ prefix!
 
 h2. Sample Dummy Worker Logfile
 
-pre. longint:tmp cfedermann$ tail -f workerserver-dummy.log 
+pre.. longint:tmp cfedermann$ tail -f workerserver-dummy.log 
 [07/20/2010 @ 11:18:13] DummyWorker::INFO DummyWorker listening on localhost:1234
 [07/20/2010 @ 11:18:13] DummyWorker::INFO Started DummyWorker instance, serving via XML-RPC.
 [07/20/2010 @ 11:18:22] DummyWorker::INFO DummyWorker listening on localhost:1234
