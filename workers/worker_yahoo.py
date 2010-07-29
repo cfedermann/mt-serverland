@@ -51,9 +51,9 @@ if __name__ == "__main__":
         print "\n\tusage {0} <host> <port>\n".format(sys.argv[0])
         sys.exit(-1)
 
-    # Prepare XML-RPC server instance running on localhost:6666.
+    # Prepare XML-RPC server instance running on hostname:port.
     SERVER = YahooWorker(sys.argv[1], int(sys.argv[2]),
-      '/tmp/workerserver-google.log')
+      '/tmp/workerserver-yahoo.log')
 
     # Start server and serve forever.
     SERVER.start_worker()

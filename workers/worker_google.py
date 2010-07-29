@@ -7,6 +7,7 @@ import urllib
 import urllib2
 
 from worker import AbstractWorkerServer
+from TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 class GoogleWorker(AbstractWorkerServer):
@@ -23,15 +24,15 @@ class GoogleWorker(AbstractWorkerServer):
         Currently hard-coded to the language pair DE -> EN.
 
         """
-        source = open('/tmp/{0}.source'.format(request_id), 'r')
-        text = source.read()
-        source.close()
+        message = open('/tmp/{0}.message'.format(request_id), 'rw')
+        request = TranslationRequestMessage()
+        request.ParseFromString(message.read())
         
         opener = urllib2.build_opener(urllib2.HTTPHandler)
         
         the_url = 'http://translate.google.com/translate_t'
-        the_data = urllib.urlencode({'js': 'n', 'text': text, 'sl': 'de',
-          'tl': 'en'})
+        the_data = urllib.urlencode({'js': 'n', 'text': message.source_text,
+          'sl': 'de', 'tl': 'en'})
         the_header = {'User-agent': 'Mozilla/5.0'}
         
         request = urllib2.Request(the_url, the_data, the_header)
@@ -45,17 +46,18 @@ class GoogleWorker(AbstractWorkerServer):
         result = result_exp.search(content)
         
         if result:
-            target = open('/tmp/{0}.target'.format(request_id), 'w')
-            target.write(result.group(1))
-            target.close()
+            request.target_text = result
+            message.seek(0)
+            message.write(request.SerializeToString())
 
+        message.close()
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print "\n\tusage {0} <host> <port>\n".format(sys.argv[0])
         sys.exit(-1)
 
-    # Prepare XML-RPC server instance running on localhost:6666.
+    # Prepare XML-RPC server instance running on hostname:port.
     SERVER = GoogleWorker(sys.argv[1], int(sys.argv[2]),
       '/tmp/workerserver-google.log')
 

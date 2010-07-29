@@ -85,13 +85,13 @@ class WorkerServer(models.Model):
         return False
 
 
-    def start_translation(self, text):
+    def start_translation(self, request_id, text):
         """Sends the translation request to the worker server."""
         try:
             proxy = xmlrpclib.ServerProxy("{0}:{1}".format(self.hostname,
               self.port))
             text = b64encode(text)
-            return proxy.start_translation(text)
+            return proxy.start_translation(request_id, text)
         
         except (xmlrpclib.Error, socket.error):
             return None
@@ -154,10 +154,9 @@ class TranslationRequest(models.Model):
         """Checks if the current translation request is valid."""
         return self.worker.is_valid(self.request_id)
 
-    def start_translation(self, text):
+    def start_translation(self):
         """Sends the translation request to the associated worker server."""
-        print "GOT TEXT...", len(text)
-        return self.worker.start_translation(text)
+        return self.worker.start_translation(self.request_id, self.text)
 
     def fetch_translation(self):
         """Fetches a translation result from the worker server."""

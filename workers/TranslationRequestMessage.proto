@@ -1,0 +1,8 @@
+package serverland;
+
+message TranslationRequestMessage {
+  required string source_text = 1;
+  optional string target_text = 2;
+  optional string request_id = 3;
+  repeated string packet_data = 4; // Container for additional request data.
+}

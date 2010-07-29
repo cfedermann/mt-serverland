@@ -7,6 +7,7 @@ import sys
 from worker import DummyWorker
 from worker_bing import BingWorker
 from worker_google import GoogleWorker
+from worker_lucy import LucyWorker
 from worker_yahoo import YahooWorker
 
 # Make configurable:
@@ -20,7 +21,8 @@ REGISTERED_WORKERS = {
   'DummyWorker': (DummyWorker, '/tmp/workerserver-dummy.log'),
   'BingWorker': (BingWorker, '/tmp/workerserver-bing.log'),
   'GoogleWorker': (GoogleWorker, '/tmp/workerserver-google.log'),
-  'YahooWorker': (YahooWorker, '/tmp/workerserver-yahoo.log'),
+  'LucyWorker': (LucyWorker, '/tmp/workerserver-lucy.log'),
+  'YahooWorker': (YahooWorker, '/tmp/workerserver-yahoo.log')
 }
 
 if __name__ == "__main__":

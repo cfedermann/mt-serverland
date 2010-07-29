@@ -4,7 +4,6 @@ Baseline implementation for a MT Server Land "worker" server.
 Implements the basic "worker" interface.
 """
 import logging
-import uuid
 
 from base64 import b64encode, b64decode
 from logging.handlers import RotatingFileHandler
@@ -13,6 +12,7 @@ from os import remove
 from time import sleep
 from random import random
 from SimpleXMLRPCServer import SimpleXMLRPCServer
+from TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 class AbstractWorkerServer(object):
@@ -125,22 +125,29 @@ class AbstractWorkerServer(object):
         """
         return request_id in self.jobs.keys()
 
-    def start_translation(self, text):
+    def start_translation(self, request_id, text):
         """
-        Sends a new translation request to the worker server.
+        Stores a new translation request with the given id and source text.
         
-        Returns request id as 32-digit hex number generated from UUID.
+        Writes out a serialized version of the TranslationRequestMessage to
+        the worker server's output folder.  Returns True if successful, False
+        when an error occurs.
         """
-        request_id = uuid.uuid4().hex
         self.LOGGER.info('Created new translation request "{0}".'.format(
           request_id))
 
         try:
-            # Write translation source text to file.
-            source = open('/tmp/{0}.source'.format(request_id), 'w')
-            source.write(b64decode(text))
-            source.close()
+            # Create new TranslationRequestMessage object.
+            request = TranslationRequestMessage()
+            request.source_text = b64decode(text)
+            request.request_id = request_id
             
+            # Write serialized translation request message to file.
+            message = open('/tmp/{0}.message'.format(request_id), 'w')
+            message.write(request.SerializeToString())
+            message.close()
+            
+            # Start up translation process for the new request object.
             proc = Process(target=self.handle_translation, args=(request_id,))
             proc.start()
             self.jobs[request_id] = proc
@@ -152,9 +159,9 @@ class AbstractWorkerServer(object):
             if request_id in self.jobs.keys():
                 self.jobs.pop(request_id)
             
-            request_id = None
+            return False
         
-        return request_id
+        return True
 
     def fetch_translation(self, request_id):
         """
@@ -173,13 +180,16 @@ class AbstractWorkerServer(object):
             self.LOGGER.debug("Translation requests: {0}".format(
               repr(self.jobs)))
 
-            target = open('/tmp/{0}.target'.format(request_id), 'r')
-            result = target.read()
-            target.close()
-            return b64encode(result)
+            message = open('/tmp/{0}.message'.format(request_id), 'r')
+            request = TranslationRequestMessage()
+            request.ParseFromString(message.read())
+            message.close()
+            
+            if request.HasField('target_text'):
+                return b64encode(request.target_text)
             
         except IOError:
-            return b64encode("")
+            return b64encode("ERROR")
         
         return b64encode("ERROR")
     
@@ -198,13 +208,7 @@ class AbstractWorkerServer(object):
         self.jobs[request_id].terminate()
         self.LOGGER.info('Terminated request "{0}".'.format(request_id))
         
-        remove('/tmp/{0}.source'.format(request_id))
-        try:
-            remove('/tmp/{0}.target'.format(request_id))
-        
-        except IOError:
-            pass
-
+        remove('/tmp/{0}.message'.format(request_id))
         return True
 
     def handle_translation(self, request_id):
@@ -231,14 +235,17 @@ class DummyWorker(AbstractWorkerServer):
         interval = 50 + int(random() * 100)
         self.LOGGER.info("Sleeping for {0} seconds...".format(interval))
         sleep(interval)
-    
+
         # The dummy implementation takes the source text from /tmp/$id.source
         # and writes an upper-cased version of that text to /tmp/$id.target.
-    
+
         self.LOGGER.debug("Finalizing result for request {0}".format(
           request_id))
-        target = open('/tmp/{0}.target'.format(request_id), 'w')
-        source = open('/tmp/{0}.source'.format(request_id), 'r')
-        target.write(source.read().upper())
-        target.close()
-        source.close()
+
+        message = open('/tmp/{0}.message'.format(request_id), 'rw')
+        request = TranslationRequestMessage()
+        request.ParseFromString(message.read())        
+        request.target_text = request.source_text.upper()
+        message.seek(0)
+        message.write(request.SerializeToString())
+        message.close()

@@ -3,6 +3,8 @@ Project: MT Server Land prototype code
  Author: Christian Federmann <cfedermann@dfki.de>
 """
 import logging
+import uuid
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -71,16 +73,11 @@ def create(request):
             for chunk in request.FILES['source_text'].chunks():
                 text += chunk
             
-            new.request_id = new.start_translation(text)
-            
-            if not new.request_id:
-                LOGGER.warning('Could not start translation request!')
-                messages.add_message(request, messages.ERROR,
-                  'Could not start translation request!')
-                return HttpResponseRedirect('/dashboard/')
-            
+            new.request_id = uuid.uuid4().hex
             new.owner = request.user
             new.save()
+            
+            new.start_translation()
             
             messages.add_message(request, messages.SUCCESS,
               'Successfully started translation request.')
