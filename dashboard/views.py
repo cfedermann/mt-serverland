@@ -76,6 +76,7 @@ def create(request):
             #for chunk in request.FILES['source_text'].chunks():
             #    text += chunk
             
+            # Check that the newly generated UUID-4 is indeed unique.
             new.request_id = uuid.uuid4().hex
             new.owner = request.user
             new.save()

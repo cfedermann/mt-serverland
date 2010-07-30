@@ -31,6 +31,10 @@ class LucyWorker(AbstractWorkerServer):
           'ENGLISH')
         result = content.get('EN.txt')
 
+        # We have to parse the result text and filter out Lucy's alternative
+        # translations, e.g.:
+        #
+        # The apple does not fall far from the <A[tribe|stem|trunk]>.
         if result:
             request.target_text = result
             message.seek(0)
