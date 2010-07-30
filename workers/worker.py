@@ -242,7 +242,7 @@ class DummyWorker(AbstractWorkerServer):
         self.LOGGER.debug("Finalizing result for request {0}".format(
           request_id))
 
-        message = open('/tmp/{0}.message'.format(request_id), 'rw')
+        message = open('/tmp/{0}.message'.format(request_id), 'r+b')
         request = TranslationRequestMessage()
         request.ParseFromString(message.read())        
         request.target_text = request.source_text.upper()

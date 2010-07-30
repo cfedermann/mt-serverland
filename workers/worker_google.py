@@ -24,19 +24,19 @@ class GoogleWorker(AbstractWorkerServer):
         Currently hard-coded to the language pair DE -> EN.
 
         """
-        message = open('/tmp/{0}.message'.format(request_id), 'rw')
+        message = open('/tmp/{0}.message'.format(request_id), 'r+b')
         request = TranslationRequestMessage()
         request.ParseFromString(message.read())
         
         opener = urllib2.build_opener(urllib2.HTTPHandler)
         
         the_url = 'http://translate.google.com/translate_t'
-        the_data = urllib.urlencode({'js': 'n', 'text': message.source_text,
+        the_data = urllib.urlencode({'js': 'n', 'text': request.source_text,
           'sl': 'de', 'tl': 'en'})
         the_header = {'User-agent': 'Mozilla/5.0'}
         
-        request = urllib2.Request(the_url, the_data, the_header)
-        handle = opener.open(request)
+        http_request = urllib2.Request(the_url, the_data, the_header)
+        handle = opener.open(http_request)
         content = handle.read()
         handle.close()
         
@@ -46,7 +46,7 @@ class GoogleWorker(AbstractWorkerServer):
         result = result_exp.search(content)
         
         if result:
-            request.target_text = result
+            request.target_text = result.group(1)
             message.seek(0)
             message.write(request.SerializeToString())
 

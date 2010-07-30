@@ -22,21 +22,21 @@ class BingWorker(AbstractWorkerServer):
         Requires a Bing AppID as documented at MSDN:
         - http://msdn.microsoft.com/en-us/library/ff512421.aspx
         """
-        source = open('/tmp/{0}.source'.format(request_id), 'r')
-        text = source.read()
-        source.close()
+        message = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        request = TranslationRequestMessage()
+        request.ParseFromString(message.read())
         
         opener = urllib2.build_opener(urllib2.HTTPHandler)
         
         app_id = '9259D297CB9F67680C259FD62734B07C0D528312'
-        the_data = urllib.urlencode({'appId': app_id, 'text': text,
-          'from': 'de', 'to': 'en'})
+        the_data = urllib.urlencode({'appId': app_id,
+          'text': request.source_text, 'from': 'de', 'to': 'en'})
         the_url = 'http://api.microsofttranslator.com/v2/Http.svc/' \
           'Translate?{0}'.format(the_data)
         the_header = {'User-agent': 'Mozilla/5.0'}
         
-        request = urllib2.Request(the_url, None, the_header)
-        handle = opener.open(request)
+        http_request = urllib2.Request(the_url, None, the_header)
+        handle = opener.open(http_request)
         content = handle.read()
         handle.close()
         
@@ -46,9 +46,11 @@ class BingWorker(AbstractWorkerServer):
         result = result_exp.search(content)
         
         if result:
-            target = open('/tmp/{0}.target'.format(request_id), 'w')
-            target.write(result.group(1))
-            target.close()
+            request.target_text = result.group(1)
+            message.seek(0)
+            message.write(request.SerializeToString())
+
+        message.close()
 
 
 if __name__ == "__main__":

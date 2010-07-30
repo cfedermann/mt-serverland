@@ -19,19 +19,20 @@ class YahooWorker(AbstractWorkerServer):
         """
         Translates text from German->English using Yahoo! Babel Fish.
         """
-        source = open('/tmp/{0}.source'.format(request_id), 'r')
-        text = source.read()
-        source.close()
+        message = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        request = TranslationRequestMessage()
+        request.ParseFromString(message.read())
         
         opener = urllib2.build_opener(urllib2.HTTPHandler)
         
-        the_data = urllib.urlencode({'text': text, 'lp': 'de_en'})
+        the_data = urllib.urlencode({'text': request.source_text,
+          'lp': 'de_en'})
         the_url = 'http://babelfish.yahoo.com/translate_txt?{0}'.format(
           the_data)
         the_header = {'User-agent': 'Mozilla/5.0'}
         
-        request = urllib2.Request(the_url, None, the_header)
-        handle = opener.open(request)
+        http_request = urllib2.Request(the_url, None, the_header)
+        handle = opener.open(http_request)
         content = handle.read()
         handle.close()
         
@@ -41,9 +42,11 @@ class YahooWorker(AbstractWorkerServer):
         result = result_exp.search(content)
         
         if result:
-            target = open('/tmp/{0}.target'.format(request_id), 'w')
-            target.write(result.group(1))
-            target.close()
+            request.target_text = result.group(1)
+            message.seek(0)
+            message.write(request.SerializeToString())
+
+        message.close()
 
 
 if __name__ == "__main__":

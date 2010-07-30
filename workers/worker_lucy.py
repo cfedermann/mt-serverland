@@ -20,20 +20,22 @@ class LucyWorker(AbstractWorkerServer):
 
         Uses the XML-RPC server wrapper running at msv-3207.sb.dfki.de.
         """
-        source = open('/tmp/{0}.source'.format(request_id), 'r')
-        text = source.read()
-        source.close()
+        message = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        request = TranslationRequestMessage()
+        request.ParseFromString(message.read())
         
         proxy = xmlrpclib.ServerProxy('http://msv-3207.sb.dfki.de:9999/')
         assert(proxy.isAlive())
         
         content = proxy.lucyTranslate(text, 'GERMAN', 'ENGLISH')
         result = content.get('EN.txt')
-        
+
         if result:
-            target = open('/tmp/{0}.target'.format(request_id), 'w')
-            target.write(result.group(1))
-            target.close()
+            request.target_text = result
+            message.seek(0)
+            message.write(request.SerializeToString())
+
+        message.close()
 
 
 if __name__ == "__main__":

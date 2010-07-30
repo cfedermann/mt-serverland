@@ -156,7 +156,8 @@ class TranslationRequest(models.Model):
 
     def start_translation(self):
         """Sends the translation request to the associated worker server."""
-        return self.worker.start_translation(self.request_id, self.text)
+        return self.worker.start_translation(self.request_id,
+          self.source_text.read())
 
     def fetch_translation(self):
         """Fetches a translation result from the worker server."""
