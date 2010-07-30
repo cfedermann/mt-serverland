@@ -1,11 +1,11 @@
 """
 Implementation of a worker server that connects to the Lucy RBMT system.
 """
-import re
 import sys
 import xmlrpclib
 
 from worker import AbstractWorkerServer
+from TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 class LucyWorker(AbstractWorkerServer):
@@ -27,7 +27,8 @@ class LucyWorker(AbstractWorkerServer):
         proxy = xmlrpclib.ServerProxy('http://msv-3207.sb.dfki.de:9999/')
         assert(proxy.isAlive())
         
-        content = proxy.lucyTranslate(text, 'GERMAN', 'ENGLISH')
+        content = proxy.lucyTranslate(request.source_text, 'GERMAN',
+          'ENGLISH')
         result = content.get('EN.txt')
 
         if result:

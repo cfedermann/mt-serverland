@@ -7,6 +7,7 @@ import urllib
 import urllib2
 
 from worker import AbstractWorkerServer
+from TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 class BingWorker(AbstractWorkerServer):

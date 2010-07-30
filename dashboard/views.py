@@ -69,9 +69,12 @@ def create(request):
               pk=int(request.POST['worker']))
             new.source_text = request.FILES['source_text']
             
-            text = ''
-            for chunk in request.FILES['source_text'].chunks():
-                text += chunk
+            # This is not needed anymore, we have to think about ways to
+            # remove the FileField and store the raw source text instead...
+            #
+            #text = ''
+            #for chunk in request.FILES['source_text'].chunks():
+            #    text += chunk
             
             new.request_id = uuid.uuid4().hex
             new.owner = request.user
