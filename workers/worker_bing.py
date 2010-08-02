@@ -23,23 +23,23 @@ class BingWorker(AbstractWorkerServer):
         Requires a Bing AppID as documented at MSDN:
         - http://msdn.microsoft.com/en-us/library/ff512421.aspx
         """
-        message = open('/tmp/{0}.message'.format(request_id), 'r+b')
-        request = TranslationRequestMessage()
-        request.ParseFromString(message.read())
+        handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        message = TranslationRequestMessage()
+        message.ParseFromString(handle.read())
         
         opener = urllib2.build_opener(urllib2.HTTPHandler)
         
         app_id = '9259D297CB9F67680C259FD62734B07C0D528312'
         the_data = urllib.urlencode({'appId': app_id,
-          'text': request.source_text, 'from': 'de', 'to': 'en'})
+          'text': message.source_text, 'from': 'de', 'to': 'en'})
         the_url = 'http://api.microsofttranslator.com/v2/Http.svc/' \
           'Translate?{0}'.format(the_data)
         the_header = {'User-agent': 'Mozilla/5.0'}
         
         http_request = urllib2.Request(the_url, None, the_header)
-        handle = opener.open(http_request)
-        content = handle.read()
-        handle.close()
+        http_handle = opener.open(http_request)
+        content = http_handle.read()
+        http_handle.close()
         
         result_exp = re.compile('<string xmlns="http://schemas.microsoft.' \
           'com/2003/10/Serialization/">(.*?)</string>', re.I|re.U)
@@ -47,11 +47,11 @@ class BingWorker(AbstractWorkerServer):
         result = result_exp.search(content)
         
         if result:
-            request.target_text = result.group(1)
-            message.seek(0)
-            message.write(request.SerializeToString())
+            message.target_text = result.group(1)
+            handle.seek(0)
+            handle.write(message.SerializeToString())
 
-        message.close()
+        handle.close()
 
 
 if __name__ == "__main__":

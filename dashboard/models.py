@@ -7,16 +7,25 @@ Project: MT Server Land prototype code
 import datetime
 import logging
 import socket
+import uuid
 import xmlrpclib
+
 from base64 import b64decode, b64encode
 from django.db import models
 from django.contrib.auth.models import User
+from google.protobuf.message import DecodeError
+from os import getcwd
 from serverland.settings import LOG_LEVEL, LOG_HANDLER
+from serverland.workers.TranslationRequestMessage_pb2 import \
+  TranslationRequestMessage
 
 # Setup logging support.
 logging.basicConfig(level=LOG_LEVEL)
 LOGGER = logging.getLogger('serverland.views')
 LOGGER.addHandler(LOG_HANDLER)
+
+# Serialized message files will be stored in this location.
+TRANSLATION_MESSAGE_PATH = '{0}/messages'.format(getcwd())
 
 
 class WorkerServer(models.Model):
@@ -84,14 +93,12 @@ class WorkerServer(models.Model):
 
         return False
 
-
-    def start_translation(self, request_id, text):
+    def start_translation(self, serialized):
         """Sends the translation request to the worker server."""
         try:
             proxy = xmlrpclib.ServerProxy("{0}:{1}".format(self.hostname,
               self.port))
-            text = b64encode(text)
-            return proxy.start_translation(request_id, text)
+            return proxy.start_translation(b64encode(serialized))
         
         except (xmlrpclib.Error, socket.error):
             return None
@@ -122,20 +129,30 @@ class WorkerServer(models.Model):
 
         return False
 
+
+def create_request_id():
+    """Creates a random UUID-4 32-digit hex number for use as request id."""
+    new_id = uuid.uuid4().hex
+    while (TranslationRequest.objects.filter(request_id=new_id)):
+        new_id = uuid.uuid4().hex
+    
+    return new_id
+
+
 class TranslationRequest(models.Model):
     """A Translation Request encodes the parameters of a translation job."""
     shortname = models.CharField(max_length=50)
+    request_id = models.CharField(max_length=32, default=create_request_id)
     worker = models.ForeignKey(WorkerServer, related_name='requests')
-    source_text = models.FileField(upload_to='requests')
-    request_id = models.CharField(max_length=32, editable=False, blank=True)
-    created = models.DateTimeField(editable=False,
-      default=datetime.datetime.now)
-    owner = models.ForeignKey(User, related_name='requests', editable=False)
+    owner = models.ForeignKey(User, related_name='requests')
+    created = models.DateTimeField(default=datetime.datetime.now)
+    
+    # We use a TranslationRequestMessage instance to store all request data.
+    # The serialized, binary message will be stored as $request_id.message.
     
     # Cache attributes that save the request's "state" inside the Django DB.
-    ready = models.BooleanField(editable=False, default=False)
-    deleted = models.BooleanField(editable=False, default=False)
-    result = models.TextField(editable=False, default="")
+    ready = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
     
     def __unicode__(self):
         """Returns a Unicode String representation of the request."""
@@ -150,28 +167,53 @@ class TranslationRequest(models.Model):
 
         return self.ready
 
-    def is_valid(self):
-        """Checks if the current translation request is valid."""
-        return self.worker.is_valid(self.request_id)
+    def is_corrupted(self):
+        """Checks whether the translation request message file is OK."""
+        try:
+            # Read in serialized message from file.
+            handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
+              self.request_id), 'r')
+            message = handle.read()
+            handle.close()
+            
+            # Try to create TranslationRequestMessage object from String.
+            instance = TranslationRequestMessage()
+            instance.ParseFromString(message)
+            instance = None
+            
+        except (IOError, DecodeError):
+            return True
+        
+        return False
+
+# IS VALID CAN BE SAFELY REMOVED, RIGHT?
+#
+#    def is_valid(self):
+#        """Checks if the current translation request is valid."""
+#        return self.worker.is_valid(self.request_id)
 
     def start_translation(self):
-        """Sends the translation request to the associated worker server."""
-        return self.worker.start_translation(self.request_id,
-          self.source_text.read())
+        """Sends the serialized translation request to the worker server."""
+        handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
+          self.request_id), 'r')
+        message = handle.read()
+        handle.close()
+                
+        return self.worker.start_translation(message)
 
     def fetch_translation(self):
         """Fetches a translation result from the worker server."""
-        if self.result == "":
-            self.result = self.worker.fetch_translation(self.request_id)
+        serialized = self.worker.fetch_translation(self.request_id)
             
-            if self.result == "ERROR":
-                LOGGER.warning('Could not fetch translation for request' \
-                  ' "{0}" from worker "{1}".'.format(self.request_id,
-                  self.worker.shortname))
-            
-            self.save()
-
-        return self.result
+        if serialized == "ERROR":
+            LOGGER.warning('Could not fetch translation for request' \
+              ' "{0}" from worker "{1}".'.format(self.request_id,
+              self.worker.shortname))
+            return "ERROR"
+        
+        message = TranslationRequestMessage()
+        message.ParseFromString(serialized)
+        return message.target_text
 
     def delete_translation(self):
         """Kills and deletes a translation request from the worker server."""

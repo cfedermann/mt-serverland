@@ -20,14 +20,14 @@ class LucyWorker(AbstractWorkerServer):
 
         Uses the XML-RPC server wrapper running at msv-3207.sb.dfki.de.
         """
-        message = open('/tmp/{0}.message'.format(request_id), 'r+b')
-        request = TranslationRequestMessage()
-        request.ParseFromString(message.read())
+        handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        message = TranslationRequestMessage()
+        message.ParseFromString(handle.read())
         
         proxy = xmlrpclib.ServerProxy('http://msv-3207.sb.dfki.de:9999/')
         assert(proxy.isAlive())
         
-        content = proxy.lucyTranslate(request.source_text, 'GERMAN',
+        content = proxy.lucyTranslate(message.source_text, 'GERMAN',
           'ENGLISH')
         result = content.get('EN.txt')
 
@@ -36,11 +36,11 @@ class LucyWorker(AbstractWorkerServer):
         #
         # The apple does not fall far from the <A[tribe|stem|trunk]>.
         if result:
-            request.target_text = result
-            message.seek(0)
-            message.write(request.SerializeToString())
+            message.target_text = result
+            handle.seek(0)
+            handle.write(message.SerializeToString())
 
-        message.close()
+        handle.close()
 
 
 if __name__ == "__main__":

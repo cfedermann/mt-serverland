@@ -5,8 +5,9 @@ Project: MT Server Land prototype code
 import logging
 import socket
 import subprocess
+
 from os import remove
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm, ValidationError, FileField
 from serverland.dashboard.models import TranslationRequest
 from serverland.settings import LOG_LEVEL, LOG_HANDLER
 
@@ -20,6 +21,10 @@ class TranslationRequestForm(ModelForm):
     class Meta:
         """Meta class that connects to the TranslationRequest class."""
         model = TranslationRequest
+        exclude = ('request_id', 'owner', 'created', 'ready', 'deleted')
+    
+    # We add a FileField widget to allow uploading of the source text.
+    source_text = FileField()
     
     def clean_shortname(self):
         """Checks that the new shortname is not yet in use."""
@@ -57,7 +62,7 @@ class TranslationRequestForm(ModelForm):
         LOGGER.debug('clean_source_text() called for file "{0}".'.format(
           data.name))
         
-        destination = open('/tmp/{0}'.format(data.name), 'wb+')
+        destination = open('/tmp/{0}'.format(data.name), 'w+b')
         for chunk in data.chunks():
             destination.write(chunk)
         destination.close()
@@ -65,7 +70,7 @@ class TranslationRequestForm(ModelForm):
         # Instead of using /usr/bin/file directly, we could use libmagic:
         # - http://github.com/ahupp/python-magic
         LOGGER.debug('TODO: use libmagic instead of "file" call!')
-        mime_type = subprocess.Popen('/usr/bin/file -I /tmp/{0}'.format(
+        mime_type = subprocess.Popen('/usr/bin/file --mime /tmp/{0}'.format(
           data.name), shell=True, stdout=subprocess.PIPE).communicate()[0]
         mime_type = mime_type.strip().split()[1].strip(';')
         LOGGER.info('Detected MIME type "{0}" for file "{1}".'.format(

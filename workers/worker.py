@@ -6,6 +6,7 @@ Implements the basic "worker" interface.
 import logging
 
 from base64 import b64encode, b64decode
+from google.protobuf.message import DecodeError
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process
 from os import remove
@@ -125,7 +126,7 @@ class AbstractWorkerServer(object):
         """
         return request_id in self.jobs.keys()
 
-    def start_translation(self, request_id, text):
+    def start_translation(self, serialized):
         """
         Stores a new translation request with the given id and source text.
         
@@ -133,31 +134,31 @@ class AbstractWorkerServer(object):
         the worker server's output folder.  Returns True if successful, False
         when an error occurs.
         """
-        self.LOGGER.info('Created new translation request "{0}".'.format(
-          request_id))
-
         try:
-            # Create new TranslationRequestMessage object.
-            request = TranslationRequestMessage()
-            request.source_text = b64decode(text)
-            request.request_id = request_id
+            # Create new TranslationRequestMessage object and load serialized.
+            message = TranslationRequestMessage()
+            message.ParseFromString(b64decode(serialized))
             
             # Write serialized translation request message to file.
-            message = open('/tmp/{0}.message'.format(request_id), 'w')
-            message.write(request.SerializeToString())
-            message.close()
+            handle = open('/tmp/{0}.message'.format(message.request_id), 'w')
+            handle.write(message.SerializeToString())
+            handle.close()
+            
+            self.LOGGER.info('Created new translation request "{0}".'.format(
+              message.request_id))
             
             # Start up translation process for the new request object.
-            proc = Process(target=self.handle_translation, args=(request_id,))
+            proc = Process(target=self.handle_translation,
+              args=(message.request_id,))
             proc.start()
-            self.jobs[request_id] = proc
+            self.jobs[message.request_id] = proc
             self.LOGGER.info('Started translation job "{0}"'.format(proc))
 
-        except IOError:
+        except (IOError, DecodeError):
             self.LOGGER.error('Could not start translation job!')
             
-            if request_id in self.jobs.keys():
-                self.jobs.pop(request_id)
+            if message.request_id in self.jobs.keys():
+                self.jobs.pop(message.request_id)
             
             return False
         
@@ -175,20 +176,20 @@ class AbstractWorkerServer(object):
               request_id))
             
             return b64encode("ERROR")
-                
+        
         try:
             self.LOGGER.debug("Translation requests: {0}".format(
               repr(self.jobs)))
 
-            message = open('/tmp/{0}.message'.format(request_id), 'r')
-            request = TranslationRequestMessage()
-            request.ParseFromString(message.read())
-            message.close()
+            handle = open('/tmp/{0}.message'.format(request_id), 'rb')
+            message = TranslationRequestMessage()
+            message.ParseFromString(handle.read())
+            handle.close()
             
-            if request.HasField('target_text'):
-                return b64encode(request.target_text)
+            if message.HasField('target_text'):
+                return b64encode(message.SerializeToString())
             
-        except IOError:
+        except (IOError, DecodeError):
             return b64encode("ERROR")
         
         return b64encode("ERROR")
@@ -242,10 +243,10 @@ class DummyWorker(AbstractWorkerServer):
         self.LOGGER.debug("Finalizing result for request {0}".format(
           request_id))
 
-        message = open('/tmp/{0}.message'.format(request_id), 'r+b')
-        request = TranslationRequestMessage()
-        request.ParseFromString(message.read())        
-        request.target_text = request.source_text.upper()
-        message.seek(0)
-        message.write(request.SerializeToString())
-        message.close()
+        handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        message = TranslationRequestMessage()
+        message.ParseFromString(handle.read())
+        message.target_text = message.source_text.upper()
+        handle.seek(0)
+        handle.write(message.SerializeToString())
+        handle.close()

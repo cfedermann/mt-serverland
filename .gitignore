@@ -1,3 +1,4 @@
 *.pyc
 development.db
-media/requests/
+media/
+messages/

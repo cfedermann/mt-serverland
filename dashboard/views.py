@@ -11,8 +11,11 @@ from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from serverland.dashboard.models import TranslationRequest, WorkerServer
+from serverland.dashboard.models import TRANSLATION_MESSAGE_PATH
 from serverland.dashboard.forms import TranslationRequestForm
 from serverland.settings import LOG_LEVEL, LOG_HANDLER
+from serverland.workers.TranslationRequestMessage_pb2 import \
+  TranslationRequestMessage
 
 # Setup logging support.
 logging.basicConfig(level=LOG_LEVEL)
@@ -32,8 +35,10 @@ def dashboard(request):
     ordered = TranslationRequest.objects.all().order_by('-created')
     requests = [r for r in ordered if not r.deleted]
     finished = [r for r in requests if r.is_ready()]
-    invalid = [r for r in requests if not r.is_valid() and not r in finished]
-    active = [r for r in requests if not r in finished and not r in invalid]
+    #invalid = [r for r in requests if not r.is_valid() and not r in finished]
+    #active = [r for r in requests if not r in finished and not r in invalid]
+    invalid = []
+    active = [r for r in requests if not r in finished and not r in finished]
     
     dictionary = {'title': 'MT Server Land (prototype) -- Dashboard',
       'finished_requests': finished, 'active_requests': active,
@@ -65,20 +70,21 @@ def create(request):
 
             new = TranslationRequest()
             new.shortname = request.POST['shortname']
+            new.owner = request.user
             new.worker = WorkerServer.objects.get(
               pk=int(request.POST['worker']))
-            new.source_text = request.FILES['source_text']
             
-            # This is not needed anymore, we have to think about ways to
-            # remove the FileField and store the raw source text instead...
-            #
-            #text = ''
-            #for chunk in request.FILES['source_text'].chunks():
-            #    text += chunk
+            message = TranslationRequestMessage()
+            message.request_id = new.request_id
+            message.source_text = ''
+            for chunk in request.FILES['source_text'].chunks():
+                message.source_text += chunk
             
-            # Check that the newly generated UUID-4 is indeed unique.
-            new.request_id = uuid.uuid4().hex
-            new.owner = request.user
+            handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
+              new.request_id), 'w+b')
+            handle.write(message.SerializeToString())
+            handle.close()
+            
             new.save()
             
             new.start_translation()
