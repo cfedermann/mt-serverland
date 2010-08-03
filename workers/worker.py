@@ -168,7 +168,7 @@ class AbstractWorkerServer(object):
         """
         Retrieves translation result for the given request id.
         
-        Returns "ERROR" if request_id is invalid or the empty result "" if the
+        Returns "ERROR" if request_id is invalid or "NOT_READY" if the
         translation request is not yet ready.
         """
         if not request_id in self.jobs.keys():
@@ -177,19 +177,20 @@ class AbstractWorkerServer(object):
             
             return b64encode("ERROR")
         
+        # Check if the given request is still being processed.
+        if self.jobs[request_id].is_alive():
+            return b64encode("NOT_READY")
+        
+        self.LOGGER.debug("Translation requests: {0}".format(
+          repr(self.jobs)))
+
         try:
-            self.LOGGER.debug("Translation requests: {0}".format(
-              repr(self.jobs)))
-            
-            # cfedermann: Would it make more sense to just check if the job
-            #   is still running rather than checking for "target_text"?
             handle = open('/tmp/{0}.message'.format(request_id), 'rb')
             message = TranslationRequestMessage()
             message.ParseFromString(handle.read())
             handle.close()
             
-            if message.HasField('target_text'):
-                return b64encode(message.SerializeToString())
+            return b64encode(message.SerializeToString())
             
         except (IOError, DecodeError):
             return b64encode("ERROR")

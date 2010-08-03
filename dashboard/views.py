@@ -87,8 +87,8 @@ def create(request):
             
             new.start_translation()
             
-            messages.add_message(request, messages.SUCCESS,
-              'Successfully started translation request.')
+            messages.add_message(request, messages.SUCCESS, 'Successfully ' \
+              'started translation request "{0}".'.format(new.shortname))
             return HttpResponseRedirect('/dashboard/')
         
     else:

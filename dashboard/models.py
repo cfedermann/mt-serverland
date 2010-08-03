@@ -164,6 +164,27 @@ class TranslationRequest(models.Model):
         if not self.ready:
             self.ready = self.worker.is_ready(self.request_id)
             self.save()
+        
+            # If the translation request has been finished by now, we fetch
+            # the corresponding TranslationRequestMessage from the worker
+            # server and copy it to the broker's TRANSLATION_MESSAGE_PATH.
+            if self.ready:
+                LOGGER.info('Fetching translation result for request' \
+                  ' "{0}"'.format(self.request_id))
+                serialized = self.worker.fetch_translation(self.request_id)
+                handle = open('{0}/{1}.message'.format(
+                  TRANSLATION_MESSAGE_PATH, self.request_id), 'w+b')
+                handle.write(serialized)
+                handle.close()
+                
+                # Now that we have successfully retrieved the translation from
+                # the worker server, we can delete it from the worker's queue.
+                success = self.worker.delete_translation(self.request_id)
+
+                if not success:
+                    LOGGER.warning('Could not delete request "{0}" on ' \
+                      ' worker "{1}".'.format(self.request_id,
+                      self.worker.shortname))
 
         return self.ready
 
@@ -172,7 +193,7 @@ class TranslationRequest(models.Model):
         try:
             # Read in serialized message from file.
             handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
-              self.request_id), 'r')
+              self.request_id), 'rb')
             message = handle.read()
             handle.close()
             
@@ -193,41 +214,39 @@ class TranslationRequest(models.Model):
     def start_translation(self):
         """Sends the serialized translation request to the worker server."""
         handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
-          self.request_id), 'r')
+          self.request_id), 'rb')
         message = handle.read()
         handle.close()
                 
         return self.worker.start_translation(message)
 
     def fetch_translation(self):
-        """Fetches a translation result from the worker server."""
-        serialized = self.worker.fetch_translation(self.request_id)
-            
-        if serialized == "ERROR":
-            LOGGER.warning('Could not fetch translation for request' \
-              ' "{0}" from worker "{1}".'.format(self.request_id,
-              self.worker.shortname))
-            return "ERROR"
+        """Fetches the TranslationRequestMessage object if ready."""
+        if not self.is_ready():
+            return "NOT_READY"
+        
+        handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
+          self.request_id), 'rb')
+        serialized = handle.read()
+        handle.close()
         
         message = TranslationRequestMessage()
         message.ParseFromString(serialized)
-        
-        # cfedermann: Change code to store the fetched result on the broker
-        #   server's TRANSLATION_MESSAGE_PATH once the request is ready!
                 
         return message.target_text
 
     def delete_translation(self):
-        """Kills and deletes a translation request from the worker server."""
+        """Deletes a translation request from the broker server queue."""
         if not self.deleted:
-            self.deleted = self.worker.delete_translation(self.request_id)
-            
-            if not self.deleted:
-                LOGGER.warning('Could not delete request "{0}" on worker' \
-                  ' "{1}".'.format(self.request_id, self.worker.shortname))
-                
-                self.deleted = True
-            
+            self.deleted = True
             self.save()
+            
+            if not self.ready:
+                success = self.worker.delete_translation(self.request_id)
+
+                if not success:
+                    LOGGER.warning('Could not delete request "{0}" on ' \
+                      ' worker "{1}".'.format(self.request_id,
+                      self.worker.shortname))
 
         return self.deleted
