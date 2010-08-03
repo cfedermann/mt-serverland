@@ -241,6 +241,8 @@ class TranslationRequest(models.Model):
             self.deleted = True
             self.save()
             
+            # If the translation request is not yet ready, we have to ensure
+            # that it is properly deleted from the worker's job queue.
             if not self.ready:
                 success = self.worker.delete_translation(self.request_id)
 
