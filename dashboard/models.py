@@ -186,11 +186,9 @@ class TranslationRequest(models.Model):
         
         return False
 
-# IS VALID CAN BE SAFELY REMOVED, RIGHT?
-#
-#    def is_valid(self):
-#        """Checks if the current translation request is valid."""
-#        return self.worker.is_valid(self.request_id)
+    def is_valid(self):
+        """Checks if the current translation request is valid."""
+        return self.worker.is_valid(self.request_id)
 
     def start_translation(self):
         """Sends the serialized translation request to the worker server."""
@@ -213,6 +211,10 @@ class TranslationRequest(models.Model):
         
         message = TranslationRequestMessage()
         message.ParseFromString(serialized)
+        
+        # cfedermann: Change code to store the fetched result on the broker
+        #   server's TRANSLATION_MESSAGE_PATH once the request is ready!
+                
         return message.target_text
 
     def delete_translation(self):

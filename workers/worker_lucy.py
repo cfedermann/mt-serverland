@@ -1,6 +1,7 @@
 """
 Implementation of a worker server that connects to the Lucy RBMT system.
 """
+import re
 import sys
 import xmlrpclib
 
@@ -13,6 +14,13 @@ class LucyWorker(AbstractWorkerServer):
     Implementation of a worker server that connects to the Lucy RBMT system.
     """
     __name__ = 'LucyWorker'
+    
+    def is_alive(self):
+        """
+        Checks if the Lucy RBMT XML-RPC interface is running.
+        """
+        proxy = xmlrpclib.ServerProxy('http://msv-3207.sb.dfki.de:9999/')
+        return proxy.isAlive()
     
     def handle_translation(self, request_id):
         """
@@ -30,16 +38,27 @@ class LucyWorker(AbstractWorkerServer):
         content = proxy.lucyTranslate(message.source_text, 'GERMAN',
           'ENGLISH')
         result = content.get('EN.txt')
+        trees = content.get('tre')
 
         # We have to parse the result text and filter out Lucy's alternative
         # translations, e.g.:
         #
-        # The apple does not fall far from the <A[tribe|stem|trunk]>.
+        #   The apple does not fall far from the <A[tribe|stem|trunk]>.
+        #
+        # For this example, we will return "...from the tribe." as target text
+        # while the "raw" translation as well as the trees are return inside
+        # the TranslationRequestMessage's packet_data list.
         if result:
-            message.target_text = result
-            handle.seek(0)
-            handle.write(message.SerializeToString())
-
+            filter_exp = re.compile('<.\[(.+?)\|.+?\]>')
+            filtered_result = filter_exp.sub('\g<1>', result)
+            message.target_text = filtered_result
+            message.packet_data.append(result)
+        
+        if trees:
+            message.packet_data.append(trees)
+        
+        handle.seek(0)
+        handle.write(message.SerializeToString())
         handle.close()
 
 

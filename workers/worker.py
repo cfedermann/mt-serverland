@@ -180,7 +180,9 @@ class AbstractWorkerServer(object):
         try:
             self.LOGGER.debug("Translation requests: {0}".format(
               repr(self.jobs)))
-
+            
+            # cfedermann: Would it make more sense to just check if the job
+            #   is still running rather than checking for "target_text"?
             handle = open('/tmp/{0}.message'.format(request_id), 'rb')
             message = TranslationRequestMessage()
             message.ParseFromString(handle.read())

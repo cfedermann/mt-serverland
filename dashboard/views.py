@@ -35,10 +35,8 @@ def dashboard(request):
     ordered = TranslationRequest.objects.all().order_by('-created')
     requests = [r for r in ordered if not r.deleted]
     finished = [r for r in requests if r.is_ready()]
-    #invalid = [r for r in requests if not r.is_valid() and not r in finished]
-    #active = [r for r in requests if not r in finished and not r in invalid]
-    invalid = []
-    active = [r for r in requests if not r in finished and not r in finished]
+    invalid = [r for r in requests if not r.is_valid() and not r in finished]
+    active = [r for r in requests if not r in finished and not r in invalid]
     
     dictionary = {'title': 'MT Server Land (prototype) -- Dashboard',
       'finished_requests': finished, 'active_requests': active,
@@ -139,6 +137,10 @@ def result(request, request_id):
         
         return HttpResponseRedirect('/dashboard/')
 
+    # cfedermann: Make sure that the request is marked as finished once the
+    #   result has been transferred to the local hard disk!!!  We are trying
+    #   to access the result from the worker server for each request now :(
+    #   This will break if the worker server has forgotten about the request.
     LOGGER.info('Fetching request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
     translation_result = req.fetch_translation()
