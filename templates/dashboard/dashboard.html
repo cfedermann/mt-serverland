@@ -52,7 +52,7 @@ function confirm_delete(name, url) {
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
-    <a href="javascript:confirm_delete('{{request.shortname}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
+    <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
     <a href="/dashboard/result/{{request.request_id}}/"><img src="/site_media/search_small.png" class="actions" alt="View" /></a>
     <a href="/dashboard/download/{{request.request_id}}/"><img src="/site_media/download_small.png" class="actions" alt="Download" /></a>
   </td>
@@ -81,7 +81,7 @@ function confirm_delete(name, url) {
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
-    <a href="javascript:confirm_delete('{{request.shortname}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
+    <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
   </td>
   </tr>
   {% endfor %}
@@ -107,7 +107,7 @@ function confirm_delete(name, url) {
   <tr>
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
-  <td><a href="javascript:confirm_delete('{{request.shortname}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" /></a>
+  <td><a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" /></a>
   </td>
   </tr>
   {% endfor %}
