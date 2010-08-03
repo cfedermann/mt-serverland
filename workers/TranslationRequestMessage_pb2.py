@@ -10,10 +10,44 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = descriptor.FileDescriptor(
   name='TranslationRequestMessage.proto',
   package='serverland',
-  serialized_pb='\n\x1fTranslationRequestMessage.proto\x12\nserverland\"n\n\x19TranslationRequestMessage\x12\x13\n\x0bsource_text\x18\x01 \x02(\t\x12\x13\n\x0btarget_text\x18\x02 \x01(\t\x12\x12\n\nrequest_id\x18\x03 \x01(\t\x12\x13\n\x0bpacket_data\x18\x04 \x03(\t')
+  serialized_pb='\n\x1fTranslationRequestMessage.proto\x12\nserverland\"\xce\x01\n\x19TranslationRequestMessage\x12\x13\n\x0bsource_text\x18\x01 \x02(\t\x12\x13\n\x0btarget_text\x18\x02 \x01(\t\x12\x12\n\nrequest_id\x18\x03 \x01(\t\x12G\n\x0bpacket_data\x18\x04 \x03(\x0b\x32\x32.serverland.TranslationRequestMessage.KeyValuePair\x1a*\n\x0cKeyValuePair\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x02(\t')
 
 
 
+
+_TRANSLATIONREQUESTMESSAGE_KEYVALUEPAIR = descriptor.Descriptor(
+  name='KeyValuePair',
+  full_name='serverland.TranslationRequestMessage.KeyValuePair',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    descriptor.FieldDescriptor(
+      name='key', full_name='serverland.TranslationRequestMessage.KeyValuePair.key', index=0,
+      number=1, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    descriptor.FieldDescriptor(
+      name='value', full_name='serverland.TranslationRequestMessage.KeyValuePair.value', index=1,
+      number=2, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=212,
+  serialized_end=254,
+)
 
 _TRANSLATIONREQUESTMESSAGE = descriptor.Descriptor(
   name='TranslationRequestMessage',
@@ -45,7 +79,7 @@ _TRANSLATIONREQUESTMESSAGE = descriptor.Descriptor(
       options=None),
     descriptor.FieldDescriptor(
       name='packet_data', full_name='serverland.TranslationRequestMessage.packet_data', index=3,
-      number=4, type=9, cpp_type=9, label=3,
+      number=4, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -53,20 +87,28 @@ _TRANSLATIONREQUESTMESSAGE = descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[],
+  nested_types=[_TRANSLATIONREQUESTMESSAGE_KEYVALUEPAIR, ],
   enum_types=[
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=47,
-  serialized_end=157,
+  serialized_start=48,
+  serialized_end=254,
 )
 
 
+_TRANSLATIONREQUESTMESSAGE_KEYVALUEPAIR.containing_type = _TRANSLATIONREQUESTMESSAGE;
+_TRANSLATIONREQUESTMESSAGE.fields_by_name['packet_data'].message_type = _TRANSLATIONREQUESTMESSAGE_KEYVALUEPAIR
 
 class TranslationRequestMessage(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
+  
+  class KeyValuePair(message.Message):
+    __metaclass__ = reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _TRANSLATIONREQUESTMESSAGE_KEYVALUEPAIR
+    
+    # @@protoc_insertion_point(class_scope:serverland.TranslationRequestMessage.KeyValuePair)
   DESCRIPTOR = _TRANSLATIONREQUESTMESSAGE
   
   # @@protoc_insertion_point(class_scope:serverland.TranslationRequestMessage)

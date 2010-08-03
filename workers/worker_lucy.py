@@ -52,10 +52,14 @@ class LucyWorker(AbstractWorkerServer):
             filter_exp = re.compile('<.\[(.+?)\|.+?\]>')
             filtered_result = filter_exp.sub('\g<1>', result)
             message.target_text = filtered_result
-            message.packet_data.append(result)
+            keyvalue = message.packet_data.add()
+            keyvalue.key = 'RAW_RESULT'
+            keyvalue.value = result
         
         if trees:
-            message.packet_data.append(trees)
+            keyvalue = message.packet_data.add()
+            keyvalue.key = 'TREES'
+            keyvalue.value = trees
         
         handle.seek(0)
         handle.write(message.SerializeToString())
