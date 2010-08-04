@@ -143,10 +143,18 @@ def result(request, request_id):
     #   This will break if the worker server has forgotten about the request.
     LOGGER.info('Fetching request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
-    translation_result = req.fetch_translation()
+    translation_message = req.fetch_translation()
+    translation_result = translation_message
+    translation_packet_data = None
+    
+    if type(translation_result) == TranslationRequestMessage:
+        translation_result = translation_message.target_text
+        translation_packet_data = [(x.key, x.value) for x in 
+          translation_message.packet_data]
     
     dictionary = {'title': 'MT Server Land (prototype) -- {0}'.format(
-      req.shortname), 'request': req, 'result': translation_result}
+      req.shortname), 'request': req, 'result': translation_result,
+      'packet_data': translation_packet_data}
     return render_to_response('dashboard/result.html', dictionary,
       context_instance=RequestContext(request))
 

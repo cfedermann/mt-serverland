@@ -15,6 +15,13 @@
 
   <h2>Request Result</h2>
   <div id="result">{{ result|linebreaks }}</div>
+{% if packet_data %}
+  <div id="packet_data">
+  {% for k,v in packet_data %}
+  <b>{{k}}</b>: {{v}}<br/>
+  {% endfor %}
+  </div>
+{% endif %}
   <br/><br/><br/><br/><br/>
 </div>
 

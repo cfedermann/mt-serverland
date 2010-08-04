@@ -225,15 +225,19 @@ class TranslationRequest(models.Model):
         if not self.is_ready():
             return "NOT_READY"
         
-        handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
-          self.request_id), 'rb')
-        serialized = handle.read()
-        handle.close()
+        try:
+            handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
+              self.request_id), 'rb')
+            serialized = handle.read()
+            handle.close()
+            
+            message = TranslationRequestMessage()
+            message.ParseFromString(serialized)
         
-        message = TranslationRequestMessage()
-        message.ParseFromString(serialized)
-                
-        return message.target_text
+        except (IOError, DecodeError):
+            return "ERROR"
+        
+        return message
 
     def delete_translation(self):
         """Deletes a translation request from the broker server queue."""
