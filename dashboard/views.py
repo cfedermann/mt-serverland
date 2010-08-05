@@ -74,6 +74,8 @@ def create(request):
             
             message = TranslationRequestMessage()
             message.request_id = new.request_id
+            message.source_language = request.POST['source_language']
+            message.target_language = request.POST['target_language']
             message.source_text = u''
             for chunk in request.FILES['source_text'].chunks():
                 message.source_text += unicode(chunk, 'utf-8')

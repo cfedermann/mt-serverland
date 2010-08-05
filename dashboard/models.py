@@ -42,6 +42,20 @@ class WorkerServer(models.Model):
         return u"{0} ({1}→{2})".format(self.shortname, self.source_language,
           self.target_language)
 
+    def language_pairs(self):
+        """
+        Returns a tuple of all supported language pairs for this worker.
+        """
+        try:
+            proxy = xmlrpclib.ServerProxy("{0}:{1}".format(self.hostname,
+              self.port))
+            return (tuple(x) for x in proxy.language_pairs())
+
+        except (xmlrpclib.Error, socket.error):
+            return ()
+
+        return ()
+
     def is_alive(self):
         """Checks if the current worker server instance is alive."""
         try:

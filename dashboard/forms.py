@@ -7,7 +7,7 @@ import socket
 import subprocess
 
 from os import remove
-from django.forms import ModelForm, ValidationError, FileField
+from django.forms import ModelForm, ValidationError, FileField, ChoiceField
 from serverland.dashboard.models import TranslationRequest
 from serverland.settings import LOG_LEVEL, LOG_HANDLER
 
@@ -16,6 +16,10 @@ logging.basicConfig(level=LOG_LEVEL)
 LOGGER = logging.getLogger('dashboard.forms')
 LOGGER.addHandler(LOG_HANDLER)
 
+LANGUAGE_CODES = (
+  ('eng', 'English'), ('fre', 'French'), ('ger', 'German'), ('spa', 'Spanish')
+)
+
 class TranslationRequestForm(ModelForm):
     """Form class for a translation request object."""
     class Meta:
@@ -23,8 +27,26 @@ class TranslationRequestForm(ModelForm):
         model = TranslationRequest
         exclude = ('request_id', 'owner', 'created', 'ready', 'deleted')
     
+    source_language = ChoiceField(choices=LANGUAGE_CODES)
+    target_language = ChoiceField(choices=LANGUAGE_CODES)
+    
     # We add a FileField widget to allow uploading of the source text.
     source_text = FileField()
+    
+    def clean(self):
+        """Checks that source and target language are different."""
+        source = self.cleaned_data['source_language']
+        target = self.cleaned_data['target_language']
+        
+        if (source == target):
+            raise ValidationError('Source and target language not different!')
+        
+        worker = self.cleaned_data.get('worker')
+        
+        if worker and not (source, target) in worker.language_pairs():
+            raise ValidationError('Worker does not support language pair!')
+        
+        return self.cleaned_data
     
     def clean_shortname(self):
         """Checks that the new shortname is not yet in use."""

@@ -65,6 +65,7 @@ class AbstractWorkerServer(object):
           "fetch_translation")
         self.server.register_function(self.delete_translation,
           "delete_translation")
+        self.server.register_function(self.language_pairs, "language_pairs")
 
     def start_worker(self):
         """
@@ -218,6 +219,20 @@ class AbstractWorkerServer(object):
     def handle_translation(self, request_id):
         """
         Raises NotImplemented exception, has to be implemented in sub-classes.
+        """
+        raise NotImplementedError
+    
+    def language_pairs(self):
+        """
+        Returns a tuple of all supported language pairs for this worker.
+        """
+        raise NotImplementedError
+    
+    def language_code(self, iso639_2_code):
+        """
+        Converts a given ISO-639-2 code into the worker representation.
+        
+        Returns None for unknown languages.
         """
         raise NotImplementedError
 
