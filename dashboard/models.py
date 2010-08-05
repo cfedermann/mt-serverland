@@ -32,15 +32,12 @@ class WorkerServer(models.Model):
     """A Worker Server implements translation functionality via XML-RPC."""
     shortname = models.CharField(max_length=50)
     description = models.TextField()
-    source_language = models.CharField(max_length=3)
-    target_language = models.CharField(max_length=3)
     hostname = models.CharField(max_length=200)
     port = models.CharField(max_length=5)
     
     def __unicode__(self):
         """Returns a Unicode String representation of the worker server."""
-        return u"{0} ({1}→{2})".format(self.shortname, self.source_language,
-          self.target_language)
+        return self.shortname
 
     def language_pairs(self):
         """
