@@ -74,9 +74,9 @@ def create(request):
             
             message = TranslationRequestMessage()
             message.request_id = new.request_id
-            message.source_text = ''
+            message.source_text = u''
             for chunk in request.FILES['source_text'].chunks():
-                message.source_text += chunk
+                message.source_text += unicode(chunk, 'utf-8')
             
             handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
               new.request_id), 'w+b')
