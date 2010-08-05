@@ -85,6 +85,11 @@ def create(request):
             
             new.save()
             
+            # cfedermann: We have to decide whether the translation process
+            #   should directly be sent to the worker server or whether it
+            #   makes more sense to "queue" it on the broker server and have
+            #   a cronjob start the process when the worker is not busy...
+            #   This does have impact on system performance/robustness!
             new.start_translation()
             
             messages.add_message(request, messages.SUCCESS, 'Successfully ' \
