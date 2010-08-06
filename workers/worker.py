@@ -21,12 +21,11 @@ class AbstractWorkerServer(object):
     Abstract worker server defining the basic worker server interface.
     """
     __name__ = 'AbstractWorkerServer'
-    
+
     finished = False
     server = None
     jobs = {}
-    language_pairs = []
-    
+
     def __init__(self, host, port, logfile):
         """
         Creates a new WorkerServer instance serving from host:port.
@@ -45,13 +44,13 @@ class AbstractWorkerServer(object):
         logging.basicConfig(level=LOG_LEVEL)
         self.LOGGER = logging.getLogger(self.__name__)
         self.LOGGER.addHandler(LOG_HANDLER)
-        
+
         self.server = SimpleXMLRPCServer((host, port), allow_none=True)
         self.LOGGER.info("{0} listening on {1}:{2}".format(self.__name__,
           host, port))
-        
+
         self.jobs = {}
-        
+
         # Register worker interface functions.
         self.server.register_function(self.stop_worker, "stop_worker")
         self.server.register_function(self.list_requests, "list_requests")
@@ -73,10 +72,10 @@ class AbstractWorkerServer(object):
         """
         self.LOGGER.info("Started {0} instance, serving via XML-RPC.".format(
           self.__name__))
-        
+
         while not self.finished:
             self.server.handle_request()
-    
+
     def stop_worker(self):
         """
         Stops the event handler terminating all pending translation processes.
@@ -84,7 +83,7 @@ class AbstractWorkerServer(object):
         self.LOGGER.info('Stopped {0} instance.'.format(self.__name__))
         if not self.finished:
             self.finished = True
-            
+
             for proc in self.jobs.values():
                 if proc.is_alive():
                     proc.terminate()
@@ -98,7 +97,7 @@ class AbstractWorkerServer(object):
         Will return True to signal that the worker server is running.
         """
         return True
-    
+
     def is_busy(self):
         """
         Checks if the worker server is currently busy.
@@ -114,11 +113,11 @@ class AbstractWorkerServer(object):
         if not request_id in self.jobs.keys():
             self.LOGGER.info('Unknown request id "{0}" queried.'.format(
               request_id))
-            
+
             return False
 
         return not self.jobs[request_id].is_alive()
-    
+
     def is_valid(self, request_id):
         """
         Checks if a translation request is valid, i.e. known in self.jobs.
@@ -130,7 +129,7 @@ class AbstractWorkerServer(object):
     def start_translation(self, serialized):
         """
         Stores a new translation request with the given id and source text.
-        
+
         Writes out a serialized version of the TranslationRequestMessage to
         the worker server's output folder.  Returns True if successful, False
         when an error occurs.
@@ -139,15 +138,15 @@ class AbstractWorkerServer(object):
             # Create new TranslationRequestMessage object and load serialized.
             message = TranslationRequestMessage()
             message.ParseFromString(b64decode(serialized))
-            
+
             # Write serialized translation request message to file.
             handle = open('/tmp/{0}.message'.format(message.request_id), 'w')
             handle.write(message.SerializeToString())
             handle.close()
-            
+
             self.LOGGER.info('Created new translation request "{0}".'.format(
               message.request_id))
-            
+
             # Start up translation process for the new request object.
             proc = Process(target=self.handle_translation,
               args=(message.request_id,))
@@ -157,31 +156,31 @@ class AbstractWorkerServer(object):
 
         except (IOError, DecodeError):
             self.LOGGER.error('Could not start translation job!')
-            
+
             if message.request_id in self.jobs.keys():
                 self.jobs.pop(message.request_id)
-            
+
             return False
-        
+
         return True
 
     def fetch_translation(self, request_id):
         """
         Retrieves translation result for the given request id.
-        
+
         Returns "ERROR" if request_id is invalid or "NOT_READY" if the
         translation request is not yet ready.
         """
         if not request_id in self.jobs.keys():
             self.LOGGER.info('Unknown request id "{0}" queried.'.format(
               request_id))
-            
+
             return b64encode("ERROR")
-        
+
         # Check if the given request is still being processed.
         if self.jobs[request_id].is_alive():
             return b64encode("NOT_READY")
-        
+
         self.LOGGER.debug("Translation requests: {0}".format(
           repr(self.jobs)))
 
@@ -190,29 +189,29 @@ class AbstractWorkerServer(object):
             message = TranslationRequestMessage()
             message.ParseFromString(handle.read())
             handle.close()
-            
+
             return b64encode(message.SerializeToString())
-            
+
         except (IOError, DecodeError):
             return b64encode("ERROR")
-        
+
         return b64encode("ERROR")
-    
+
     def delete_translation(self, request_id):
         """
         Deletes a translation request from the worker server.
-        
+
         Returns True if the translation request could be deleted successfully.
         """
         if not request_id in self.jobs.keys():
             self.LOGGER.info('Unknown request id "{0}" queried.'.format(
               request_id))
-            
+
             return False
-        
+
         self.jobs[request_id].terminate()
         self.LOGGER.info('Terminated request "{0}".'.format(request_id))
-        
+
         remove('/tmp/{0}.message'.format(request_id))
         return True
 
@@ -221,17 +220,17 @@ class AbstractWorkerServer(object):
         Raises NotImplemented exception, has to be implemented in sub-classes.
         """
         raise NotImplementedError
-    
+
     def language_pairs(self):
         """
         Returns a tuple of all supported language pairs for this worker.
         """
         raise NotImplementedError
-    
+
     def language_code(self, iso639_2_code):
         """
         Converts a given ISO-639-2 code into the worker representation.
-        
+
         Returns None for unknown languages.
         """
         raise NotImplementedError
@@ -243,7 +242,7 @@ class DummyWorker(AbstractWorkerServer):
     then writes out an all-uppercase "translation" of the input text.
     """
     __name__ = "DummyWorker"
-    
+
     def handle_translation(self, request_id):
         """
         Dummy translation handler that blocks for a random amount of time.

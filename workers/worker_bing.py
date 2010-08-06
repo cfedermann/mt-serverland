@@ -35,7 +35,7 @@ class BingWorker(AbstractWorkerServer):
         mapping = {
           'ara': 'ar', 'bul': 'bg', 'chi': 'zh-CHS', 'cze': 'cs', 'dan': 'da',
           'dut': 'nl', 'eng': 'en', 'est': 'et', 'fin': 'fi', 'fre': 'fr',
-          'ger': 'de', 'gre': 'el', 'hat': 'ht', 'heb': 'he', 'hun': 'hu',          
+          'ger': 'de', 'gre': 'el', 'hat': 'ht', 'heb': 'he', 'hun': 'hu',
           'ita': 'it', 'jpn': 'ja', 'kor': 'ko', 'lav': 'lv', 'lit': 'lt',
           'nor': 'no', 'pol': 'pl', 'por': 'pt', 'rum': 'ro', 'rus': 'ru',
           'slo': 'sk', 'slv': 'sl', 'spa': 'es', 'swe': 'sv', 'tha': 'th',

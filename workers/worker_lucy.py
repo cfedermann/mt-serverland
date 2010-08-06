@@ -28,7 +28,7 @@ class LucyWorker(AbstractWorkerServer):
         """
         return (
           ('eng', 'fre'), ('eng', 'ger'), ('eng', 'spa'), ('eng', 'ita'),
-          ('fre', 'eng'), ('fre', 'ger'),      
+          ('fre', 'eng'), ('fre', 'ger'),
           ('ger', 'eng'), ('ger', 'spa'), ('ger', 'fre'),
           ('spa', 'eng'), ('spa', 'ger'),
         )

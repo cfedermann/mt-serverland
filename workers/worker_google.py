@@ -71,7 +71,7 @@ class GoogleWorker(AbstractWorkerServer):
           'text': message.source_text.encode('utf-8')})
         the_header = {'User-agent': 'Mozilla/5.0'}
 
-        opener = urllib2.build_opener(urllib2.HTTPHandler)        
+        opener = urllib2.build_opener(urllib2.HTTPHandler)
         http_request = urllib2.Request(the_url, the_data, the_header)
         http_handle = opener.open(http_request)
         content = http_handle.read()
