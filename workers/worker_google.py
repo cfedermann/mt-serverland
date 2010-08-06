@@ -25,8 +25,8 @@ class GoogleWorker(AbstractWorkerServer):
           'fin', 'fre', 'glg', 'geo', 'ger', 'gre', 'hat', 'heb', 'hin',
           'hun', 'ice', 'ind', 'gla', 'ita', 'jpn', 'kor', 'lav', 'lit',
           'mac', 'may', 'mlt', 'nor', 'per', 'pol', 'por', 'rum', 'rus',
-          'srp', 'slo', 'spa', 'swa', 'swe', 'tha', 'tur', 'ukr', 'urd',
-          'vie', 'yid')
+          'srp', 'slo', 'slv', 'spa', 'swa', 'swe', 'tha', 'tur', 'ukr',
+          'urd', 'vie', 'wel', 'yid')
         return tuple([(a,b) for a in languages for b in languages if a != b])
 
     def language_code(self, iso639_2_code):
