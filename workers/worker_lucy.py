@@ -26,8 +26,12 @@ class LucyWorker(AbstractWorkerServer):
         """
         Returns a tuple of all supported language pairs for this worker.
         """
-        languages = ('eng', 'fre', 'ger', 'spa')
-        return tuple([(a,b) for a in languages for b in languages if a != b])
+        return (
+          ('eng', 'fre'), ('eng', 'ger'), ('eng', 'spa'), ('eng', 'ita'),
+          ('fre', 'eng'), ('fre', 'ger'),      
+          ('ger', 'eng'), ('ger', 'spa'), ('ger', 'fre'),
+          ('spa', 'eng'), ('spa', 'ger'),
+        )
 
     def language_code(self, iso639_2_code):
         """
