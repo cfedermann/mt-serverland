@@ -47,7 +47,7 @@ class YahooWorker(AbstractWorkerServer):
 
     def handle_translation(self, request_id):
         """
-        Translates text from German->English using Yahoo! Babel Fish.
+        Translates text using Yahoo! Babel Fish.
         """
         handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
         message = TranslationRequestMessage()

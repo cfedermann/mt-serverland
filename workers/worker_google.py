@@ -55,9 +55,6 @@ class GoogleWorker(AbstractWorkerServer):
         """
         Translation handler that obtains a translation via the Google
         translation web front end.
-
-        Currently hard-coded to the language pair DE -> EN.
-
         """
         handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
         message = TranslationRequestMessage()
