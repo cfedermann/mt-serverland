@@ -20,17 +20,34 @@ class GoogleWorker(AbstractWorkerServer):
         """
         Returns a tuple of all supported language pairs for this worker.
         """
-        languages = ['eng', 'fre', 'ger', 'spa']
+        languages = ('afr', 'alb', 'ara', 'arm', 'aze', 'baq', 'bel', 'bul',
+          'cat', 'chi', 'hrv', 'cze', 'dan', 'dut', 'eng', 'est', 'phi',
+          'fin', 'fre', 'glg', 'geo', 'ger', 'gre', 'hat', 'heb', 'hin',
+          'hun', 'ice', 'ind', 'gla', 'ita', 'jpn', 'kor', 'lav', 'lit',
+          'mac', 'may', 'mlt', 'nor', 'per', 'pol', 'por', 'rum', 'rus',
+          'srp', 'slo', 'spa', 'swa', 'swe', 'tha', 'tur', 'ukr', 'urd',
+          'vie', 'yid')
         return tuple([(a,b) for a in languages for b in languages if a != b])
-    
+
     def language_code(self, iso639_2_code):
         """
         Converts a given ISO-639-2 code into the worker representation.
-        
+
         Returns None for unknown languages.
         """
         mapping = {
-          'eng': 'en', 'fre': 'fr', 'ger': 'de', 'spa': 'es'
+          'afr': 'af', 'alb': 'sq', 'ara': 'ar', 'arm': 'hy', 'aze', 'az',
+          'baq': 'eu', 'bel': 'be', 'bul': 'bg', 'cat': 'ca', 'chi': 'zh-CN',
+          'hrv': 'hr', 'cze': 'cs', 'dan': 'da', 'dut': 'nl', 'eng': 'en',
+          'est': 'et', 'phi': 'tl', 'fin': 'fi', 'fre': 'fr', 'glg': 'gl',
+          'geo': 'ka', 'ger': 'de', 'gre': 'el', 'hat': 'ht', 'heb': 'iw',
+          'hin': 'hi', 'hun': 'hu', 'ice': 'is', 'ind': 'id', 'gla': 'ir',
+          'ita': 'it', 'jpn': 'ja', 'kor': 'ko', 'lav', 'lv', 'lit': 'lt',
+          'mac': 'mk', 'may': 'ms', 'mlt': 'mt', 'nor': 'no', 'per': 'fa',
+          'pol': 'pl', 'por': 'pt', 'rum': 'ro', 'rus': 'ru', 'srp': 'sr',
+          'slo': 'sk', 'slv': 'sl', 'spa': 'es', 'swa': 'sw', 'swe': 'sv',
+          'tha': 'th', 'tur': 'tr', 'ukr': 'uk', 'urd': 'ur', 'vie': 'vi',
+          'wel': 'cy', 'yid': 'yi'
         }
         return mapping.get(iso639_2_code)
 
@@ -45,10 +62,10 @@ class GoogleWorker(AbstractWorkerServer):
         handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
         message = TranslationRequestMessage()
         message.ParseFromString(handle.read())
-        
+
         source = self.language_code(message.source_language)
         target = self.language_code(message.target_language)
-        
+
         the_url = 'http://translate.google.com/translate_t'
         the_data = urllib.urlencode({'js': 'n', 'text': message.source_text.encode('utf-8'),
           'sl': source, 'tl': target})
@@ -59,12 +76,12 @@ class GoogleWorker(AbstractWorkerServer):
         http_handle = opener.open(http_request)
         content = http_handle.read()
         http_handle.close()
-        
+
         result_exp = re.compile('<textarea name=utrans wrap=SOFT ' \
           'dir="ltr" id=suggestion.*>(.*?)</textarea>', re.I|re.U)
-        
+
         result = result_exp.search(content)
-        
+
         if result:
             target_html = result.group(1)
             target_text = target_html.replace('&lt;br&gt;', '\n')

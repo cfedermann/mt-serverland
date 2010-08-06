@@ -16,8 +16,28 @@ logging.basicConfig(level=LOG_LEVEL)
 LOGGER = logging.getLogger('dashboard.forms')
 LOGGER.addHandler(LOG_HANDLER)
 
+# By definition, we use the ISO 639-2 "B" (bibliographic) codes defined at:
+# - http://www.loc.gov/standards/iso639-2/php/code_list.php
 LANGUAGE_CODES = (
-  ('eng', 'English'), ('fre', 'French'), ('ger', 'German'), ('spa', 'Spanish')
+  ('afr', 'Afrikaans'), ('alb', 'Albanian'), ('ara', 'Arabic'),
+  ('arm', 'Armenian'), ('aze', 'Azerbaijani'), ('baq', 'Basque'),
+  ('bel', 'Belarusian'), ('bul', 'Bulgarian'), ('cat', 'Catalan'),
+  ('chi', 'Chinese'), ('hrv', 'Croatian'), ('cze', 'Czech'),
+  ('dan', 'Danish'), ('dut', 'Dutch'), ('eng', 'English'),
+  ('est', 'Estonian'), ('phi', 'Filipino'), ('fin', 'Finnish'),
+  ('fre', 'French'), ('glg', 'Galician'), ('geo', 'Georgian'),
+  ('ger', 'German'), ('gre', 'Greek'), ('hat', 'Haitian Creole'),
+  ('heb', 'Hebrew'), ('hin', 'Hindi'), ('hun', 'Hungarian'),
+  ('ice', 'Icelandic'), ('ind', 'Indonesian'), ('gla', 'Irish'),
+  ('ita', 'Italian'), ('jpn', 'Japanese'), ('kor', 'Korean'),
+  ('lav', 'Latvian'), ('lit', 'Lithuanian'), ('mac', 'Macedonian'),
+  ('may', 'Malay'), ('mlt', 'Maltese'), ('nor', 'Norwegian'),
+  ('per', 'Persian'), ('pol', 'Polish'), ('por', 'Portuguese'),
+  ('rum', 'Romanian'), ('rus', 'Russian'), ('srp', 'Serbian'),
+  ('slo', 'Slovak'), ('slv', 'Slovenian'), ('spa', 'Spanish'),
+  ('swa', 'Swahili'), ('swe', 'Swedish'), ('tha', 'Thai'), ('tur', 'Turkish'),
+  ('ukr', 'Ukrainian'), ('urd', 'Urdu'), ('vie', 'Vietnamese'),
+  ('wel', 'Welsh'), ('yid', 'Yiddish'),
 )
 
 class TranslationRequestForm(ModelForm):
