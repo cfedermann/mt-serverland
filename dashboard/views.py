@@ -26,18 +26,18 @@ LOGGER.addHandler(LOG_HANDLER)
 def dashboard(request):
     """
     Renders the MT Server Land dashboard for the current user.
-    
+
     Does not yet work for anonymous users!
     """
     LOGGER.info('Rendering dashboard for user "{0}".'.format(
       request.user.username))
-    
+
     ordered = TranslationRequest.objects.all().order_by('-created')
     requests = [r for r in ordered if not r.deleted]
     finished = [r for r in requests if r.is_ready()]
     invalid = [r for r in requests if not r.is_valid() and not r in finished]
     active = [r for r in requests if not r in finished and not r in invalid]
-    
+
     dictionary = {'title': 'MT Server Land (prototype) -- Dashboard',
       'finished_requests': finished, 'active_requests': active,
       'invalid_requests': invalid}
@@ -48,21 +48,21 @@ def dashboard(request):
 def create(request):
     """
     Creates a new translation request for the current user.
-    
+
     Does not yet work for anonymous users!
     """
     LOGGER.info('Rendering create request view for user "{0}".'.format(
       request.user.username))
 
     form = None
-    
+
     if request.method == "POST":
         form = TranslationRequestForm(request.POST, request.FILES)
-        
+
         if form.errors:
             LOGGER.info('Form validation errors: {0}'.format(
               ['{0}: {1}'.format(a, b[0]) for a, b in form.errors.items()]))
-        
+
         if form.is_valid():
             LOGGER.info('Create request form is valid.')
 
@@ -71,7 +71,7 @@ def create(request):
             new.owner = request.user
             new.worker = WorkerServer.objects.get(
               pk=int(request.POST['worker']))
-            
+
             message = TranslationRequestMessage()
             message.request_id = new.request_id
             message.source_language = request.POST['source_language']
@@ -79,32 +79,32 @@ def create(request):
             message.source_text = u''
             for chunk in request.FILES['source_text'].chunks():
                 message.source_text += unicode(chunk, 'utf-8')
-            
+
             handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
               new.request_id), 'w+b')
             handle.write(message.SerializeToString())
             handle.close()
-            
+
             new.save()
-            
+
             # cfedermann: We have to decide whether the translation process
             #   should directly be sent to the worker server or whether it
             #   makes more sense to "queue" it on the broker server and have
             #   a cronjob start the process when the worker is not busy...
             #   This does have impact on system performance/robustness!
             new.start_translation()
-            
+
             messages.add_message(request, messages.SUCCESS, 'Successfully ' \
               'started translation request "{0}".'.format(new.shortname))
             return HttpResponseRedirect('/dashboard/')
-        
+
     else:
         form = TranslationRequestForm()
 
     #from serverland.dashboard.models import WorkerServer
     #workers = WorkerServer.objects.all()
     #active_workers = [w for w in workers if w.is_alive()]
-    
+
     dictionary = {'title': 'MT Server Land (prototype) -- Create translation',
       'form': form}
     return render_to_response('dashboard/create.html', dictionary,
@@ -116,17 +116,17 @@ def delete(request, request_id):
     Deletes a translation request.
     """
     req = get_object_or_404(TranslationRequest, request_id=request_id)
-    
+
     if req.owner != request.user:
         LOGGER.warning('Illegal delete request from user "{0}".'.format(
           request.user.username or "Anonymous"))
-        
+
         return HttpResponseRedirect('/dashboard/')
-    
+
     LOGGER.info('Deleting translation request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
     req.delete_translation()
-    
+
     messages.add_message(request, messages.SUCCESS, 'Successfully deleted' \
       ' request "{0}".'.format(req.shortname))
     return HttpResponseRedirect('/dashboard/')
@@ -141,7 +141,7 @@ def result(request, request_id):
     if req.owner != request.user:
         LOGGER.warning('Illegal result request from user "{0}".'.format(
           request.user.username or "Anonymous"))
-        
+
         return HttpResponseRedirect('/dashboard/')
 
     # cfedermann: Make sure that the request is marked as finished once the
@@ -153,12 +153,12 @@ def result(request, request_id):
     translation_message = req.fetch_translation()
     translation_result = translation_message
     translation_packet_data = None
-    
+
     if type(translation_result) == TranslationRequestMessage:
         translation_result = translation_message.target_text
         translation_packet_data = [(x.key, x.value) for x in 
           translation_message.packet_data]
-    
+
     dictionary = {'title': 'MT Server Land (prototype) -- {0}'.format(
       req.shortname), 'request': req, 'result': translation_result,
       'packet_data': translation_packet_data}
@@ -175,7 +175,7 @@ def download(request, request_id):
     if req.owner != request.user:
         LOGGER.warning('Illegal download request from user "{0}".'.format(
           request.user.username or "Anonymous"))
-        
+
         return HttpResponseRedirect('/dashboard/')
 
     LOGGER.info('Downloading request "{0}" for user "{1}".'.format(

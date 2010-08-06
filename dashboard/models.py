@@ -34,7 +34,7 @@ class WorkerServer(models.Model):
     description = models.TextField()
     hostname = models.CharField(max_length=200)
     port = models.CharField(max_length=5)
-    
+
     def __unicode__(self):
         """Returns a Unicode String representation of the worker server."""
         return self.shortname
@@ -110,10 +110,10 @@ class WorkerServer(models.Model):
             proxy = xmlrpclib.ServerProxy("{0}:{1}".format(self.hostname,
               self.port))
             return proxy.start_translation(b64encode(serialized))
-        
+
         except (xmlrpclib.Error, socket.error):
             return None
-        
+
         return None
 
     def fetch_translation(self, request_id):
@@ -146,7 +146,7 @@ def create_request_id():
     new_id = uuid.uuid4().hex
     while (TranslationRequest.objects.filter(request_id=new_id)):
         new_id = uuid.uuid4().hex
-    
+
     return new_id
 
 
@@ -157,14 +157,14 @@ class TranslationRequest(models.Model):
     worker = models.ForeignKey(WorkerServer, related_name='requests')
     owner = models.ForeignKey(User, related_name='requests')
     created = models.DateTimeField(default=datetime.datetime.now)
-    
+
     # We use a TranslationRequestMessage instance to store all request data.
     # The serialized, binary message will be stored as $request_id.message.
-    
+
     # Cache attributes that save the request's "state" inside the Django DB.
     ready = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
-    
+
     def __unicode__(self):
         """Returns a Unicode String representation of the request."""
         return u"{0} (request_id={1}, worker={2})".format(self.shortname,
@@ -175,7 +175,7 @@ class TranslationRequest(models.Model):
         if not self.ready:
             self.ready = self.worker.is_ready(self.request_id)
             self.save()
-        
+
             # If the translation request has been finished by now, we fetch
             # the corresponding TranslationRequestMessage from the worker
             # server and copy it to the broker's TRANSLATION_MESSAGE_PATH.
@@ -187,7 +187,7 @@ class TranslationRequest(models.Model):
                   TRANSLATION_MESSAGE_PATH, self.request_id), 'w+b')
                 handle.write(serialized)
                 handle.close()
-                
+
                 # Now that we have successfully retrieved the translation from
                 # the worker server, we can delete it from the worker's queue.
                 success = self.worker.delete_translation(self.request_id)
@@ -207,15 +207,15 @@ class TranslationRequest(models.Model):
               self.request_id), 'rb')
             message = handle.read()
             handle.close()
-            
+
             # Try to create TranslationRequestMessage object from String.
             instance = TranslationRequestMessage()
             instance.ParseFromString(message)
             instance = None
-            
+
         except (IOError, DecodeError):
             return True
-        
+
         return False
 
     def is_valid(self):
@@ -228,26 +228,26 @@ class TranslationRequest(models.Model):
           self.request_id), 'rb')
         message = handle.read()
         handle.close()
-                
+
         return self.worker.start_translation(message)
 
     def fetch_translation(self):
         """Fetches the TranslationRequestMessage object if ready."""
         if not self.is_ready():
             return "NOT_READY"
-        
+
         try:
             handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
               self.request_id), 'rb')
             serialized = handle.read()
             handle.close()
-            
+
             message = TranslationRequestMessage()
             message.ParseFromString(serialized)
-        
+
         except (IOError, DecodeError):
             return "ERROR"
-        
+
         return message
 
     def delete_translation(self):
@@ -255,7 +255,7 @@ class TranslationRequest(models.Model):
         if not self.deleted:
             self.deleted = True
             self.save()
-            
+
             # If the translation request is not yet ready, we have to ensure
             # that it is properly deleted from the worker's job queue.
             if not self.ready:
