@@ -67,8 +67,8 @@ class GoogleWorker(AbstractWorkerServer):
         target = self.language_code(message.target_language)
 
         the_url = 'http://translate.google.com/translate_t'
-        the_data = urllib.urlencode({'js': 'n', 'text': message.source_text.encode('utf-8'),
-          'sl': source, 'tl': target})
+        the_data = urllib.urlencode({'js': 'n', 'sl': source, 'tl': target,
+          'text': message.source_text.encode('utf-8')})
         the_header = {'User-agent': 'Mozilla/5.0'}
 
         opener = urllib2.build_opener(urllib2.HTTPHandler)        
