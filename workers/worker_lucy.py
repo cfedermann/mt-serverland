@@ -65,6 +65,8 @@ class LucyWorker(AbstractWorkerServer):
         target_key = target[:2]
         if target_key == 'SP':
             target_key = 'ES'
+        elif target_key == 'GE':
+            target_key = 'DE'
 
         result = content.get('{0}.txt'.format(target_key))
         trees = content.get('tre')
@@ -78,7 +80,7 @@ class LucyWorker(AbstractWorkerServer):
         # while the "raw" translation as well as the trees are return inside
         # the TranslationRequestMessage's packet_data list.
         if result:
-            filter_exp = re.compile('<.\[(.+?)\|.+?\]>')
+            filter_exp = re.compile('<.\[(.+?)(\|.+?)?\]>', re.I|re.U)
             filtered_result = filter_exp.sub('\g<1>', result)
             message.target_text = unicode(filtered_result, 'utf-8')
             keyvalue = message.packet_data.add()
