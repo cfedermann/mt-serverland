@@ -1,8 +1,19 @@
-h1. MT Server Land Software Package
+h1. Welcome to the mt-serverland wiki!
 
-h2. Important Remarks
+*MT Server Land* is an open-source architecture for MT, developed by DFKI's MT Group in Saarbrücken.
 
-* do *NOT* create translation requests from within the django admin backend as this currently causes an @IntegrityError@, see "issue #1":http://github.com/cfedermann/mt-serverland/issues#issue/1 for more information.
+There’s nothing to be seen yet as we are prepping the software for release at the Machine Translation Marathon in Le Mans. Expect more information in late August 2010...
+
+h2. Documentation
+ * See [[license]] for more information.
+ * The [[system architecture]] is described here.
+ * [[API Interface]] planning goes here.
+
+p. *Please note:* Added a Bing! worker server using a sample appID from "http://www.bing.com/community/forums/p/658908/9597507.aspx":http://www.bing.com/community/forums/p/658908/9597507.aspx.
+
+h2. Required packages
+ * python-protobuf 2.3.0
+ * django-piston 0.2.2
 
 h2. Quick Setup Guide
 
@@ -27,30 +38,115 @@ You can find a dummy worker implementation within @workers/@. The dummy worker w
 
 A sample session with the dummy worker is shown below:
 
-pre.. longint:workers cfedermann$ ./start-worker.py 
+pre.. longint:workers cfedermann$ ./start_worker.py 
 
-    usage: ./start-worker.py <worker> <host> <port>
+    usage: ./start_worker.py <worker> <host> <port>
 
     registered worker servers:
     - DummyWorker
 
-longint:workers cfedermann$ ./start-worker.py DummyWorker localhost 1234
+longint:workers cfedermann$ ./start_worker.py DummyWorker localhost 1234
 INFO:DummyWorker:DummyWorker listening on localhost:1234
 INFO:DummyWorker:Started DummyWorker instance, serving via XML-RPC.
 ...
 ^Z
-[1]+  Stopped                 ./start-worker.py DummyWorker localhost 1234
+[1]+  Stopped                 ./start_worker.py DummyWorker localhost 1234
 longint:workers cfedermann$ bg
-[1]+ ./start-worker.py DummyWorker localhost 1234 &
-longint:workers cfedermann$ ./stop-worker.py 
+[1]+ ./start_worker.py DummyWorker localhost 1234 &
+longint:workers cfedermann$ ./stop_worker.py 
 
-    usage: ./stop-worker.py <host> <port>
+    usage: ./stop_worker.py <host> <port>
 
-longint:workers cfedermann$ ./stop-worker.py localhost 1234
+longint:workers cfedermann$ ./stop_worker.py localhost 1234
 INFO:DummyWorker:Stopped DummyWorker instance.
 localhost - - [20/Jul/2010 11:18:33] "POST / HTTP/1.0" 200 -
 longint:workers cfedermann$ 
-[1]+  Done                    ./start-worker.py DummyWorker localhost 1234
+[1]+  Done                    ./start_worker.py DummyWorker localhost 1234
+longint:workers cfedermann$
+
+p. Before you can actually use a worker server inside the MT Server Land application, you have to create a corresponding @WorkerServer@ instance inside the django admin backend at @http://127.0.0.1:8000/admin/dashboard/workerserver/@.
+
+*Important:* make sure you enter the hostname *including* the @http://@ prefix!
+
+h2. Sample Dummy Worker Logfile
+
+pre.. longint:tmp cfedermann$ tail -f workerserver-dummy.log 
+[07/20/2010 @ 11:18:13] DummyWorker::INFO DummyWorker listening on localhost:1234
+[07/20/2010 @ 11:18:13] DummyWorker::INFO Started DummyWorker instance, serving via XML-RPC.
+[07/20/2010 @ 11:18:22] DummyWorker::INFO DummyWorker listening on localhost:1234
+[07/20/2010 @ 11:18:22] DummyWorker::INFO Started DummyWorker instance, serving via XML-RPC.
+[07/20/2010 @ 11:18:33] DummyWorker::INFO Stopped DummyWorker instance.
+[07/20/2010 @ 11:32:47] DummyWorker::INFO DummyWorker listening on localhost:1234
+[07/20/2010 @ 11:32:47] DummyWorker::INFO Started DummyWorker instance, serving via XML-RPC.
+[07/20/2010 @ 11:36:58] DummyWorker::INFO Created new translation request "0e97c0226c2f40b7b86583c1664ca2c3".
+[07/20/2010 @ 11:36:58] DummyWorker::INFO Started translation job "<Process(Process-1, started)>"
+[07/20/2010 @ 11:36:58] DummyWorker::INFO Sleeping for 110 seconds...
+[07/20/2010 @ 11:38:48] DummyWorker::DEBUG Finalizing result for request 0e97c0226c2f40b7b86583c1664ca2c3
+[07/20/2010 @ 11:39:04] DummyWorker::DEBUG Translation requests: {'0e97c0226c2f40b7b86583c1664ca2c3': <Process(Process-1, stopped)>}
+h1. Welcome to the mt-serverland wiki!
+
+*MT Server Land* is an open-source architecture for MT, developed by DFKI's MT Group in Saarbrücken.
+
+There’s nothing to be seen yet as we are prepping the software for release at the Machine Translation Marathon in Le Mans. Expect more information in late August 2010...
+
+h2. Documentation
+ * See [[license]] for more information.
+ * The [[system architecture]] is described here.
+ * [[API Interface]] planning goes here.
+
+p. *Please note:* Added a Bing! worker server using a sample appID from "http://www.bing.com/community/forums/p/658908/9597507.aspx":http://www.bing.com/community/forums/p/658908/9597507.aspx.
+
+h2. Required packages
+ * python-protobuf 2.3.0
+ * django-piston 0.2.2
+
+h2. Quick Setup Guide
+
+0. Install django 1.2.x, Python 2.6.x, do *NOT* use django-svn as this is *NOT TESTED* and likely to break things
+1. Extract data to a folder named @serverland@, do *NOT* name the folder @mt-serverland@ as this does not work with Python!
+2. Prepare development database (See next section)
+3. @python manage.py runserver@
+4. Point your browser to @http://127.0.0.1:8000@
+
+More details to be added soon, in case of problems, drop me an email: @cfedermann<at>dfki.de@.
+
+h2. Setting Up Development Database
+
+Use @python manage.py syncdb@ to create the necessary database file. A sample database file for superuser @admin:admin@ is available here:
+* @http://github.com/downloads/cfedermann/mt-serverland/mt-serverland-development.db@
+
+Rename the file to @development.db@ or adapt the @DATABASE_NAME@ value in @settings.py@.
+
+h2. Setting Up Worker Servers
+
+You can find a dummy worker implementation within @workers/@. The dummy worker will block for a certain amount of seconds and then return an all-uppercase version of the input text it received.
+
+A sample session with the dummy worker is shown below:
+
+pre.. longint:workers cfedermann$ ./start_worker.py 
+
+    usage: ./start_worker.py <worker> <host> <port>
+
+    registered worker servers:
+    - DummyWorker
+
+longint:workers cfedermann$ ./start_worker.py DummyWorker localhost 1234
+INFO:DummyWorker:DummyWorker listening on localhost:1234
+INFO:DummyWorker:Started DummyWorker instance, serving via XML-RPC.
+...
+^Z
+[1]+  Stopped                 ./start_worker.py DummyWorker localhost 1234
+longint:workers cfedermann$ bg
+[1]+ ./start_worker.py DummyWorker localhost 1234 &
+longint:workers cfedermann$ ./stop_worker.py 
+
+    usage: ./stop_worker.py <host> <port>
+
+longint:workers cfedermann$ ./stop_worker.py localhost 1234
+INFO:DummyWorker:Stopped DummyWorker instance.
+localhost - - [20/Jul/2010 11:18:33] "POST / HTTP/1.0" 200 -
+longint:workers cfedermann$ 
+[1]+  Done                    ./start_worker.py DummyWorker localhost 1234
 longint:workers cfedermann$
 
 p. Before you can actually use a worker server inside the MT Server Land application, you have to create a corresponding @WorkerServer@ instance inside the django admin backend at @http://127.0.0.1:8000/admin/dashboard/workerserver/@.
