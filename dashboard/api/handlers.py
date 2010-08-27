@@ -105,12 +105,10 @@ class RequestHandler(BaseHandler):
         # put the URI of the newly created object into the HTTP header
         # Location field (see RFC 2616)
         response['Location'] = reverse('requests', args=[new.request_id + '/'])
-        # would be nice to echo the created object inside the HTTP
-        # response
-        #response.write ( RequestHandler.request_to_dict(new) )
-        # try:
-        #response.content = BBB
-        #response.content_type = BBB
+        # echo the created object inside the HTTP response
+        # NOTE: this overwrites the "Location" header field set above.
+        # See piston.resource.__call__()
+        response.content = RequestHandler.request_to_dict(new)
         return response
 
     def delete(self, request, shortname = None, results = False):
