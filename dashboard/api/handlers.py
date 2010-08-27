@@ -6,7 +6,6 @@ Project: MT Server Land prototype code
 '''
 
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
@@ -168,12 +167,13 @@ class WorkerHandler(BaseHandler):
             objects = WorkerServer.objects.all()
         else:
             objects = [get_object_or_404(WorkerServer, shortname=shortname)]
-        objects = [ self.server_to_dict(o) for o in objects ]
+        objects = [ WorkerHandler.server_to_dict(o) for o in objects ]
         if len(objects) == 1:
             objects = objects[0]
         return objects
 
-    def server_to_dict ( self, server ):
+    @staticmethod
+    def server_to_dict ( server ):
         '''Transforms a WorkerServer object to a Python dictionary.'''
         retval = {}
         retval['shortname'] = server.shortname
