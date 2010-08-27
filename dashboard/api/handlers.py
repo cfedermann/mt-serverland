@@ -36,7 +36,8 @@ class RequestHandler(BaseHandler):
                 objects = [get_object_or_404(not_deleted, request_id=shortname)]
             except ValueError:
                 objects = [get_object_or_404(not_deleted, shortname=shortname)]
-        objects = [ self.request_to_dict(o, results) for o in objects ]
+        objects = [ RequestHandler.request_to_dict(o, results)
+                    for o in objects ]
         if len(objects) == 1:
             objects = objects[0]
         return objects
@@ -57,6 +58,15 @@ class RequestHandler(BaseHandler):
                     shortname=postdata['worker']).id)
             except ObjectDoesNotExist:
                 return rc.BAD_REQUEST
+        # check whether the translation request is a duplicate
+        if 'shortname' in postdata:
+            try:
+                TranslationRequest.objects.get(shortname=postdata['shortname'])
+                return rc.DUPLICATE_ENTRY
+            except MultipleObjectsReturned:
+                return rc.DUPLICATE_ENTRY
+            except ObjectDoesNotExist:
+                pass
         # validate POST data using our Django form
         form = TranslationRequestForm(postdata, request.FILES)
         try:
@@ -97,7 +107,10 @@ class RequestHandler(BaseHandler):
         response['Location'] = reverse('requests', args=[new.request_id + '/'])
         # would be nice to echo the created object inside the HTTP
         # response
-        #response.write ( self.request_to_dict(new) )
+        #response.write ( RequestHandler.request_to_dict(new) )
+        # try:
+        #response.content = BBB
+        #response.content_type = BBB
         return response
 
     def delete(self, request, shortname = None, results = False):
@@ -123,7 +136,8 @@ class RequestHandler(BaseHandler):
                              ' request "{0}".'.format(req.shortname))
         return rc.DELETED
 
-    def request_to_dict ( self, request, include_results = False ):
+    @staticmethod
+    def request_to_dict ( request, include_results = False ):
         '''Transforms a TranslationRequest object to a Python
         dictionary.'''
         retval = {}
