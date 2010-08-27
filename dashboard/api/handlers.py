@@ -27,7 +27,8 @@ class RequestHandler(BaseHandler):
 
     def read(self, request, shortname = None, results = False):
         '''Handles a GET request asking about translation requests.'''
-        not_deleted = TranslationRequest.objects.exclude(deleted=True) # AUTH
+        not_deleted = TranslationRequest.objects.exclude(deleted = True)
+        not_deleted = not_deleted.filter(owner = request.user)
         if shortname is None:
             objects = not_deleted.all()
         else:
@@ -46,7 +47,7 @@ class RequestHandler(BaseHandler):
         '''Handles a POST request to create a new translation request.'''
         if shortname is not None or results:
             return rc.BAD_REQUEST
-        print 'content-type', request.content_type # DEBUG
+        print 'CREATE content-type', request.content_type # DEBUG
         # get the data from the POST request
         postdata = self.flatten_dict(request.data)
         # ensure that the worker field is present
@@ -77,8 +78,7 @@ class RequestHandler(BaseHandler):
         # create a new request object
         new = TranslationRequest()
         new.shortname = form.cleaned_data['shortname']
-        #new.owner = request.user  # AUTH
-        new.owner = User.objects.get(id=1) # AUTH
+        new.owner = request.user
         new.worker = form.cleaned_data['worker']
         # create a new worker message
         message = TranslationRequestMessage()
@@ -113,10 +113,11 @@ class RequestHandler(BaseHandler):
 
     def delete(self, request, shortname = None, results = False):
         '''Handles a DELETE request to destroy a translation request.'''
-        print 'delete' # DEBUG
+        #print 'delete' # DEBUG
         if shortname is None or results:
             return rc.BAD_REQUEST
-        not_deleted = TranslationRequest.objects.exclude(deleted=True) # AUTH
+        not_deleted = TranslationRequest.objects.exclude(deleted = True)
+        not_deleted = not_deleted.filter(owner = request.user)
         try:
             try:
                 _request_uuid = uuid.UUID(shortname)

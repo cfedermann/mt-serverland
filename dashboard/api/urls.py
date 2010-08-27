@@ -7,9 +7,12 @@ Project: MT Server Land prototype code
 from django.conf.urls.defaults import patterns, url
 from piston.resource import Resource
 from serverland.dashboard.api.handlers import RequestHandler, WorkerHandler
+from serverland.dashboard.api.authentication import TokenAuthentication
 
-request_handler = Resource(RequestHandler)
-worker_handler = Resource(WorkerHandler)
+auth = TokenAuthentication()
+
+request_handler = Resource(RequestHandler, authentication=auth)
+worker_handler = Resource(WorkerHandler, authentication=auth)
 
 urlpatterns = patterns(
     '',
