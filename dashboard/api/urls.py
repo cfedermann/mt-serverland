@@ -9,17 +9,17 @@ from piston.resource import Resource
 from serverland.dashboard.api.handlers import RequestHandler, WorkerHandler
 from serverland.dashboard.api.authentication import TokenAuthentication
 
-auth = TokenAuthentication()
+AUTH = TokenAuthentication()
 
-request_handler = Resource(RequestHandler, authentication=auth)
-worker_handler = Resource(WorkerHandler, authentication=auth)
+REQUEST_HANDLER = Resource(RequestHandler, authentication=AUTH)
+WORKER_HANDLER = Resource(WorkerHandler, authentication=AUTH)
 
 urlpatterns = patterns(
     '',
     url(r'^((?P<emitter_format>[^/]+)/)?requests/((?P<shortname>[^/]+)/)?$',
-        request_handler, {'results': False}, name='requests'),
+        REQUEST_HANDLER, {'results': False}, name='requests'),
     url(r'^((?P<emitter_format>[^/]+)/)?results/((?P<shortname>[^/]+)/)?$',
-        request_handler, {'results': True}, name='results'),
+        REQUEST_HANDLER, {'results': True}, name='results'),
     url(r'^((?P<emitter_format>[^/]+)/)?workers/((?P<shortname>[^/]+)/)?$',
-        worker_handler)
+        WORKER_HANDLER)
     )

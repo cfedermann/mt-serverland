@@ -26,6 +26,14 @@ class MosesWorker(AbstractWorkerServer):
           ('ger', 'eng'), # TODO: Make the output dependent on actual config.
         )
 
+    def language_code(self, iso639_2_code):
+        """
+        Converts a given ISO-639-2 code into the worker representation.
+
+        Returns None for unknown languages.
+        """
+        return iso639_2_code
+
     def handle_translation(self, request_id):
         """
         Translates text from German->English using the Moses SMT system.
@@ -44,10 +52,10 @@ class MosesWorker(AbstractWorkerServer):
         # Then, we invoke the Moses command reading from the source file
         # and writing to a target file, also inside /tmp.  This blocks until
         # the Moses process finishes.
-        CMD_STRING = "{0} -f {1} < /tmp/{2}.source > /tmp/{3}.target".format(
+        shell_cmd = "{0} -f {1} < /tmp/{2}.source > /tmp/{3}.target".format(
           MOSES_CMD, MOSES_CONFIG, request_id, request_id)
-        p = Popen(CMD_STRING, shell=True)
-        p.wait()
+        process = Popen(shell_cmd, shell=True)
+        process.wait()
 
         # We can now load the translation from the target file.
         target = open('/tmp/{0}.target'.format(request_id), 'r')

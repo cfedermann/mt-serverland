@@ -3,7 +3,6 @@ Project: MT Server Land prototype code
  Author: Christian Federmann <cfedermann@dfki.de>
 """
 import logging
-import uuid
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
