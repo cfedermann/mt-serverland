@@ -13,7 +13,8 @@ from os import remove
 from time import sleep
 from random import random
 from SimpleXMLRPCServer import SimpleXMLRPCServer
-from TranslationRequestMessage_pb2 import TranslationRequestMessage
+
+from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 class AbstractWorkerServer(object):

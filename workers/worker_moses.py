@@ -4,8 +4,8 @@ Implementation of a worker server that starts a Moses SMT system.
 import sys
 from subprocess import Popen
 
-from worker import AbstractWorkerServer
-from TranslationRequestMessage_pb2 import TranslationRequestMessage
+from workers.worker import AbstractWorkerServer
+from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 # Current settings just pass through the input, adapt to your Moses setup!
