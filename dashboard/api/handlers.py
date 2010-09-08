@@ -18,13 +18,15 @@ from serverland.protobuf.TranslationRequestMessage_pb2 import \
      TranslationRequestMessage
 import uuid
 
+MAX_REQUESTS_PER_MINUTE = 25
+
 class RequestHandler(BaseHandler):
     '''API handler for translation request queries.'''
 
     # we don't allow updating translation requests
     allowed_methods = ('GET', 'POST', 'DELETE')
 
-    @throttle(5,60)
+    @throttle(MAX_REQUESTS_PER_MINUTE, 60)
     def read(self, request, shortname = None, results = False):
         '''Handles a GET request asking about translation requests.'''
         not_deleted = TranslationRequest.objects.exclude(deleted = True)
@@ -43,7 +45,7 @@ class RequestHandler(BaseHandler):
             objects = objects[0]
         return objects
 
-    @throttle(5,60)
+    @throttle(MAX_REQUESTS_PER_MINUTE, 60)
     def create(self, request, shortname = None, results = False):
         '''Handles a POST request to create a new translation request.'''
         if shortname is not None or results:
@@ -112,7 +114,7 @@ class RequestHandler(BaseHandler):
         response.content = RequestHandler.request_to_dict(new)
         return response
 
-    @throttle(5,60)
+    @throttle(MAX_REQUESTS_PER_MINUTE, 60)
     def delete(self, request, shortname = None, results = False):
         '''Handles a DELETE request to destroy a translation request.'''
         #print 'delete' # DEBUG
@@ -164,7 +166,7 @@ class WorkerHandler(BaseHandler):
     # workers are read-only accessible
     allowed_methods = ('GET',)
 
-    @throttle(5,60)
+    @throttle(MAX_REQUESTS_PER_MINUTE, 60)
     def read(self, request, shortname = None):
         '''Handles a GET request asking about worker servers.'''
         if shortname is None:
