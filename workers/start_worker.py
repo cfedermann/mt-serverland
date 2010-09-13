@@ -26,8 +26,10 @@ REGISTERED_WORKERS = {
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4 or not sys.argv[1] in REGISTERED_WORKERS.keys():
-        print "\n\tusage: {0} <worker> <host> <port>\n".format(sys.argv[0])
+    if len(sys.argv) < 4 or len(sys.argv) > 5 or \
+      not sys.argv[1] in REGISTERED_WORKERS.keys():
+        print "\n\tusage: {0} <worker> <host> <port> [logfile]\n".format(
+          sys.argv[0])
 
         if len(REGISTERED_WORKERS):
             print "\tregistered worker servers:"
@@ -36,7 +38,12 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     # Prepare XML-RPC server instance running on host:port.
-    WORKER_IMPLEMENTATION, LOGFILE = REGISTERED_WORKERS[sys.argv[1]]
+    if len(sys.argv) == 5:
+        WORKER_IMPLEMENTATION, _ = REGISTERED_WORKERS[sys.argv[1]]
+        LOGFILE = sys.argv[4]
+    else:
+        WORKER_IMPLEMENTATION, LOGFILE = REGISTERED_WORKERS[sys.argv[1]]
+    
     SERVER = WORKER_IMPLEMENTATION(sys.argv[2], int(sys.argv[3]), LOGFILE)
 
     # Start server and serve forever.
