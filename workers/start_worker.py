@@ -4,11 +4,11 @@ Startup script to create a worker server instance at host:port.
 """
 import sys
 
-from worker import DummyWorker
-from worker_bing import BingWorker
-from worker_google import GoogleWorker
-from worker_lucy import LucyWorker
-from worker_yahoo import YahooWorker
+from workers.worker import DummyWorker
+from workers.worker_bing import BingWorker
+from workers.worker_google import GoogleWorker
+from workers.worker_lucy import LucyWorker
+from workers.worker_yahoo import YahooWorker
 
 # Make configurable:
 #

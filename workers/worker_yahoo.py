@@ -6,8 +6,8 @@ import sys
 import urllib
 import urllib2
 
-from worker import AbstractWorkerServer
-from TranslationRequestMessage_pb2 import TranslationRequestMessage
+from workers.worker import AbstractWorkerServer
+from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 class YahooWorker(AbstractWorkerServer):

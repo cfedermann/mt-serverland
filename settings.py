@@ -108,6 +108,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.messages',
-    
+
     'serverland.dashboard',
+    'serverland.dashboard.api',
 )
