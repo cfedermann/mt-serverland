@@ -10,27 +10,27 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = descriptor.FileDescriptor(
   name='WorkerServerMessage.proto',
   package='serverland',
-  serialized_pb='\n\x19WorkerServerMessage.proto\x12\nserverland\"\xd6\x01\n\x13WorkerServerMessage\x12\x11\n\tshortname\x18\x01 \x02(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x02(\t\x12\x10\n\x08is_alive\x18\x03 \x02(\x08\x12\x0f\n\x07is_busy\x18\x04 \x02(\x08\x12\x44\n\x0elanguage_pairs\x18\x05 \x03(\x0b\x32,.serverland.WorkerServerMessage.LanguagePair\x1a.\n\x0cLanguagePair\x12\x0e\n\x06source\x18\x01 \x02(\t\x12\x0e\n\x06target\x18\x02 \x02(\t\"C\n\x10WorkerServerList\x12/\n\x06worker\x18\x01 \x03(\x0b\x32\x1f.serverland.WorkerServerMessage')
+  serialized_pb='\n\x19WorkerServerMessage.proto\x12\nserverland\"\xd4\x01\n\x12WorkerServerObject\x12\x11\n\tshortname\x18\x01 \x02(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x02(\t\x12\x10\n\x08is_alive\x18\x03 \x02(\x08\x12\x0f\n\x07is_busy\x18\x04 \x02(\x08\x12\x43\n\x0elanguage_pairs\x18\x05 \x03(\x0b\x32+.serverland.WorkerServerObject.LanguagePair\x1a.\n\x0cLanguagePair\x12\x0e\n\x06source\x18\x01 \x02(\t\x12\x0e\n\x06target\x18\x02 \x02(\t\"C\n\x10WorkerServerList\x12/\n\x07workers\x18\x01 \x03(\x0b\x32\x1e.serverland.WorkerServerObject')
 
 
 
 
-_WORKERSERVERMESSAGE_LANGUAGEPAIR = descriptor.Descriptor(
+_WORKERSERVEROBJECT_LANGUAGEPAIR = descriptor.Descriptor(
   name='LanguagePair',
-  full_name='serverland.WorkerServerMessage.LanguagePair',
+  full_name='serverland.WorkerServerObject.LanguagePair',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='source', full_name='serverland.WorkerServerMessage.LanguagePair.source', index=0,
+      name='source', full_name='serverland.WorkerServerObject.LanguagePair.source', index=0,
       number=1, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='target', full_name='serverland.WorkerServerMessage.LanguagePair.target', index=1,
+      name='target', full_name='serverland.WorkerServerObject.LanguagePair.target', index=1,
       number=2, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
@@ -45,47 +45,47 @@ _WORKERSERVERMESSAGE_LANGUAGEPAIR = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=210,
-  serialized_end=256,
+  serialized_start=208,
+  serialized_end=254,
 )
 
-_WORKERSERVERMESSAGE = descriptor.Descriptor(
-  name='WorkerServerMessage',
-  full_name='serverland.WorkerServerMessage',
+_WORKERSERVEROBJECT = descriptor.Descriptor(
+  name='WorkerServerObject',
+  full_name='serverland.WorkerServerObject',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='shortname', full_name='serverland.WorkerServerMessage.shortname', index=0,
+      name='shortname', full_name='serverland.WorkerServerObject.shortname', index=0,
       number=1, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='description', full_name='serverland.WorkerServerMessage.description', index=1,
+      name='description', full_name='serverland.WorkerServerObject.description', index=1,
       number=2, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='is_alive', full_name='serverland.WorkerServerMessage.is_alive', index=2,
+      name='is_alive', full_name='serverland.WorkerServerObject.is_alive', index=2,
       number=3, type=8, cpp_type=7, label=2,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='is_busy', full_name='serverland.WorkerServerMessage.is_busy', index=3,
+      name='is_busy', full_name='serverland.WorkerServerObject.is_busy', index=3,
       number=4, type=8, cpp_type=7, label=2,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     descriptor.FieldDescriptor(
-      name='language_pairs', full_name='serverland.WorkerServerMessage.language_pairs', index=4,
+      name='language_pairs', full_name='serverland.WorkerServerObject.language_pairs', index=4,
       number=5, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -94,14 +94,14 @@ _WORKERSERVERMESSAGE = descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_WORKERSERVERMESSAGE_LANGUAGEPAIR, ],
+  nested_types=[_WORKERSERVEROBJECT_LANGUAGEPAIR, ],
   enum_types=[
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
   serialized_start=42,
-  serialized_end=256,
+  serialized_end=254,
 )
 
 
@@ -113,7 +113,7 @@ _WORKERSERVERLIST = descriptor.Descriptor(
   containing_type=None,
   fields=[
     descriptor.FieldDescriptor(
-      name='worker', full_name='serverland.WorkerServerList.worker', index=0,
+      name='workers', full_name='serverland.WorkerServerList.workers', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -128,26 +128,26 @@ _WORKERSERVERLIST = descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=258,
-  serialized_end=325,
+  serialized_start=256,
+  serialized_end=323,
 )
 
 
-_WORKERSERVERMESSAGE_LANGUAGEPAIR.containing_type = _WORKERSERVERMESSAGE;
-_WORKERSERVERMESSAGE.fields_by_name['language_pairs'].message_type = _WORKERSERVERMESSAGE_LANGUAGEPAIR
-_WORKERSERVERLIST.fields_by_name['worker'].message_type = _WORKERSERVERMESSAGE
+_WORKERSERVEROBJECT_LANGUAGEPAIR.containing_type = _WORKERSERVEROBJECT;
+_WORKERSERVEROBJECT.fields_by_name['language_pairs'].message_type = _WORKERSERVEROBJECT_LANGUAGEPAIR
+_WORKERSERVERLIST.fields_by_name['workers'].message_type = _WORKERSERVEROBJECT
 
-class WorkerServerMessage(message.Message):
+class WorkerServerObject(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType
   
   class LanguagePair(message.Message):
     __metaclass__ = reflection.GeneratedProtocolMessageType
-    DESCRIPTOR = _WORKERSERVERMESSAGE_LANGUAGEPAIR
+    DESCRIPTOR = _WORKERSERVEROBJECT_LANGUAGEPAIR
     
-    # @@protoc_insertion_point(class_scope:serverland.WorkerServerMessage.LanguagePair)
-  DESCRIPTOR = _WORKERSERVERMESSAGE
+    # @@protoc_insertion_point(class_scope:serverland.WorkerServerObject.LanguagePair)
+  DESCRIPTOR = _WORKERSERVEROBJECT
   
-  # @@protoc_insertion_point(class_scope:serverland.WorkerServerMessage)
+  # @@protoc_insertion_point(class_scope:serverland.WorkerServerObject)
 
 class WorkerServerList(message.Message):
   __metaclass__ = reflection.GeneratedProtocolMessageType

@@ -8,6 +8,7 @@ from django.conf.urls.defaults import patterns, url
 from piston.resource import Resource
 from serverland.dashboard.api.handlers import RequestHandler, WorkerHandler
 from serverland.dashboard.api.authentication import TokenAuthentication
+import serverland.dashboard.api.protobuf_emitter
 
 AUTH = TokenAuthentication()
 

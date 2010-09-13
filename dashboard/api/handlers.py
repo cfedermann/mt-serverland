@@ -153,6 +153,8 @@ class RequestHandler(BaseHandler):
         if include_results:
             translation_message = request.fetch_translation()
             if type(translation_message) == TranslationRequestMessage:
+                retval['source_language'] = translation_message.source_language
+                retval['target_language'] = translation_message.target_language
                 retval['result'] = translation_message.target_text
                 retval.update( [(x.key, x.value) for x in
                                 translation_message.packet_data] )
