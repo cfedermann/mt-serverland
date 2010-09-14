@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from google.protobuf.message import DecodeError
 from os import getcwd
 from serverland.settings import LOG_LEVEL, LOG_HANDLER
-from serverland.workers.TranslationRequestMessage_pb2 import \
+from serverland.protobuf.TranslationRequestMessage_pb2 import \
   TranslationRequestMessage
 
 # Setup logging support.

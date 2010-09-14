@@ -14,7 +14,7 @@ from piston.utils import rc, throttle
 from serverland.dashboard.models import WorkerServer, TranslationRequest
 from serverland.dashboard.models import TRANSLATION_MESSAGE_PATH
 from serverland.dashboard.forms import TranslationRequestForm
-from serverland.workers.TranslationRequestMessage_pb2 import \
+from serverland.protobuf.TranslationRequestMessage_pb2 import \
      TranslationRequestMessage
 import uuid
 
