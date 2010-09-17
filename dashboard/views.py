@@ -32,7 +32,8 @@ def dashboard(request):
       request.user.username))
 
     ordered = TranslationRequest.objects.all().order_by('-created')
-    requests = [r for r in ordered if not r.deleted]
+    filtered = ordered.filter(owner=request.user)
+    requests = [r for r in filtered if not r.deleted]
     finished = [r for r in requests if r.is_ready()]
     invalid = [r for r in requests if not r.is_valid() and not r in finished]
     active = [r for r in requests if not r in finished and not r in invalid]
