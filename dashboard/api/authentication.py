@@ -5,7 +5,7 @@ Project: MT Server Land prototype code
 
 '''
 
-from piston.utils import rc, translate_mime
+from piston.utils import rc, translate_mime, MimerDataException
 from serverland.dashboard.api.models import AuthToken
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
@@ -31,7 +31,10 @@ class TokenAuthentication(object):
             token = request.POST['token']
         # translate mime-types in the request if this is a mime
         # message
-        translate_mime(request)
+        try:
+            translate_mime(request)
+        except MimerDataException:
+            pass
         # check if there's a token in the mime data
         if ( hasattr(request, 'data') and
              request.data and
