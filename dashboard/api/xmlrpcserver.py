@@ -15,13 +15,7 @@ dashboard_api_url -- the URL of the serverland dashboard API
 '''
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
-
-# Question for Will: do we really need httplib2?
-# - http://code.google.com/p/httplib2/
-#
-# Or would the httplib import suffice?
-import httplib2
-
+import httplib
 import json
 import mimetools
 import sys
@@ -52,9 +46,14 @@ def normalize_api_url (url):
     return url
 
 def do_http_request(url, method='GET', body=None, headers={}):
-    http = httplib2.Http()
-    response = http.request(url, method=method, body=body, headers=headers)
-    return response
+    parsed_url = urlparse.urlparse(url)
+    uri = urlparse.urlunparse([''] * 2 + list(parsed_url)[2:])
+    conn = httplib.HTTPConnection(parsed_url.netloc)
+    conn.request(method, uri, body=body, headers=headers)
+    response = conn.getresponse()
+    retval = (response, response.read())
+    conn.close()
+    return retval
 
 class XmlRpcAPIServer(object):
     '''
