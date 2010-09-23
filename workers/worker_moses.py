@@ -66,7 +66,7 @@ class MosesWorker(AbstractWorkerServer):
         Returns a tuple of all supported language pairs for this worker.
         """
         return (
-          (MOSES_SOURCE, MOSES_TARGET),
+          (self.MOSES_SOURCE, self.MOSES_TARGET),
         )
 
     def language_code(self, iso639_2_code):
