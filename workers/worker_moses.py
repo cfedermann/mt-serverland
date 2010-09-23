@@ -79,9 +79,7 @@ class MosesWorker(AbstractWorkerServer):
 
     def handle_translation(self, request_id):
         """
-        Translates text from German->English using the Moses SMT system.
-
-        You have to adapt MOSES_CMD and MOSES_CONFIG to the correct values :)
+        Translates text using the Moses SMT system.
         """
         handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
         message = TranslationRequestMessage()
@@ -96,7 +94,7 @@ class MosesWorker(AbstractWorkerServer):
         # and writing to a target file, also inside /tmp.  This blocks until
         # the Moses process finishes.
         shell_cmd = "{0} -f {1} < /tmp/{2}.source > /tmp/{3}.target".format(
-          MOSES_CMD, MOSES_CONFIG, request_id, request_id)
+          self.MOSES_CMD, self.MOSES_CONFIG, request_id, request_id)
         process = Popen(shell_cmd, shell=True)
         process.wait()
 
