@@ -12,7 +12,7 @@ from django.template import RequestContext
 from serverland.dashboard.models import TranslationRequest, WorkerServer
 from serverland.dashboard.models import TRANSLATION_MESSAGE_PATH
 from serverland.dashboard.forms import TranslationRequestForm
-from serverland.settings import LOG_LEVEL, LOG_HANDLER
+from serverland.settings import LOG_LEVEL, LOG_HANDLER, DEPLOYMENT_PREFIX
 from serverland.protobuf.TranslationRequestMessage_pb2 import \
   TranslationRequestMessage
 
@@ -39,8 +39,8 @@ def dashboard(request):
     active = [r for r in requests if not r in finished and not r in invalid]
 
     dictionary = {'title': 'MT Server Land (prototype) -- Dashboard',
-      'finished_requests': finished, 'active_requests': active,
-      'invalid_requests': invalid}
+      'PREFIX': DEPLOYMENT_PREFIX, 'finished_requests': finished,
+      'active_requests': active, 'invalid_requests': invalid}
     return render_to_response('dashboard/dashboard.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -96,7 +96,8 @@ def create(request):
 
             messages.add_message(request, messages.SUCCESS, 'Successfully ' \
               'started translation request "{0}".'.format(new.shortname))
-            return HttpResponseRedirect('/dashboard/')
+            return HttpResponseRedirect('{0}/dashboard/'.format(
+              DEPLOYMENT_PREFIX))
 
     else:
         form = TranslationRequestForm()
@@ -106,7 +107,7 @@ def create(request):
     #active_workers = [w for w in workers if w.is_alive()]
 
     dictionary = {'title': 'MT Server Land (prototype) -- Create translation',
-      'form': form}
+      'PREFIX': DEPLOYMENT_PREFIX, 'form': form}
     return render_to_response('dashboard/create.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -121,7 +122,8 @@ def delete(request, request_id):
         LOGGER.warning('Illegal delete request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('/dashboard/')
+        return HttpResponseRedirect('{0}/dashboard/'.format(
+          DEPLOYMENT_PREFIX))
 
     LOGGER.info('Deleting translation request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
@@ -129,7 +131,7 @@ def delete(request, request_id):
 
     messages.add_message(request, messages.SUCCESS, 'Successfully deleted' \
       ' request "{0}".'.format(req.shortname))
-    return HttpResponseRedirect('/dashboard/')
+    return HttpResponseRedirect('{0}/dashboard/'.format(DEPLOYMENT_PREFIX))
 
 @login_required
 def result(request, request_id):
@@ -142,7 +144,8 @@ def result(request, request_id):
         LOGGER.warning('Illegal result request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('/dashboard/')
+        return HttpResponseRedirect('{0}/dashboard/'.format(
+          DEPLOYMENT_PREFIX))
 
     # cfedermann: Make sure that the request is marked as finished once the
     #   result has been transferred to the local hard disk!!!  We are trying
@@ -161,7 +164,7 @@ def result(request, request_id):
 
     dictionary = {'title': 'MT Server Land (prototype) -- {0}'.format(
       req.shortname), 'request': req, 'result': translation_result,
-      'packet_data': translation_packet_data}
+      'packet_data': translation_packet_data, 'PREFIX': DEPLOYMENT_PREFIX}
     return render_to_response('dashboard/result.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -176,7 +179,8 @@ def download(request, request_id):
         LOGGER.warning('Illegal download request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('/dashboard/')
+        return HttpResponseRedirect('{0}/dashboard/'.format(
+          DEPLOYMENT_PREFIX))
 
     LOGGER.info('Downloading request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))

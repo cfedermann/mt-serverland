@@ -30,10 +30,10 @@ function confirm_delete(name, url) {
 {% endif %}
 
 <div id="instructions">
-  <img src="/site_media/dashboard.png" style="float: right; padding-right: 20px;" />
+  <img src="{{PREFIX}}/site_media/dashboard.png" style="float: right; padding-right: 20px;" />
   
   <h2>User actions</h2>
-  <p>You are logged in as <b>{{ user.username }}</b>. You can create a <a href="/dashboard/create/">new translation request</a> or logout by <a href="/logout/">clicking here</a>.</p>
+  <p>You are logged in as <b>{{ user.username }}</b>. You can create a <a href="{{PREFIX}}/dashboard/create/">new translation request</a> or logout by <a href="{{PREFIX}}/logout/">clicking here</a>.</p>
   <br/>
   
   <h2>Finished translation requests</h2>
@@ -52,9 +52,9 @@ function confirm_delete(name, url) {
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
-    <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
-    <a href="/dashboard/result/{{request.request_id}}/"><img src="/site_media/search_small.png" class="actions" alt="View" /></a>
-    <a href="/dashboard/download/{{request.request_id}}/"><img src="/site_media/download_small.png" class="actions" alt="Download" /></a>
+    <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{{PREFIX}}/dashboard/delete/{{request.request_id}}/');"><img src="{{PREFIX}}/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
+    <a href="{{PREFIX}}/dashboard/result/{{request.request_id}}/"><img src="{{PREFIX}}/site_media/search_small.png" class="actions" alt="View" /></a>
+    <a href="{{PREFIX}}/dashboard/download/{{request.request_id}}/"><img src="{{PREFIX}}/site_media/download_small.png" class="actions" alt="Download" /></a>
   </td>
   </tr>
   {% endfor %}
@@ -81,7 +81,7 @@ function confirm_delete(name, url) {
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
-    <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
+    <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{{PREFIX}}/dashboard/delete/{{request.request_id}}/');"><img src="{{PREFIX}}/site_media/delete_small.png" class="actions" alt="Delete?" /></a>
   </td>
   </tr>
   {% endfor %}
@@ -107,7 +107,7 @@ function confirm_delete(name, url) {
   <tr>
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
-  <td><a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '/dashboard/delete/{{request.request_id}}/');"><img src="/site_media/delete_small.png" class="actions" /></a>
+  <td><a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{{PREFIX}}/dashboard/delete/{{request.request_id}}/');"><img src="{{PREFIX}}/site_media/delete_small.png" class="actions" /></a>
   </td>
   </tr>
   {% endfor %}
