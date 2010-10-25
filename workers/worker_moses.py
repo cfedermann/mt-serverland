@@ -3,6 +3,7 @@ Implementation of a worker server that starts a Moses SMT system.
 """
 import sys
 from subprocess import Popen
+from time import sleep
 
 from workers.worker import AbstractWorkerServer
 from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
@@ -97,10 +98,14 @@ class MosesWorker(AbstractWorkerServer):
           self.MOSES_CMD, self.MOSES_CONFIG, request_id, request_id)
         process = Popen(shell_cmd, shell=True)
         process.wait()
+        
+        # Wait for some time to ensure file I/O is completed.
+        sleep(2)
 
         # We can now load the translation from the target file.
         target = open('/tmp/{0}.target'.format(request_id), 'r')
-        message.target_text = unicode(target.read(), 'utf-8')
+        target_text = target.read()
+        message.target_text = unicode(target_text, 'utf-8')
         target.close()
 
         handle.seek(0)
