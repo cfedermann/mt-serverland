@@ -68,8 +68,8 @@ class YahooWorker(AbstractWorkerServer):
         content = http_handle.read()
         http_handle.close()
 
-        result_exp = re.compile('type="hidden" name="p" value="([^"]+)',
-          re.I|re.U)
+        result_exp = re.compile(
+          '<div id="result"><div.*?>([^<]+)</div></div>', re.I|re.U|re.S)
 
         result = result_exp.search(content)
 
