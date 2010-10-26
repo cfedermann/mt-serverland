@@ -184,7 +184,12 @@ def download(request, request_id):
 
     LOGGER.info('Downloading request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
-    response = HttpResponse(req.fetch_translation(), mimetype='text/plain')
-    response['Content-Disposition'] = 'attachment; filename={0}.txt'.format(
+
+    # We only return the target text, not the full TranslationRequestMessage.
+    translation = req.fetch_translation().target_text.encode('utf-8')
+    
+    # We return it as a "text/plain" file attachment with charset "UTF-8".
+    response = HttpResponse(translation, mimetype='text/plain; charset=UTF-8')
+    response['Content-Disposition'] = 'attachment; filename="{0}.txt"'.format(
       req.shortname)
     return response
