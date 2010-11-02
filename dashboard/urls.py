@@ -2,7 +2,7 @@
 Project: MT Server Land prototype code
  Author: Christian Federmann <cfedermann@dfki.de>
 """
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, include
 
 urlpatterns = patterns('serverland.dashboard.views',
   (r'^$', 'dashboard'),

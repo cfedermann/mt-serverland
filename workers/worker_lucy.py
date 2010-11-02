@@ -5,8 +5,8 @@ import re
 import sys
 import xmlrpclib
 
-from worker import AbstractWorkerServer
-from TranslationRequestMessage_pb2 import TranslationRequestMessage
+from workers.worker import AbstractWorkerServer
+from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 class LucyWorker(AbstractWorkerServer):

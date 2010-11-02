@@ -1,0 +1,33 @@
+package serverland;
+
+message TranslationRequestMessage {
+  required string request_id = 1;
+  required string source_language = 2;
+  required string target_language = 3;
+  required string source_text = 4;
+  optional string target_text = 5;
+
+  message KeyValuePair {
+    required string key = 1;
+    required string value = 2;
+  }
+
+  repeated KeyValuePair packet_data = 6; // Container for additional request data.
+}
+
+message TranslationRequestObject {
+  required string shortname = 1;
+  required string request_id = 2;
+  required string worker = 3;
+  required string owner = 4;
+  required string created = 5;
+  required bool ready = 6;
+  required string serialized = 7; // Container for the serialized protobuf object representation.
+  
+  // cfedermann: TBD, we might want to only export a "result" field instead
+  //             of the full "serialized" object here.  I'm not yet sure...
+}
+
+message TranslationRequestList {
+  repeated TranslationRequestObject requests = 1;
+}

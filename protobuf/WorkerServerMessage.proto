@@ -1,0 +1,19 @@
+package serverland;
+
+message WorkerServerObject {
+  required string shortname = 1;
+  required string description = 2;
+  required bool is_alive = 3;
+  required bool is_busy = 4;
+
+  message LanguagePair {
+    required string source = 1;
+    required string target = 2;
+  }
+
+  repeated LanguagePair language_pairs = 5;
+}
+
+message WorkerServerList {
+  repeated WorkerServerObject workers = 1;
+}

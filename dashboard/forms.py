@@ -118,6 +118,14 @@ class TranslationRequestForm(ModelForm):
         mime_type = mime_type.strip().split()[1].strip(';')
         LOGGER.info('Detected MIME type "{0}" for file "{1}".'.format(
           mime_type, data.name))
+        
+        # Check that file contents can be encoded as UTF-8.
+        with open('/tmp/{0}'.format(data.name), 'r') as destination:
+            for line in destination:
+                try:
+                    _ = unicode(line.strip(), 'utf-8')
+                except UnicodeDecodeError:
+                    raise ValidationError("Source file must be valid UTF-8.")
 
         remove('/tmp/{0}'.format(data.name))
 

@@ -3,7 +3,6 @@ Project: MT Server Land prototype code
  Author: Christian Federmann <cfedermann@dfki.de>
 """
 import logging
-import uuid
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -13,8 +12,8 @@ from django.template import RequestContext
 from serverland.dashboard.models import TranslationRequest, WorkerServer
 from serverland.dashboard.models import TRANSLATION_MESSAGE_PATH
 from serverland.dashboard.forms import TranslationRequestForm
-from serverland.settings import LOG_LEVEL, LOG_HANDLER
-from serverland.workers.TranslationRequestMessage_pb2 import \
+from serverland.settings import LOG_LEVEL, LOG_HANDLER, DEPLOYMENT_PREFIX
+from serverland.protobuf.TranslationRequestMessage_pb2 import \
   TranslationRequestMessage
 
 # Setup logging support.
@@ -33,14 +32,15 @@ def dashboard(request):
       request.user.username))
 
     ordered = TranslationRequest.objects.all().order_by('-created')
-    requests = [r for r in ordered if not r.deleted]
+    filtered = ordered.filter(owner=request.user)
+    requests = [r for r in filtered if not r.deleted]
     finished = [r for r in requests if r.is_ready()]
     invalid = [r for r in requests if not r.is_valid() and not r in finished]
     active = [r for r in requests if not r in finished and not r in invalid]
 
     dictionary = {'title': 'MT Server Land (prototype) -- Dashboard',
-      'finished_requests': finished, 'active_requests': active,
-      'invalid_requests': invalid}
+      'PREFIX': DEPLOYMENT_PREFIX, 'finished_requests': finished,
+      'active_requests': active, 'invalid_requests': invalid}
     return render_to_response('dashboard/dashboard.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -96,7 +96,8 @@ def create(request):
 
             messages.add_message(request, messages.SUCCESS, 'Successfully ' \
               'started translation request "{0}".'.format(new.shortname))
-            return HttpResponseRedirect('/dashboard/')
+            return HttpResponseRedirect('{0}/dashboard/'.format(
+              DEPLOYMENT_PREFIX))
 
     else:
         form = TranslationRequestForm()
@@ -106,7 +107,7 @@ def create(request):
     #active_workers = [w for w in workers if w.is_alive()]
 
     dictionary = {'title': 'MT Server Land (prototype) -- Create translation',
-      'form': form}
+      'PREFIX': DEPLOYMENT_PREFIX, 'form': form}
     return render_to_response('dashboard/create.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -121,7 +122,8 @@ def delete(request, request_id):
         LOGGER.warning('Illegal delete request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('/dashboard/')
+        return HttpResponseRedirect('{0}/dashboard/'.format(
+          DEPLOYMENT_PREFIX))
 
     LOGGER.info('Deleting translation request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
@@ -129,7 +131,7 @@ def delete(request, request_id):
 
     messages.add_message(request, messages.SUCCESS, 'Successfully deleted' \
       ' request "{0}".'.format(req.shortname))
-    return HttpResponseRedirect('/dashboard/')
+    return HttpResponseRedirect('{0}/dashboard/'.format(DEPLOYMENT_PREFIX))
 
 @login_required
 def result(request, request_id):
@@ -142,7 +144,8 @@ def result(request, request_id):
         LOGGER.warning('Illegal result request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('/dashboard/')
+        return HttpResponseRedirect('{0}/dashboard/'.format(
+          DEPLOYMENT_PREFIX))
 
     # cfedermann: Make sure that the request is marked as finished once the
     #   result has been transferred to the local hard disk!!!  We are trying
@@ -161,7 +164,7 @@ def result(request, request_id):
 
     dictionary = {'title': 'MT Server Land (prototype) -- {0}'.format(
       req.shortname), 'request': req, 'result': translation_result,
-      'packet_data': translation_packet_data}
+      'packet_data': translation_packet_data, 'PREFIX': DEPLOYMENT_PREFIX}
     return render_to_response('dashboard/result.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -176,11 +179,17 @@ def download(request, request_id):
         LOGGER.warning('Illegal download request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('/dashboard/')
+        return HttpResponseRedirect('{0}/dashboard/'.format(
+          DEPLOYMENT_PREFIX))
 
     LOGGER.info('Downloading request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
-    response = HttpResponse(req.fetch_translation(), mimetype='text/plain')
-    response['Content-Disposition'] = 'attachment; filename={0}.txt'.format(
+
+    # We only return the target text, not the full TranslationRequestMessage.
+    translation = req.fetch_translation().target_text.encode('utf-8')
+    
+    # We return it as a "text/plain" file attachment with charset "UTF-8".
+    response = HttpResponse(translation, mimetype='text/plain; charset=UTF-8')
+    response['Content-Disposition'] = 'attachment; filename="{0}.txt"'.format(
       req.shortname)
     return response

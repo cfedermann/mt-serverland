@@ -4,16 +4,18 @@ Baseline implementation for a MT Server Land "worker" server.
 Implements the basic "worker" interface.
 """
 import logging
+import stat
 
 from base64 import b64encode, b64decode
 from google.protobuf.message import DecodeError
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process
-from os import remove
+from os import chmod, remove
 from time import sleep
 from random import random
 from SimpleXMLRPCServer import SimpleXMLRPCServer
-from TranslationRequestMessage_pb2 import TranslationRequestMessage
+
+from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
 class AbstractWorkerServer(object):
@@ -44,6 +46,12 @@ class AbstractWorkerServer(object):
         logging.basicConfig(level=LOG_LEVEL)
         self.LOGGER = logging.getLogger(self.__name__)
         self.LOGGER.addHandler(LOG_HANDLER)
+        
+        # Change permissions of logfile so that everybody may read and write.
+        mode = stat.S_IREAD | stat.S_IWRITE
+        mode |= stat.S_IRGRP | stat.S_IWGRP
+        mode |= stat.S_IROTH | stat.S_IWOTH
+        chmod(LOG_FILENAME, mode)
 
         self.server = SimpleXMLRPCServer((host, port), allow_none=True)
         self.LOGGER.info("{0} listening on {1}:{2}".format(self.__name__,
@@ -65,6 +73,19 @@ class AbstractWorkerServer(object):
         self.server.register_function(self.delete_translation,
           "delete_translation")
         self.server.register_function(self.language_pairs, "language_pairs")
+
+    @staticmethod
+    def usage():
+        """
+        Returns usage information, e.g. for additional parameters, etc.
+        """
+        return ()
+
+    def parse_args(self, args):
+        """
+        Parses the given args list and sets worker specific paramters.
+        """
+        return True
 
     def start_worker(self):
         """
