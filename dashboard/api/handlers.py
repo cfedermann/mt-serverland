@@ -172,7 +172,7 @@ class WorkerHandler(BaseHandler):
     def read(self, request, shortname = None):
         '''Handles a GET request asking about worker servers.'''
         if shortname is None:
-            objects = WorkerServer.objects.all()
+            objects = WorkerServer.objects.filter(users=request.user)
         else:
             objects = [get_object_or_404(WorkerServer, shortname=shortname)]
         objects = [ WorkerHandler.server_to_dict(o) for o in objects ]
