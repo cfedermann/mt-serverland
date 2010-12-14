@@ -72,7 +72,7 @@ class RequestHandler(BaseHandler):
             except ObjectDoesNotExist:
                 pass
         # validate POST data using our Django form
-        form = TranslationRequestForm(postdata, request.FILES)
+        form = TranslationRequestForm(request.user, postdata, request.FILES)
         try:
             if not form.is_valid():
                 return rc.BAD_REQUEST
