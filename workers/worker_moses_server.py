@@ -103,11 +103,13 @@ class MosesServerWorker(AbstractWorkerServer):
         proxy = xmlrpclib.ServerProxy('{0}:{1}'.format(self.MOSES_HOST,
           self.MOSES_PORT))
 
-        content = proxy.translate({'text': message.source_text})
-        result = content.get('text', None)
+        result = []
+        for text in message.source_text.split(u'\n'):
+            content = proxy.translate({'text': text})
+            result.append(content.get('text', '\n'))
 
         if result:
-            message.target_text = result
+            message.target_text = u'\n'.join(result)
 
         handle.seek(0)
         handle.write(message.SerializeToString())
