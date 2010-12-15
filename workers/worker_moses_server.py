@@ -107,7 +107,7 @@ class MosesServerWorker(AbstractWorkerServer):
         result = content.get('text', None)
 
         if result:
-            message.target_text = unicode(result, 'utf-8')
+            message.target_text = result
 
         handle.seek(0)
         handle.write(message.SerializeToString())
