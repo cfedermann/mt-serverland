@@ -82,8 +82,8 @@ class MosesServerWorker(AbstractWorkerServer):
         """
         Checks if the Lucy RBMT XML-RPC interface is running.
         """
-        proxy = xmlrpclib.ServerProxy('{0}:{1}'.format(MOSES_HOST,
-          MOSES_PORT))
+        proxy = xmlrpclib.ServerProxy('{0}:{1}'.format(self.MOSES_HOST,
+          self.MOSES_PORT))
         try:
             _ = proxy.system.listMethods()
         
@@ -100,8 +100,8 @@ class MosesServerWorker(AbstractWorkerServer):
         message = TranslationRequestMessage()
         message.ParseFromString(handle.read())
 
-        proxy = xmlrpclib.ServerProxy('{0}:{1}'.format(MOSES_HOST,
-          MOSES_PORT))
+        proxy = xmlrpclib.ServerProxy('{0}:{1}'.format(self.MOSES_HOST,
+          self.MOSES_PORT))
 
         content = proxy.translate({'text': message.source_text})
         result = content.get('text', None)
