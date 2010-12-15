@@ -25,7 +25,7 @@ class MosesWorker(AbstractWorkerServer):
         Returns usage information, e.g. for additional parameters, etc.
         """
         return ('MOSES_CMD=/path/to/moses/binary',
-          'MOSES_CONFIG=/path/to/moses/config>',
+          'MOSES_CONFIG=/path/to/moses/config',
           'MOSES_SOURCE=source_language_iso639_2_code',
           'MOSES_TARGET=target_language_iso639_2_code')
     
@@ -111,16 +111,3 @@ class MosesWorker(AbstractWorkerServer):
         handle.seek(0)
         handle.write(message.SerializeToString())
         handle.close()
-
-
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print "\n\tusage {0} <host> <port>\n".format(sys.argv[0])
-        sys.exit(-1)
-
-    # Prepare XML-RPC server instance running on hostname:port.
-    SERVER = MosesWorker(sys.argv[1], int(sys.argv[2]),
-      '/tmp/workerserver-moses.log')
-
-    # Start server and serve forever.
-    SERVER.start_worker()
