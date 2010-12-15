@@ -10,6 +10,7 @@ from workers.worker_google import GoogleWorker
 from workers.worker_lucy import LucyWorker
 from workers.worker_yahoo import YahooWorker
 from workers.worker_moses import MosesWorker
+from workers.worker_moses_server import MosesServerWorker
 
 # Make configurable:
 #
@@ -22,6 +23,8 @@ REGISTERED_WORKERS = {
   'LucyWorker': (LucyWorker, '/tmp/workerserver-lucy.log'),
   'YahooWorker': (YahooWorker, '/tmp/workerserver-yahoo.log'),
   'MosesWorker': (MosesWorker, '/tmp/workerserver-moses.log'),
+  'MosesServerWorker': (MosesServerWorker,
+    '/tmp/workerserver-mosesserver.log'),
 }
 
 
