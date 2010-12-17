@@ -56,12 +56,19 @@ class TranslationRequestForm(ModelForm):
         else:
             worker_queryset = WorkerServer.objects.all()
         
-        language_pairs = [x for w in worker_queryset
-          for x in w.language_pairs()]
+        try:
+            language_pairs = []
+            for worker in worker_queryset:
+                language_pairs.extend([x for x in worker.language_pairs()])
+            
+        except:
+            LOGGER.warning('Could not access language pairs for ' \
+              'worker "{0}"'.format(worker))
+            continue
+
         assert(language_pairs), "Translation language pairs set is empty."
-        
-        print language_pairs
-        
+
+        # TODO: clean that up...
         source_languages = [(x[0], LANGUAGE_CODES[x[0]])
           for x in language_pairs]
         target_languages = [(x[1], LANGUAGE_CODES[x[1]])
@@ -70,8 +77,6 @@ class TranslationRequestForm(ModelForm):
         target_languages = list(set(target_languages))
         source_languages.sort()
         target_languages.sort()
-        
-        print source_languages
 
         self.fields['source_language'] = ChoiceField(choices=source_languages)
         self.fields['target_language'] = ChoiceField(choices=target_languages)
