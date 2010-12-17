@@ -56,15 +56,15 @@ class TranslationRequestForm(ModelForm):
         else:
             worker_queryset = WorkerServer.objects.all()
         
-        try:
-            language_pairs = []
-            for worker in worker_queryset:
+        language_pairs = []
+        for worker in worker_queryset:
+            try:
                 language_pairs.extend([x for x in worker.language_pairs()])
             
-        except:
-            LOGGER.warning('Could not access language pairs for ' \
-              'worker "{0}"'.format(worker))
-            continue
+            except:
+                LOGGER.warning('Could not access language pairs for ' \
+                  'worker "{0}"'.format(worker))
+                continue
 
         assert(language_pairs), "Translation language pairs set is empty."
 
