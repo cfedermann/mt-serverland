@@ -57,7 +57,8 @@ def create(request):
     form = None
 
     if request.method == "POST":
-        form = TranslationRequestForm(request.POST, request.FILES)
+        form = TranslationRequestForm(request.user, request.POST,
+          request.FILES)
 
         if form.errors:
             LOGGER.info('Form validation errors: {0}'.format(
@@ -100,7 +101,7 @@ def create(request):
               DEPLOYMENT_PREFIX))
 
     else:
-        form = TranslationRequestForm()
+        form = TranslationRequestForm(user=request.user)
 
     #from serverland.dashboard.models import WorkerServer
     #workers = WorkerServer.objects.all()
