@@ -157,12 +157,13 @@ class XmlRpcAPIServer(object):
         body.append('')
         body = CRLF.join(body)
         content_type = 'multipart/form-data; boundary={0}'.format(boundary)
-        header = {'Content-type': content_type,
-                  'Content-length': str(len(body))}
+        header = {'Content-Type': content_type,
+                  'Content-Length': str(len(body))}
         response = do_http_request(self.api_url + 'requests/',
                                    method='POST', body=body, headers=header)
-        if response[0].status == 201:
+        if response[0].status == 200:
             return json.loads(response[1])
+
         else:
             raise Exception(response[0].reason)
 
