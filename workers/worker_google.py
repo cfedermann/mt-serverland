@@ -74,8 +74,7 @@ class GoogleWorker(AbstractWorkerServer):
         content = http_handle.read()
         http_handle.close()
 
-        result_exp = re.compile(
-          '<span id=result_box class="long_text">(.*)</span></div>',
+        result_exp = re.compile('<span id=result_box.*?>(.*)</span></div>',
           re.I|re.U|re.S)
 
         result = result_exp.search(content)
@@ -95,6 +94,12 @@ class GoogleWorker(AbstractWorkerServer):
             target_text = multibreaks.sub(u'\n', target_text)
 
             message.target_text = target_text
+            handle.seek(0)
+            handle.write(message.SerializeToString())
+
+        else:
+            message.target_text = "ERROR: result_exp did not match.\n" \
+              "CONTENT: {0}".format(content)
             handle.seek(0)
             handle.write(message.SerializeToString())
 
