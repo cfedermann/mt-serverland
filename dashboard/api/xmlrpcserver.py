@@ -48,11 +48,17 @@ def normalize_api_url (url):
 def do_http_request(url, method='GET', body=None, headers={}):
     parsed_url = urlparse.urlparse(url)
     uri = urlparse.urlunparse([''] * 2 + list(parsed_url)[2:])
+#    print "Creating HTTPConnection"
     conn = httplib.HTTPConnection(parsed_url.netloc)
+#    print "Sending request"
     conn.request(method, uri, body=body, headers=headers)
+#    print "Getting response"
     response = conn.getresponse()
+#    print "Reading response"
     retval = (response, response.read())
+#    print "Closing connection"
     conn.close()
+#    print "Returning result"
     return retval
 
 class XmlRpcAPIServer(object):
@@ -131,6 +137,7 @@ class XmlRpcAPIServer(object):
 
         multipart/form-data
         '''
+        print "building request"
         contents = {}
         contents['token'] = token
         contents['shortname'] = request_shortname
@@ -150,20 +157,25 @@ class XmlRpcAPIServer(object):
         body.append('Content-Disposition: form-data; ' +
                       'name="source_text"; ' +
                       'filename="{0}"'.format(file_name))
-        body.append('Content-Type: text/plain')
+        body.append('Content-Type: text/plain; charset="UTF-8"')
         body.append('')
         body.extend(file_lines)
         body.append('--' + boundary)
         body.append('')
-        body = CRLF.join(body)
+        body = (CRLF.join(body)).encode("utf-8")
         content_type = 'multipart/form-data; boundary={0}'.format(boundary)
-        header = {'Content-type': content_type,
-                  'Content-length': str(len(body))}
+        header = {'Content-Type': content_type,
+                  'Content-Length': str(len(body))}
+        
+#        print "Sending..."
         response = do_http_request(self.api_url + 'requests/',
                                    method='POST', body=body, headers=header)
-        if response[0].status == 201:
+        if response[0].status == 200:
+#            print "OK!"
             return json.loads(response[1])
+
         else:
+            print response[0].reason
             raise Exception(response[0].reason)
 
     def delete_translation(self, token, shortname_or_request_id):

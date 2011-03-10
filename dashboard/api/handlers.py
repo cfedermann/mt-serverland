@@ -52,7 +52,7 @@ class RequestHandler(BaseHandler):
             return rc.BAD_REQUEST
         print 'CREATE content-type', request.content_type # DEBUG
         # get the data from the POST request
-        postdata = self.flatten_dict(request.data)
+        postdata = self.flatten_dict(request.POST)
         # ensure that the worker field is present
         postdata['worker'] = postdata.get('worker','')
         # convert worker shortname to a worker ID if needed
@@ -103,16 +103,19 @@ class RequestHandler(BaseHandler):
         messages.add_message(request, messages.SUCCESS, 'Successfully ' \
                              'started translation request "{0}".'.format(
                                 new.shortname))
-        # return 201 CREATED
-        response = rc.CREATED
-        # put the URI of the newly created object into the HTTP header
-        # Location field (see RFC 2616)
-        response['Location'] = reverse('requests', args=[new.request_id + '/'])
+        
+        # FIXME: Could not figure out why Piston is insisting on returning the content as text/plain when we use rc.CREATED and try to return a response object. For now, I'm just using HTTP OK, which returns the JSON correctly.
+#        # return 201 CREATED
+#        response = rc.CREATED
+#        # put the URI of the newly created object into the HTTP header
+#        # Location field (see RFC 2616)
+#        response['Content-Type'] = 'application/json; charset=utf-8'
+#        response['Location'] = reverse('requests', args=[new.request_id + '/'])
         # echo the created object inside the HTTP response
         # NOTE: this overwrites the "Location" header field set above.
         # See piston.resource.__call__()
-        response.content = RequestHandler.request_to_dict(new)
-        return response
+        object = RequestHandler.request_to_dict(new, include_results=False)
+        return object
 
     @throttle(MAX_REQUESTS_PER_MINUTE, 60)
     def delete(self, request, shortname = None, results = False):
