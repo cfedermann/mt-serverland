@@ -72,7 +72,7 @@ class RequestHandler(BaseHandler):
             except ObjectDoesNotExist:
                 pass
         # validate POST data using our Django form
-        form = TranslationRequestForm(postdata, request.FILES)
+        form = TranslationRequestForm(request.user, postdata, request.FILES)
         try:
             if not form.is_valid():
                 return rc.BAD_REQUEST
@@ -172,7 +172,7 @@ class WorkerHandler(BaseHandler):
     def read(self, request, shortname = None):
         '''Handles a GET request asking about worker servers.'''
         if shortname is None:
-            objects = WorkerServer.objects.all()
+            objects = WorkerServer.objects.filter(users=request.user)
         else:
             objects = [get_object_or_404(WorkerServer, shortname=shortname)]
         objects = [ WorkerHandler.server_to_dict(o) for o in objects ]

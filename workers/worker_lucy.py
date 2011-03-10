@@ -95,16 +95,3 @@ class LucyWorker(AbstractWorkerServer):
         handle.seek(0)
         handle.write(message.SerializeToString())
         handle.close()
-
-
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print "\n\tusage {0} <host> <port>\n".format(sys.argv[0])
-        sys.exit(-1)
-
-    # Prepare XML-RPC server instance running on hostname:port.
-    SERVER = LucyWorker(sys.argv[1], int(sys.argv[2]),
-      '/tmp/workerserver-lucy.log')
-
-    # Start server and serve forever.
-    SERVER.start_worker()

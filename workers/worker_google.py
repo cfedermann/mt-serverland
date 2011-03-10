@@ -74,29 +74,28 @@ class GoogleWorker(AbstractWorkerServer):
         content = http_handle.read()
         http_handle.close()
 
-        result_exp = re.compile('<textarea name=utrans wrap=SOFT ' \
-          'dir="ltr" id=suggestion.*>(.*?)</textarea>', re.I|re.U)
+        result_exp = re.compile(
+          '<span id=result_box class="long_text">(.*)</span></div>',
+          re.I|re.U|re.S)
 
         result = result_exp.search(content)
 
         if result:
-            target_html = result.group(1)
-            target_text = target_html.replace('&lt;br&gt;', '\n')
-            message.target_text = unicode(target_text, 'utf-8')
+            # Normalize HTML line breaks to \n.
+            result = result.group(1).replace('<br>', '\n')
+
+            # Extract all <span>...</span> tags containing the translation.
+            span_exp = re.compile('<span.*?>([^<]+?)</span>', re.I|re.U|re.S)
+            span_iter = span_exp.finditer(result)
+            spans = [unicode(match.group(1), 'utf-8') for match in span_iter]
+
+            # Construct target text from list of spans, normalizing \n+ to \n.
+            target_text = u'\n'.join([span.strip() for span in spans])  
+            multibreaks = re.compile('\n+', re.I|re.U|re.S)
+            target_text = multibreaks.sub(u'\n', target_text)
+
+            message.target_text = target_text
             handle.seek(0)
             handle.write(message.SerializeToString())
 
         handle.close()
-
-
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print "\n\tusage {0} <host> <port>\n".format(sys.argv[0])
-        sys.exit(-1)
-
-    # Prepare XML-RPC server instance running on hostname:port.
-    SERVER = GoogleWorker(sys.argv[1], int(sys.argv[2]),
-      '/tmp/workerserver-google.log')
-
-    # Start server and serve forever.
-    SERVER.start_worker()

@@ -74,6 +74,19 @@ class AbstractWorkerServer(object):
           "delete_translation")
         self.server.register_function(self.language_pairs, "language_pairs")
 
+    @staticmethod
+    def usage():
+        """
+        Returns usage information, e.g. for additional parameters, etc.
+        """
+        return ()
+
+    def parse_args(self, args):
+        """
+        Parses the given args list and sets worker specific paramters.
+        """
+        return True
+
     def start_worker(self):
         """
         Starts the event handler of the worker server instance.

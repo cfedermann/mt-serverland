@@ -7,7 +7,7 @@
 </div>
 
 <div id="instructions">
-  <img src="/site_media/cloud.png" style="float: right; padding-right: 20px;" />
+  <img src="{{PREFIX}}/site_media/cloud.png" style="float: right; padding-right: 20px;" />
   <p>This service allows users and external applications to make use of DFKI's machine translation (MT) technology to translate text between various languages. Think of it as a research version of similar services such as <a href="http://translate.google.com/">Google Translate</a> or <a href="http://www.microsofttranslator.com/">Microsoft Translator</a>...</p><br/>
 
   <p>Authenticated users may:</p>
@@ -18,9 +18,9 @@
   </ul>
   <br/>
   {% if user.is_authenticated %}
-  <p>You are logged in as <b>{{ user.username }}</b>. You can <a href="/dashboard/">access your dashboard</a> or logout by <a href="/logout/">clicking here</a>.</p>
+  <p>You are logged in as <b>{{ user.username }}</b>. You can <a href="{{PREFIX}}/dashboard/">access your dashboard</a> or logout by <a href="{{PREFIX}}/logout/">clicking here</a>.</p>
   {% else %}
-  <p>Please login to access your <a href="/dashboard/">translation dashboard</a>.</p>
+  <p>Please login to access your <a href="{{PREFIX}}/dashboard/">translation dashboard</a>.</p>
   {% endif %}
   <br/><br/><br/><br/><br/>
 </div>

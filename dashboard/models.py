@@ -34,6 +34,12 @@ class WorkerServer(models.Model):
     description = models.TextField()
     hostname = models.CharField(max_length=200)
     port = models.CharField(max_length=5)
+    
+    users = models.ManyToManyField(
+      User,
+      blank=True,
+      help_text="Users allowed to use this worker server."
+    )
 
     def __unicode__(self):
         """Returns a Unicode String representation of the worker server."""

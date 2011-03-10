@@ -4,20 +4,22 @@ Project: MT Server Land prototype code
 """
 from django.conf.urls.defaults import patterns, include
 from django.contrib import admin
-from serverland.settings import MEDIA_ROOT
+from serverland.settings import MEDIA_ROOT, DEPLOYMENT_PREFIX
 
 admin.autodiscover()
 
+PREFIX = DEPLOYMENT_PREFIX[1:]
+
 urlpatterns = patterns('',
-  (r'^$', 'serverland.views.frontpage'),
-  (r'^login/$', 'serverland.views.login'),
-  (r'^logout/$', 'serverland.views.logout',
-    {'next_page': '/'}),
+  (r'^{0}/$'.format(PREFIX), 'serverland.views.frontpage'),
+  (r'^{0}/login/$'.format(PREFIX), 'serverland.views.login'),
+  (r'^{0}/logout/$'.format(PREFIX), 'serverland.views.logout',
+    {'next_page': '{0}/'.format(DEPLOYMENT_PREFIX)}),
   
-  (r'^dashboard/', include('serverland.dashboard.urls')),
+  (r'^{0}/dashboard/'.format(PREFIX), include('serverland.dashboard.urls')),
   
-  (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-    {'document_root': MEDIA_ROOT}),
+  (r'^{0}/site_media/(?P<path>.*)$'.format(PREFIX),
+    'django.views.static.serve', {'document_root': MEDIA_ROOT}),
   
-  (r'^admin/', include(admin.site.urls)),
+  (r'^{0}/admin/'.format(PREFIX), include(admin.site.urls)),
 )

@@ -5,6 +5,7 @@ Project: MT Server Land prototype code
 """
 import os
 ROOT_PATH = os.getcwd()
+DEPLOYMENT_PREFIX = '/mt-serverland'
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -21,9 +22,9 @@ LOG_HANDLER = RotatingFileHandler(filename=LOG_FILENAME, mode="a",
 LOG_HANDLER.setLevel(level=LOG_LEVEL)
 LOG_HANDLER.setFormatter(LOG_FORMATTER)
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/login/'
-LOGOUT_URL = '/logout/'
+LOGIN_URL = '{0}/login/'.format(DEPLOYMENT_PREFIX)
+LOGIN_REDIRECT_URL = '{0}/login/'.format(DEPLOYMENT_PREFIX)
+LOGOUT_URL = '{0}/logout/'.format(DEPLOYMENT_PREFIX)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -66,7 +67,7 @@ MEDIA_URL = ''
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '{0}/media/'.format(DEPLOYMENT_PREFIX)
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'fw341l^lu!z7^@&9idq+7$a+b-l*ph_4^1#aj+%+o556fdsu3!'

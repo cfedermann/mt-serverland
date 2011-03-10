@@ -15,16 +15,7 @@ dashboard_api_url -- the URL of the serverland dashboard API
 '''
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
-
-# Question for Will: do we really need httplib2?
-# - http://code.google.com/p/httplib2/
-#
-# Or would the httplib import suffice?
-try:
-    from httplib2 import Http as HTTP
-except:
-    from httplib import HTTP
-
+import httplib
 import json
 import mimetools
 import sys
@@ -54,6 +45,15 @@ def normalize_api_url (url):
     url = urlparse.urlunparse(parsed_url)
     return url
 
+def do_http_request(url, method='GET', body=None, headers={}):
+    parsed_url = urlparse.urlparse(url)
+    uri = urlparse.urlunparse([''] * 2 + list(parsed_url)[2:])
+    conn = httplib.HTTPConnection(parsed_url.netloc)
+    conn.request(method, uri, body=body, headers=headers)
+    response = conn.getresponse()
+    retval = (response, response.read())
+    conn.close()
+    return retval
 
 class XmlRpcAPIServer(object):
     '''
@@ -68,7 +68,6 @@ class XmlRpcAPIServer(object):
         '''
         Creates a new XmlRpcAPIServer instance serving from host:port.
         '''
-        self.http = HTTP()
         self.server = SimpleXMLRPCServer((host, port), allow_none=True)
         self.server.register_function(self.stop_server)
         self.server.register_function(self.list_workers)
@@ -103,7 +102,7 @@ class XmlRpcAPIServer(object):
               token)
         else:
             url = self.api_url + 'workers/?token={0}'.format(token)
-        response = self.http.request(url, method='GET')
+        response = do_http_request(url, method='GET')
         if response[0].status == 200:
             return json.loads(response[1])
         else:
@@ -118,7 +117,7 @@ class XmlRpcAPIServer(object):
               shortname_or_request_id, token)
         else:
             url = self.api_url + 'requests/?token={0}'.format(token)
-        response = self.http.request(url, method='GET')
+        response = do_http_request(url, method='GET')
         if response[0].status == 200:
             return json.loads(response[1])
         else:
@@ -160,8 +159,8 @@ class XmlRpcAPIServer(object):
         content_type = 'multipart/form-data; boundary={0}'.format(boundary)
         header = {'Content-type': content_type,
                   'Content-length': str(len(body))}
-        response = self.http.request(self.api_url + 'requests/',
-                                     method='POST', body=body, headers=header)
+        response = do_http_request(self.api_url + 'requests/',
+                                   method='POST', body=body, headers=header)
         if response[0].status == 201:
             return json.loads(response[1])
         else:
@@ -173,7 +172,7 @@ class XmlRpcAPIServer(object):
         '''
         url = self.api_url + 'requests/{0}/?token={1}'.format(
             shortname_or_request_id, token)
-        response = self.http.request(url, method='DELETE')
+        response = do_http_request(url, method='DELETE')
         if response[0].status == 204:
             return True
         else:
@@ -188,7 +187,7 @@ class XmlRpcAPIServer(object):
                 shortname_or_request_id, token)
         else:
             url = self.api_url + 'results/?token={0}'.format(token)
-        response = self.http.request(url, method='GET')
+        response = do_http_request(url, method='GET')
         if response[0].status == 200:
             return json.loads(response[1])
         else:
