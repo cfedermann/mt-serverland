@@ -72,13 +72,19 @@ class BingWorker(AbstractWorkerServer):
         http_handle.close()
 
         result_exp = re.compile('<string xmlns="http://schemas.microsoft.' \
-          'com/2003/10/Serialization/">(.*?)</string>', re.I|re.U)
+          'com/2003/10/Serialization/">(.*?)</string>', re.I|re.U|re.S)
 
         result = result_exp.search(content)
 
         if result:
             target_text = result.group(1)
             message.target_text = unicode(target_text, 'utf-8')
+            handle.seek(0)
+            handle.write(message.SerializeToString())
+
+        else:
+            message.target_text = "ERROR: result_exp did not match.\n" \
+              "CONTENT: {0}".format(content)
             handle.seek(0)
             handle.write(message.SerializeToString())
 
