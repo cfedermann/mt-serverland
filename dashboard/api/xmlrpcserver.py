@@ -20,7 +20,10 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 # - http://code.google.com/p/httplib2/
 #
 # Or would the httplib import suffice?
-import httplib2
+try:
+    from httplib2 import Http as HTTP
+except:
+    from httplib import HTTP
 
 import json
 import mimetools
@@ -65,7 +68,7 @@ class XmlRpcAPIServer(object):
         '''
         Creates a new XmlRpcAPIServer instance serving from host:port.
         '''
-        self.http = httplib2.Http()
+        self.http = HTTP()
         self.server = SimpleXMLRPCServer((host, port), allow_none=True)
         self.server.register_function(self.stop_server)
         self.server.register_function(self.list_workers)
