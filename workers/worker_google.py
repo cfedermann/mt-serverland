@@ -15,6 +15,7 @@ class GoogleWorker(AbstractWorkerServer):
     Implementation of a worker server that connects to Google Translate.
     """
     __name__ = 'GoogleWorker'
+    __splitter__ = '[GOOGLE_SPLITTER_TOKEN]'
 
     def language_pairs(self):
         """
@@ -63,9 +64,15 @@ class GoogleWorker(AbstractWorkerServer):
         source = self.language_code(message.source_language)
         target = self.language_code(message.target_language)
 
+        # Insert splitter tokens to allow re-construction of original lines.
+        _source_text = []
+        for source_line in message.source_text.split('\n'):
+            _source_text.append(source_line.strip().encode('utf-8'))
+            _source_text.append(self.__splitter__)
+
         the_url = 'http://translate.google.com/translate_t'
         the_data = urllib.urlencode({'js': 'n', 'sl': source, 'tl': target,
-          'text': message.source_text.encode('utf-8')})
+          'text': u'\n'.join(_source_text)})
         the_header = {'User-agent': 'Mozilla/5.0'}
 
         opener = urllib2.build_opener(urllib2.HTTPHandler)
@@ -93,7 +100,13 @@ class GoogleWorker(AbstractWorkerServer):
             multibreaks = re.compile('\n+', re.I|re.U|re.S)
             target_text = multibreaks.sub(u'\n', target_text)
 
-            message.target_text = target_text
+            # Re-construct original lines using the splitter tokens.
+            _target_text = []
+            for target_line in target_text.split():
+                if target_line.strip() != self.__splitter__:
+                    _target_text.append(target_line.strip())
+
+            message.target_text = u'\n'.join(_target_text)
             handle.seek(0)
             handle.write(message.SerializeToString())
 
