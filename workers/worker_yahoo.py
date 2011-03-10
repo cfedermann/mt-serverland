@@ -79,4 +79,10 @@ class YahooWorker(AbstractWorkerServer):
             handle.seek(0)
             handle.write(message.SerializeToString())
 
+        else:
+            message.target_text = "ERROR: result_exp did not match.\n" \
+              "CONTENT: {0}".format(content)
+            handle.seek(0)
+            handle.write(message.SerializeToString())
+
         handle.close()
