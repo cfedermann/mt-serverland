@@ -104,7 +104,8 @@ class GoogleWorker(AbstractWorkerServer):
             _target_text = []
             _current_line = []
             for target_line in target_text.split('\n'):
-                if target_line.strip() != self.__splitter__:
+                target_line = target_line.strip()
+                if target_line.strip('[]') != self.__splitter__.strip('[]'):
                     _current_line.append(target_line.strip())
                 else:
                     _target_text.append(u' '.join(_current_line))

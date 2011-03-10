@@ -87,9 +87,9 @@ class YahooWorker(AbstractWorkerServer):
             _target_text = []
             _current_line = []
             for target_line in target_text.split('\n'):
-                if target_line.strip() != self.__splitter__:
-                    _current_line.append(unicode(target_line.strip(),
-                      'latin-1'))
+                target_line = target_line.strip()
+                if target_line.strip('[]') != self.__splitter__.strip('[]'):
+                    _current_line.append(unicode(target_line, 'latin-1'))
                 else:
                     _target_text.append(u' '.join(_current_line))
                     _current_line = []
