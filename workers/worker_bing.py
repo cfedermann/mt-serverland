@@ -15,6 +15,7 @@ class BingWorker(AbstractWorkerServer):
     Implementation of a worker server that connects to Microsoft Translator.
     """
     __name__ = 'BingWorker'
+    __splitter__ = '[BING_SPLITTER_TOKEN]'
 
     def language_pairs(self):
         """
@@ -58,9 +59,15 @@ class BingWorker(AbstractWorkerServer):
         source = self.language_code(message.source_language)
         target = self.language_code(message.target_language)
 
+        # Insert splitter tokens to allow re-construction of original lines.
+        _source_text = []
+        for source_line in message.source_text.split('\n'):
+            _source_text.append(source_line.strip().encode('utf-8'))
+            _source_text.append(self.__splitter__)
+
         app_id = '9259D297CB9F67680C259FD62734B07C0D528312'
         the_data = urllib.urlencode({'appId': app_id, 'from': source,
-          'to': target, 'text': message.source_text.encode('utf-8')})
+          'to': target, 'text': u'\n'.join(_source_text)})
         the_url = 'http://api.microsofttranslator.com/v2/Http.svc/' \
           'Translate?{0}'.format(the_data)
         the_header = {'User-agent': 'Mozilla/5.0'}
@@ -78,7 +85,18 @@ class BingWorker(AbstractWorkerServer):
 
         if result:
             target_text = result.group(1)
-            message.target_text = unicode(target_text, 'utf-8')
+
+            # Re-construct original lines using the splitter tokens.
+            _target_text = []
+            _current_line = []
+            for target_line in target_text.split('\n'):
+                if target_line.strip() != self.__splitter__:
+                    _current_line.append(target_line.strip())
+                else:
+                    _target_text.append(u' '.join(_current_line))
+                    _current_line = []
+
+            message.target_text = unicode(u'\n'.join(_target_text), 'utf-8')
             handle.seek(0)
             handle.write(message.SerializeToString())
 
