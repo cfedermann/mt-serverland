@@ -102,9 +102,13 @@ class GoogleWorker(AbstractWorkerServer):
 
             # Re-construct original lines using the splitter tokens.
             _target_text = []
+            _current_line = []
             for target_line in target_text.split('\n'):
                 if target_line.strip() != self.__splitter__:
-                    _target_text.append(target_line.strip())
+                    _current_line.append(target_line.strip())
+                else:
+                    _target_text.append(u' '.join(_current_line))
+                    _current_line = []
 
             message.target_text = u'\n'.join(_target_text)
             handle.seek(0)
