@@ -91,7 +91,8 @@ class BingWorker(AbstractWorkerServer):
             _current_line = []
             for target_line in target_text.split('\n'):
                 if target_line.strip() != self.__splitter__:
-                    _current_line.append(unicode(target_line.strip(), 'utf-8')
+                    _current_line.append(unicode(target_line.strip(),
+                      'utf-8'))
                 else:
                     _target_text.append(u' '.join(_current_line))
                     _current_line = []
