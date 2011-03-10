@@ -15,6 +15,7 @@ class YahooWorker(AbstractWorkerServer):
     Implementation of a worker server that connects to Yahoo! Babel Fish.
     """
     __name__ = 'YahooWorker'
+    __splitter__ = '[YAHOO_SPLITTER_TOKEN]'
 
     def language_pairs(self):
         """
@@ -56,8 +57,14 @@ class YahooWorker(AbstractWorkerServer):
         source = self.language_code(message.source_language)
         target = self.language_code(message.target_language)
 
+        # Insert splitter tokens to allow re-construction of original lines.
+        _source_text = []
+        for source_line in message.source_text.split('\n'):
+            _source_text.append(source_line.strip().encode('utf-8'))
+            _source_text.append(self.__splitter__)
+
         the_data = urllib.urlencode({'lp': '{0}_{1}'.format(source, target),
-          'text': message.source_text.encode('utf-8'), 'ei': 'utf8'})
+          'text': u'\n'.join(_source_text), 'ei': 'utf8'})
         the_url = 'http://babelfish.yahoo.com/translate_txt?{0}'.format(
           the_data)
         the_header = {'User-agent': 'Mozilla/5.0'}
@@ -75,7 +82,19 @@ class YahooWorker(AbstractWorkerServer):
 
         if result:
             target_text = result.group(1)
-            message.target_text = unicode(target_text, 'latin-1')
+
+            # Re-construct original lines using the splitter tokens.
+            _target_text = []
+            _current_line = []
+            for target_line in target_text.split('\n'):
+                if target_line.strip() != self.__splitter__:
+                    _current_line.append(unicode(target_line.strip(),
+                      'latin-1'))
+                else:
+                    _target_text.append(u' '.join(_current_line))
+                    _current_line = []
+
+            message.target_text = u'\n'.join(_target_text)
             handle.seek(0)
             handle.write(message.SerializeToString())
 
