@@ -91,12 +91,12 @@ class BingWorker(AbstractWorkerServer):
             _current_line = []
             for target_line in target_text.split('\n'):
                 if target_line.strip() != self.__splitter__:
-                    _current_line.append(target_line.strip())
+                    _current_line.append(unicode(target_line.strip(), 'utf-8')
                 else:
                     _target_text.append(u' '.join(_current_line))
                     _current_line = []
 
-            message.target_text = unicode(u'\n'.join(_target_text), 'utf-8')
+            message.target_text = u'\n'.join(_target_text)
             handle.seek(0)
             handle.write(message.SerializeToString())
 
