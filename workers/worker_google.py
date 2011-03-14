@@ -54,7 +54,7 @@ class GoogleWorker(AbstractWorkerServer):
         return mapping.get(iso639_2_code)
 
     def _batch_translate(self, source, target, text):
-        """Translates a batch of text using Google Translate."""
+        """Translates a text using Google Translate."""
         the_url = 'http://translate.google.com/translate_t'
         the_data = urllib.urlencode({'js': 'n', 'sl': source, 'tl': target,
           'text': text})
@@ -105,8 +105,7 @@ class GoogleWorker(AbstractWorkerServer):
 
     def handle_translation(self, request_id):
         """
-        Translation handler that obtains a translation via the Google
-        translation web front end.
+        Handler connecting to the Google Translate service.
         """
         handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
         message = TranslationRequestMessage()
