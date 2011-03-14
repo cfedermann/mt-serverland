@@ -65,12 +65,11 @@ class YahooWorker(AbstractWorkerServer):
 
         the_data = urllib.urlencode({'lp': '{0}_{1}'.format(source, target),
           'text': u'\n'.join(_source_text), 'ei': 'utf8'})
-        the_url = 'http://babelfish.yahoo.com/translate_txt?{0}'.format(
-          the_data)
+        the_url = 'http://babelfish.yahoo.com/translate_txt'
         the_header = {'User-agent': 'Mozilla/5.0'}
 
         opener = urllib2.build_opener(urllib2.HTTPHandler)
-        http_request = urllib2.Request(the_url, None, the_header)
+        http_request = urllib2.Request(the_url, the_data, the_header)
         http_handle = opener.open(http_request)
         content = http_handle.read()
         http_handle.close()
