@@ -136,7 +136,7 @@ class GoogleWorker(AbstractWorkerServer):
             text = unicode(u'\n'.join(_source_text[-last_batch:]))
             result += self._batch_translate(source, target,
               text.encode('utf-8'))
-              result += '\n'
+            result += '\n'
 
         message.target_text = result
         handle.seek(0)
