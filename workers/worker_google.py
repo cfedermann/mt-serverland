@@ -57,7 +57,7 @@ class GoogleWorker(AbstractWorkerServer):
         """Translates a text using Google Translate."""
         the_url = 'http://translate.google.com/translate_t'
         the_data = urllib.urlencode({'js': 'n', 'sl': source, 'tl': target,
-          'text': text})
+          'text': unicode(text).encode('utf-8')})
         the_header = {'User-agent': 'Mozilla/5.0'}
 
         opener = urllib2.build_opener(urllib2.HTTPHandler)
@@ -126,15 +126,13 @@ class GoogleWorker(AbstractWorkerServer):
             _start = batch * self.__batch__
             _end = _start + self.__batch__
             text = unicode(u'\n'.join(_source_text[_start:_end]))
-            result += self._batch_translate(source, target,
-              text.encode('utf-8'))
+            result += self._batch_translate(source, target, text)
             result += '\n'
         
         last_batch = len(_source_text) % self.__batch__
         if last_batch:
             text = unicode(u'\n'.join(_source_text[-last_batch:]))
-            result += self._batch_translate(source, target,
-              text.encode('utf-8'))
+            result += self._batch_translate(source, target, text)
             result += '\n'
 
         message.target_text = result
