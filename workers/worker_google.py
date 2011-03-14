@@ -16,6 +16,7 @@ class GoogleWorker(AbstractWorkerServer):
     """
     __name__ = 'GoogleWorker'
     __splitter__ = '[GOOGLE_SPLITTER_TOKEN]'
+    __batch__ = 200
 
     def language_pairs(self):
         """
@@ -52,27 +53,11 @@ class GoogleWorker(AbstractWorkerServer):
         }
         return mapping.get(iso639_2_code)
 
-    def handle_translation(self, request_id):
-        """
-        Translation handler that obtains a translation via the Google
-        translation web front end.
-        """
-        handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
-        message = TranslationRequestMessage()
-        message.ParseFromString(handle.read())
-
-        source = self.language_code(message.source_language)
-        target = self.language_code(message.target_language)
-
-        # Insert splitter tokens to allow re-construction of original lines.
-        _source_text = []
-        for source_line in message.source_text.split('\n'):
-            _source_text.append(source_line.strip().encode('utf-8'))
-            _source_text.append(self.__splitter__)
-
+    def _batch_translate(self, source, target, text):
+        """Translates a batch of text using Google Translate."""
         the_url = 'http://translate.google.com/translate_t'
         the_data = urllib.urlencode({'js': 'n', 'sl': source, 'tl': target,
-          'text': u'\n'.join(_source_text)})
+          'text': text})
         the_header = {'User-agent': 'Mozilla/5.0'}
 
         opener = urllib2.build_opener(urllib2.HTTPHandler)
@@ -111,14 +96,49 @@ class GoogleWorker(AbstractWorkerServer):
                     _target_text.append(u' '.join(_current_line))
                     _current_line = []
 
-            message.target_text = u'\n'.join(_target_text)
-            handle.seek(0)
-            handle.write(message.SerializeToString())
+            return u'\n'.join(_target_text)
 
         else:
-            message.target_text = "ERROR: result_exp did not match.\n" \
-              "CONTENT: {0}".format(content)
-            handle.seek(0)
-            handle.write(message.SerializeToString())
+            return "ERROR: result_exp did not match.\nCONTENT: {0}".format(
+              content)
 
+
+    def handle_translation(self, request_id):
+        """
+        Translation handler that obtains a translation via the Google
+        translation web front end.
+        """
+        handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        message = TranslationRequestMessage()
+        message.ParseFromString(handle.read())
+
+        source = self.language_code(message.source_language)
+        target = self.language_code(message.target_language)
+
+        # Insert splitter tokens to allow re-construction of original lines.
+        _source_text = []
+        for source_line in message.source_text.split('\n'):
+            _source_text.append(source_line.strip())
+            _source_text.append(self.__splitter__)
+
+        result = u''
+        batches = len(_source_text) / self.__batch__
+        for batch in range(batches):
+            _start = batch * self.__batch__
+            _end = _start + self.__batch__
+            text = unicode(u'\n'.join(_source_text[_start:_end]))
+            result += self._batch_translate(source, target,
+              text.encode('utf-8'))
+            result += '\n'
+        
+        last_batch = len(_source_text) % self.__batch__
+        if last_batch:
+            text = unicode(u'\n'.join(_source_text[-last_batch:]))
+            result += self._batch_translate(source, target,
+              text.encode('utf-8'))
+              result += '\n'
+
+        message.target_text = result
+        handle.seek(0)
+        handle.write(message.SerializeToString())
         handle.close()
