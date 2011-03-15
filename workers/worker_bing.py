@@ -15,8 +15,7 @@ class BingWorker(AbstractWorkerServer):
     Implementation of a worker server that connects to Microsoft Translator.
     """
     __name__ = 'BingWorker'
-    __splitter__ = '[[BING_SPLITTER]]'
-    __batch__ = 200
+    __batch__ = 100
 
     def language_pairs(self):
         """
@@ -47,17 +46,27 @@ class BingWorker(AbstractWorkerServer):
 
     def _batch_translate(self, source, target, text):
         """Translates a text using Microsoft Translator."""
-        app_id = '9259D297CB9F67680C259FD62734B07C0D528312'        
+        app_id = '9259D297CB9F67680C259FD62734B07C0D528312'
+
+        _texts = []
+        for source_line in text.split('\n'):
+            source_line = source_line.strip()
+
+            _texts.append(u'<string xmlns="http://schemas.microsoft.com/' \
+              '2003/10/Serialization/Arrays">{0}</string>'.format(
+              source_line.replace(u'&', u'&amp;')))
+        _texts = u'\n'.join(_texts).encode('utf-8')
+
         the_xml = """<?xml version="1.0" encoding="utf-8"?>
 <TranslateArrayRequest>
 <AppId>{0}</AppId>
 <From>{1}</From>
 <Texts>
-<string xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">{2}</string>
+{2}
 </Texts>
 <To>{3}</To>
-</TranslateArrayRequest>""".format(app_id, source, text.encode('utf-8'),
-          target)
+</TranslateArrayRequest>""".format(app_id, source, _texts, target)
+
         the_url = 'http://api.microsofttranslator.com/v2/Http.svc/' \
           'TranslateArray'
         the_header = {'User-agent': 'Mozilla/5.0', 'Content-Type': 'text/xml'}
@@ -71,23 +80,11 @@ class BingWorker(AbstractWorkerServer):
         result_exp = re.compile('<TranslatedText>(.*?)</TranslatedText>',
           re.I|re.U|re.S)
 
-        result = result_exp.search(content)
+        result = result_exp.finditer(content)
 
         if result:
-            target_text = result.group(1)
-
-            # Re-construct original lines using the splitter tokens.
-            _target_text = []
-            _current_line = []
-            for target_line in target_text.split('\n'):
-                target_line = target_line.strip()
-                if target_line.strip('[]') != self.__splitter__.strip('[]'):
-                    _current_line.append(target_line.decode('utf-8'))
-                else:
-                    _target_text.append(u' '.join(_current_line))
-                    _current_line = []
-
-            return u'\n'.join(_target_text)
+            _target_text = [m.group(1).decode('utf-8') for m in result]
+            return u'\n'.join(_target_text).replace(u'&', u'&amp;')
 
         else:
             return u"ERROR: result_exp did not match.\nCONTENT: {0}".format(
@@ -108,11 +105,7 @@ class BingWorker(AbstractWorkerServer):
         source = self.language_code(message.source_language)
         target = self.language_code(message.target_language)
 
-        # Insert splitter tokens to allow re-construction of original lines.
-        _source_text = []
-        for source_line in message.source_text.split('\n'):
-            _source_text.append(source_line.strip())
-            _source_text.append(unicode(self.__splitter__))
+        _source_text = message.source_text.split('\n')
 
         result = u''
         batches = len(_source_text) / self.__batch__
