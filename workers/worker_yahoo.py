@@ -6,6 +6,7 @@ import sys
 import urllib
 import urllib2
 
+from time import sleep
 from workers.worker import AbstractWorkerServer
 from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 
@@ -16,7 +17,7 @@ class YahooWorker(AbstractWorkerServer):
     """
     __name__ = 'YahooWorker'
     __splitter__ = '[[YAHOO_SPLITTER]]'
-    __batch__ = 200
+    __batch__ = 100
 
     def language_pairs(self):
         """
@@ -48,7 +49,7 @@ class YahooWorker(AbstractWorkerServer):
         return mapping.get(iso639_2_code)
 
     def _batch_translate(self, source, target, text):
-        """Translates a text using Microsoft Translator."""
+        """Translates a text using Yahoo Babel Fish."""
         the_data = urllib.urlencode({'lp': '{0}_{1}'.format(source, target),
           'text': text.encode('utf-8'), 'ei': 'utf8'})
         the_url = 'http://babelfish.yahoo.com/translate_txt'
@@ -110,12 +111,11 @@ class YahooWorker(AbstractWorkerServer):
             text = u'\n'.join(_source_text[_start:_end])
             result += self._batch_translate(source, target, text)
             result += '\n'
+            sleep(30)
         
         last_batch = len(_source_text) % self.__batch__
         if last_batch:
-            print last_batch
             text = u'\n'.join(_source_text[-last_batch:])
-            print text
             result += self._batch_translate(source, target, text)
             result += '\n'
 
