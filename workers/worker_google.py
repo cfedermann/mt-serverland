@@ -15,7 +15,7 @@ class GoogleWorker(AbstractWorkerServer):
     Implementation of a worker server that connects to Google Translate.
     """
     __name__ = 'GoogleWorker'
-    __splitter__ = '[GOOGLE_SPLITTER_TOKEN]'
+    __splitter__ = '[[GOOGLE_SPLITTER]]'
     __batch__ = 200
 
     def language_pairs(self):
@@ -57,7 +57,7 @@ class GoogleWorker(AbstractWorkerServer):
         """Translates a text using Google Translate."""
         the_url = 'http://translate.google.com/translate_t'
         the_data = urllib.urlencode({'js': 'n', 'sl': source, 'tl': target,
-          'text': unicode(text).encode('utf-8')})
+          'text': text.encode('utf-8')})
         the_header = {'User-agent': 'Mozilla/5.0'}
 
         opener = urllib2.build_opener(urllib2.HTTPHandler)
@@ -78,7 +78,7 @@ class GoogleWorker(AbstractWorkerServer):
             # Extract all <span>...</span> tags containing the translation.
             span_exp = re.compile('<span.*?>([^<]+?)</span>', re.I|re.U|re.S)
             span_iter = span_exp.finditer(result)
-            spans = [unicode(match.group(1), 'utf-8') for match in span_iter]
+            spans = [match.group(1).decode('utf-8') for match in span_iter]
 
             # Construct target text from list of spans, normalizing \n+ to \n.
             target_text = u'\n'.join([span.strip() for span in spans])  
@@ -99,9 +99,8 @@ class GoogleWorker(AbstractWorkerServer):
             return u'\n'.join(_target_text)
 
         else:
-            return "ERROR: result_exp did not match.\nCONTENT: {0}".format(
+            return u"ERROR: result_exp did not match.\nCONTENT: {0}".format(
               content)
-
 
     def handle_translation(self, request_id):
         """
@@ -118,20 +117,20 @@ class GoogleWorker(AbstractWorkerServer):
         _source_text = []
         for source_line in message.source_text.split('\n'):
             _source_text.append(source_line.strip())
-            _source_text.append(self.__splitter__)
+            _source_text.append(unicode(self.__splitter__))
 
         result = u''
         batches = len(_source_text) / self.__batch__
         for batch in range(batches):
             _start = batch * self.__batch__
             _end = _start + self.__batch__
-            text = unicode(u'\n'.join(_source_text[_start:_end]))
+            text = u'\n'.join(_source_text[_start:_end])
             result += self._batch_translate(source, target, text)
             result += '\n'
         
         last_batch = len(_source_text) % self.__batch__
         if last_batch:
-            text = unicode(u'\n'.join(_source_text[-last_batch:]))
+            text = u'\n'.join(_source_text[-last_batch:])
             result += self._batch_translate(source, target, text)
             result += '\n'
 

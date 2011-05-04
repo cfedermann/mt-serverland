@@ -6,6 +6,7 @@ import sys
 import urllib
 import urllib2
 
+from time import sleep
 from workers.worker import AbstractWorkerServer
 from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 
@@ -15,7 +16,8 @@ class YahooWorker(AbstractWorkerServer):
     Implementation of a worker server that connects to Yahoo! Babel Fish.
     """
     __name__ = 'YahooWorker'
-    __splitter__ = '[YAHOO_SPLITTER_TOKEN]'
+    __splitter__ = '[[YAHOO_SPLITTER]]'
+    __batch__ = 100
 
     def language_pairs(self):
         """
@@ -46,25 +48,10 @@ class YahooWorker(AbstractWorkerServer):
         }
         return mapping.get(iso639_2_code)
 
-    def handle_translation(self, request_id):
-        """
-        Translates text using Yahoo! Babel Fish.
-        """
-        handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
-        message = TranslationRequestMessage()
-        message.ParseFromString(handle.read())
-
-        source = self.language_code(message.source_language)
-        target = self.language_code(message.target_language)
-
-        # Insert splitter tokens to allow re-construction of original lines.
-        _source_text = []
-        for source_line in message.source_text.split('\n'):
-            _source_text.append(source_line.strip().encode('utf-8'))
-            _source_text.append(self.__splitter__)
-
+    def _batch_translate(self, source, target, text):
+        """Translates a text using Yahoo Babel Fish."""
         the_data = urllib.urlencode({'lp': '{0}_{1}'.format(source, target),
-          'text': u'\n'.join(_source_text), 'ei': 'utf8'})
+          'text': text.encode('utf-8'), 'ei': 'utf8'})
         the_url = 'http://babelfish.yahoo.com/translate_txt'
         the_header = {'User-agent': 'Mozilla/5.0'}
 
@@ -88,19 +75,51 @@ class YahooWorker(AbstractWorkerServer):
             for target_line in target_text.split('\n'):
                 target_line = target_line.strip()
                 if target_line.strip('[]') != self.__splitter__.strip('[]'):
-                    _current_line.append(unicode(target_line, 'latin-1'))
+                    _current_line.append(target_line.decode('latin-1'))
                 else:
                     _target_text.append(u' '.join(_current_line))
                     _current_line = []
 
-            message.target_text = u'\n'.join(_target_text)
-            handle.seek(0)
-            handle.write(message.SerializeToString())
+            return u'\n'.join(_target_text)
 
         else:
-            message.target_text = "ERROR: result_exp did not match.\n" \
-              "CONTENT: {0}".format(content)
-            handle.seek(0)
-            handle.write(message.SerializeToString())
+            return "ERROR: result_exp did not match.\nCONTENT: {0}".format(
+              content)
 
+    def handle_translation(self, request_id):
+        """
+        Handler connecting to the Yahoo! Babel Fish service.
+        """
+        handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        message = TranslationRequestMessage()
+        message.ParseFromString(handle.read())
+
+        source = self.language_code(message.source_language)
+        target = self.language_code(message.target_language)
+
+        # Insert splitter tokens to allow re-construction of original lines.
+        _source_text = []
+        for source_line in message.source_text.split('\n'):
+            _source_text.append(source_line.strip())
+            _source_text.append(self.__splitter__)
+
+        result = u''
+        batches = len(_source_text) / self.__batch__
+        for batch in range(batches):
+            _start = batch * self.__batch__
+            _end = _start + self.__batch__
+            text = u'\n'.join(_source_text[_start:_end])
+            result += self._batch_translate(source, target, text)
+            result += '\n'
+            sleep(30)
+        
+        last_batch = len(_source_text) % self.__batch__
+        if last_batch:
+            text = u'\n'.join(_source_text[-last_batch:])
+            result += self._batch_translate(source, target, text)
+            result += '\n'
+
+        message.target_text = result
+        handle.seek(0)
+        handle.write(message.SerializeToString())
         handle.close()
