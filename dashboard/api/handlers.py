@@ -29,16 +29,22 @@ class RequestHandler(BaseHandler):
     @throttle(MAX_REQUESTS_PER_MINUTE, 60)
     def read(self, request, shortname = None, results = False):
         '''Handles a GET request asking about translation requests.'''
-        not_deleted = TranslationRequest.objects.exclude(deleted = True)
-        not_deleted = not_deleted.filter(owner = request.user)
+        user_requests = TranslationRequest.objects.filter(owner=request.user)
+
         if shortname is None:
-            objects = not_deleted.all()
+            objects = user_requests.all()
         else:
             try:
+                # cfedermann: I'm not at all sure why Will placed the UUID
+                #             computation here.  Seems that it can be removed.
                 _request_uuid = uuid.UUID(shortname)
-                objects = [get_object_or_404(not_deleted, request_id=shortname)]
+                objects = [get_object_or_404(user_requests,
+                  request_id=shortname)]
+            
             except ValueError:
-                objects = [get_object_or_404(not_deleted, shortname=shortname)]
+                objects = [get_object_or_404(user_requests,
+                  shortname=shortname)]
+        
         objects = [ RequestHandler.request_to_dict(o, results)
                     for o in objects ]
         if len(objects) == 1:
@@ -153,6 +159,7 @@ class RequestHandler(BaseHandler):
         retval['created'] = request.created
         retval['request_id'] = request.request_id
         retval['ready'] = request.is_ready()
+        retval['deleted'] = request.deleted
         if include_results:
             translation_message = request.fetch_translation()
             if type(translation_message) == TranslationRequestMessage:
