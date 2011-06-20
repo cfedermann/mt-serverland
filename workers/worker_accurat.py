@@ -37,6 +37,12 @@ class AccuratWorker(AbstractWorkerServer):
         }
         return mapping.get(iso639_2_code)
     
+    def start_translation(self, serialized):
+        if self.is_busy():
+            return False
+        
+        super(AccuratWorker, self).start_translation(serialized)
+    
     def handle_translation(self, request_id):
         """
         Translates text using the Accurat Moses SMT system.
