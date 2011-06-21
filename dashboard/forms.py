@@ -102,7 +102,7 @@ class TranslationRequestForm(ModelForm):
 
         worker = self.cleaned_data.get('worker')
 
-        if worker.is_busy():
+        if worker and worker.is_busy():
             raise ValidationError('Worker is currently busy!')
 
         if worker and not (source, target) in worker.language_pairs():
