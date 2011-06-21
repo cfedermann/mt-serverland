@@ -18,7 +18,7 @@ from serverland.protobuf.TranslationRequestMessage_pb2 import \
      TranslationRequestMessage
 import uuid
 
-MAX_REQUESTS_PER_MINUTE = 5
+MAX_REQUESTS_PER_MINUTE = 250
 
 class RequestHandler(BaseHandler):
     '''API handler for translation request queries.'''
