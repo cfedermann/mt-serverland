@@ -33,7 +33,7 @@ REGISTERED_WORKERS = {
 if __name__ == "__main__":
     if len(sys.argv) < 4 or not sys.argv[1] in REGISTERED_WORKERS.keys():
         print "\n\tusage: {0} <worker> <host> <port> " \
-          "[LOGFILE=/path/to/logfile] [MIN_MEMORY=123]\n".format(sys.argv[0])
+          "[LOGFILE=/path/to/logfile]\n".format(sys.argv[0])
 
         if len(REGISTERED_WORKERS):
             print "\tregistered worker servers:"
@@ -51,24 +51,17 @@ if __name__ == "__main__":
 
     # Prepare XML-RPC server instance running on host:port.
     LOGFILE = None
-    MIN_MEMORY = None
     kwargs = sys.argv[4:]
     for arg in kwargs:
         if arg.startswith('LOGFILE='):
             LOGFILE = arg.split('=')[1]
-        elif arg.startswith('MIN_MEMORY='):
-            MIN_MEMORY = int(arg.split('=')[1])
     
     if LOGFILE:
         WORKER_IMPLEMENTATION, _ = REGISTERED_WORKERS[sys.argv[1]]
     else:
         WORKER_IMPLEMENTATION, LOGFILE = REGISTERED_WORKERS[sys.argv[1]]
     
-    if MIN_MEMORY:
-        SERVER = WORKER_IMPLEMENTATION(sys.argv[2], int(sys.argv[3]), LOGFILE, MIN_MEMORY)
-    
-    else:
-        SERVER = WORKER_IMPLEMENTATION(sys.argv[2], int(sys.argv[3]), LOGFILE)
+    SERVER = WORKER_IMPLEMENTATION(sys.argv[2], int(sys.argv[3]), LOGFILE)
 
     # Parse additional parameters.
     ready = SERVER.parse_args(kwargs)

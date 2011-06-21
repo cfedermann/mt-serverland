@@ -53,11 +53,6 @@ class AbstractWorkerServer(object):
         mode |= stat.S_IROTH | stat.S_IWOTH
         chmod(LOG_FILENAME, mode)
         
-        self.MIN_MEMORY = min_memory
-        if self.MIN_MEMORY:
-            self.LOGGER.info("MIN_MEMORY set to {0} MB.".format(
-              self.MIN_MEMORY))
-
         self.server = SimpleXMLRPCServer((host, port), allow_none=True)
         self.LOGGER.info("{0} listening on {1}:{2}".format(self.__name__,
           host, port))
@@ -130,13 +125,7 @@ class AbstractWorkerServer(object):
         """
         if any([p.is_alive() for p in self.jobs.values()]):
             return True
-        
-        # cfedermann: this hotfix only works on Linux platforms!
-        if self.MIN_MEMORY:
-            memory = popen('free -m').readlines()[1].split()
-            freeMemory = memory[3]
-            return freeMemory < self.MIN_MEMORY
-        
+
         return False
 
     def is_ready(self, request_id):
@@ -169,15 +158,6 @@ class AbstractWorkerServer(object):
         the worker server's output folder.  Returns True if successful, False
         when an error occurs.
         """
-        # cfedermann: this hotfix only works on Linux platforms!
-        if self.MIN_MEMORY:
-            memory = popen('free -m').readlines()[1].split()
-            freeMemory = memory[3]
-            if freeMemory < self.MIN_MEMORY:
-                self.LOGGER.info('Not enough memory available! Aborting.')
-                
-                return False
-        
         try:
             # Create new TranslationRequestMessage object and load serialized.
             message = TranslationRequestMessage()

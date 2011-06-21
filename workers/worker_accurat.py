@@ -14,6 +14,34 @@ class AccuratWorker(AbstractWorkerServer):
     Implementation of a worker server that connects ACCURAT Moses instances.
     """
     __name__ = 'AccuratWorker'
+    N_BEST = None
+
+    @staticmethod
+    def usage():
+        """
+        Returns usage information, e.g. for additional parameters, etc.
+        """
+        return ('N_BEST=max_number_of_parallel_jobs',)
+    
+    def parse_args(self, args):
+        """
+        Parses the given args list and sets worker specific paramters.
+        """
+        for arg in args:
+            try:
+                key, value = arg.split('=')
+            
+            except ValueError:
+                continue
+            
+            if key == 'N_BEST':
+                print "Setting N_BEST={0}".format(value)
+                self.N_BEST = int(value)
+        
+        if not self.N_BEST:
+            return False
+        
+        return True
     
     def language_pairs(self):
         """
@@ -36,7 +64,16 @@ class AccuratWorker(AbstractWorkerServer):
           'lav': 'lv', 'lit': 'lt', 'hrv': 'hr', 'est': 'et'
         }
         return mapping.get(iso639_2_code)
-    
+
+    def is_busy(self):
+        """
+        Checks if the worker server is currently busy.
+        """
+        if sum([p.is_alive() for p in self.jobs.values()]) >= self.N_BEST:
+            return True
+
+        return False
+
     def start_translation(self, serialized):
         if self.is_busy():
             return False
