@@ -54,6 +54,11 @@ class AccuratWorker(AbstractWorkerServer):
         # First, we write out the source text to file.
         source = open('/tmp/{0}.source'.format(request_id), 'w')
         source.write(message.source_text.encode('utf-8'))
+        
+        # Check if the last line ends with a line break, otherwise Moses
+        # I/O implementation does not accept the input!
+        if not message.source_text.endswith('\n'):
+            source.write('\n')
         source.close()
         
         source_language = self.language_code(message.source_language)
