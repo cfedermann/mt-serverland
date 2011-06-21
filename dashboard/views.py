@@ -3,6 +3,7 @@ Project: MT Server Land prototype code
  Author: Christian Federmann <cfedermann@dfki.de>
 """
 import logging
+import socket
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -30,6 +31,8 @@ def dashboard(request):
     """
     LOGGER.info('Rendering dashboard for user "{0}".'.format(
       request.user.username))
+
+    socket.setdefaulttimeout(0.2)
 
     ordered = TranslationRequest.objects.all().order_by('-created')
     filtered = ordered.filter(owner=request.user)
