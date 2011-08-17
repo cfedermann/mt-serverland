@@ -7,7 +7,8 @@ import socket
 import subprocess
 
 from os import remove
-from django.forms import ModelForm, ValidationError, FileField, ChoiceField, ModelChoiceField
+from django.forms import ModelForm, ValidationError, FileField, ChoiceField, \
+  ModelChoiceField
 from serverland.dashboard.models import TranslationRequest, WorkerServer
 from serverland.settings import LOG_LEVEL, LOG_HANDLER
 
