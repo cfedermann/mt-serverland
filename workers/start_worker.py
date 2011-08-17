@@ -11,6 +11,7 @@ from workers.worker_lucy import LucyWorker
 from workers.worker_yahoo import YahooWorker
 from workers.worker_moses import MosesWorker
 from workers.worker_moses_server import MosesServerWorker
+from workers.worker_accurat import AccuratWorker
 
 # Make configurable:
 #
@@ -25,6 +26,7 @@ REGISTERED_WORKERS = {
   'MosesWorker': (MosesWorker, '/tmp/workerserver-moses.log'),
   'MosesServerWorker': (MosesServerWorker,
     '/tmp/workerserver-mosesserver.log'),
+  'AccuratWorker': (AccuratWorker, '/tmp/workerserver-accurat.log')
 }
 
 

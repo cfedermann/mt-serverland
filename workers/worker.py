@@ -10,7 +10,7 @@ from base64 import b64encode, b64decode
 from google.protobuf.message import DecodeError
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process
-from os import chmod, remove
+from os import chmod, remove, popen
 from time import sleep
 from random import random
 from SimpleXMLRPCServer import SimpleXMLRPCServer
@@ -28,7 +28,7 @@ class AbstractWorkerServer(object):
     server = None
     jobs = {}
 
-    def __init__(self, host, port, logfile):
+    def __init__(self, host, port, logfile, min_memory=None):
         """
         Creates a new WorkerServer instance serving from host:port.
         """
@@ -52,7 +52,7 @@ class AbstractWorkerServer(object):
         mode |= stat.S_IRGRP | stat.S_IWGRP
         mode |= stat.S_IROTH | stat.S_IWOTH
         chmod(LOG_FILENAME, mode)
-
+        
         self.server = SimpleXMLRPCServer((host, port), allow_none=True)
         self.LOGGER.info("{0} listening on {1}:{2}".format(self.__name__,
           host, port))
@@ -123,7 +123,10 @@ class AbstractWorkerServer(object):
         """
         Checks if the worker server is currently busy.
         """
-        return any([p.is_alive() for p in self.jobs.values()])
+        if any([p.is_alive() for p in self.jobs.values()]):
+            return True
+
+        return False
 
     def is_ready(self, request_id):
         """

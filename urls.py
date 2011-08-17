@@ -2,7 +2,8 @@
 Project: MT Server Land prototype code
  Author: Christian Federmann <cfedermann@dfki.de>
 """
-from django.conf.urls.defaults import patterns, include
+from django.conf.urls.defaults import patterns, include, handler404, \
+  handler500
 from django.contrib import admin
 from serverland.settings import MEDIA_ROOT, DEPLOYMENT_PREFIX
 
