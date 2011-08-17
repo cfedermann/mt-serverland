@@ -173,6 +173,6 @@ class TranslationRequestForm(ModelForm):
         remove('/tmp/{0}'.format(data.name))
 
         if not mime_type.startswith("text/"):
-             raise ValidationError("You can only upload text files.")
+            raise ValidationError("You can only upload text files.")
 
         return data

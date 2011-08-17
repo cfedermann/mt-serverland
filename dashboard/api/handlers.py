@@ -110,7 +110,11 @@ class RequestHandler(BaseHandler):
                              'started translation request "{0}".'.format(
                                 new.shortname))
         
-        # FIXME: Could not figure out why Piston is insisting on returning the content as text/plain when we use rc.CREATED and try to return a response object. For now, I'm just using HTTP OK, which returns the JSON correctly.
+        # FIXME: Could not figure out why Piston is insisting on returning the
+        #   content as text/plain when we use rc.CREATED and try to return a
+        #   response object. For now, I'm just using HTTP OK, which returns
+        #   the JSON correctly.
+        
 #        # return 201 CREATED
 #        response = rc.CREATED
 #        # put the URI of the newly created object into the HTTP header
@@ -120,6 +124,7 @@ class RequestHandler(BaseHandler):
         # echo the created object inside the HTTP response
         # NOTE: this overwrites the "Location" header field set above.
         # See piston.resource.__call__()
+        
         object = RequestHandler.request_to_dict(new, include_results=False)
         return object
 
