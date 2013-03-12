@@ -2,4 +2,25 @@ h1. MT Server Land
 
 *MT Server Land* is an open-source architecture for managing distributed MT services, developed by Christian Federmann for DFKI's MT Group in Saarbrücken. More information is available within the @serverland@ project folder.
 
+h3. Overview
+
+The system consists of two different layers: first, we have the _broker_ server that handles all direct requests from end users or API calls alike. Second, we have a layer of so-called _worker_ servers, each implementing some sort of machine translation functionality.
+
+h3. Functionality
+
+Out of the box, the package allows to integrate translation functionality from:
+
+ * "Microsoft Translator":http://www.microsofttranslator.com/
+ * "Google Translate":http://translate.google.com/
+
+h3. Extensibility
+
+It is also possible to run own translation models using the:
+
+ * "Moses SMT Decoder":http://www.statmt.org/moses/
+
+The software can easily be extended to run other translation workers.
+
+h3. Feedback
+
 In case of problems, drop me an email: @cfedermann<at>dfki<dot>de@.
