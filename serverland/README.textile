@@ -37,7 +37,7 @@ h2. Quick Setup Guide
 
 8. @mkdir serverland/messages@, otherwise not @.message@ files can be created!
 
-More details to be added soon, in case of problems, drop me an email: @cfedermann<at>dfki.de@.
+More details to be added soon, in case of problems, drop me an email: @cfedermann<at>dfki<dot>de@.
 
 h2. Setting Up Development Database
 
