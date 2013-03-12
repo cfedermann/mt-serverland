@@ -1,0 +1,3 @@
+h1. MT Server Land
+
+*MT Server Land* is an open-source architecture for managing distributed MT services, developed by Christian Federmann for DFKI's MT Group in Saarbrücken.
