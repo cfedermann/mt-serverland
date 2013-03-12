@@ -24,14 +24,17 @@ class AbstractWorkerServer(object):
     """
     __name__ = 'AbstractWorkerServer'
 
+    message_path = '/tmp'
     finished = False
     server = None
     jobs = {}
 
-    def __init__(self, host, port, logfile, min_memory=None):
+    def __init__(self, host, port, logfile, message_path, min_memory=None):
         """
         Creates a new WorkerServer instance serving from host:port.
         """
+        self.message_path = message_path
+
         LOG_LEVEL = logging.DEBUG
         LOG_FILENAME = logfile
         LOG_FORMAT = '[%(asctime)s] %(name)s::%(levelname)s %(message)s'
@@ -56,6 +59,8 @@ class AbstractWorkerServer(object):
         self.server = SimpleXMLRPCServer((host, port), allow_none=True)
         self.LOGGER.info("{0} listening on {1}:{2}".format(self.__name__,
           host, port))
+        self.LOGGER.info("{0}.message_path set to {1}".format(self.__name__,
+          self.message_path))
 
         self.jobs = {}
 
@@ -164,7 +169,8 @@ class AbstractWorkerServer(object):
             message.ParseFromString(b64decode(serialized))
 
             # Write serialized translation request message to file.
-            handle = open('/tmp/{0}.message'.format(message.request_id), 'w')
+            handle = open('{0}/{1}.message'.format(self.message_path,
+              message.request_id), 'w')
             handle.write(message.SerializeToString())
             handle.close()
 
@@ -209,7 +215,8 @@ class AbstractWorkerServer(object):
           repr(self.jobs)))
 
         try:
-            handle = open('/tmp/{0}.message'.format(request_id), 'rb')
+            handle = open('{0}/{1}.message'.format(self.message_path,
+              request_id), 'rb')
             message = TranslationRequestMessage()
             message.ParseFromString(handle.read())
             handle.close()
@@ -236,7 +243,7 @@ class AbstractWorkerServer(object):
         self.jobs[request_id].terminate()
         self.LOGGER.info('Terminated request "{0}".'.format(request_id))
 
-        remove('/tmp/{0}.message'.format(request_id))
+        remove('{0}/{1}.message'.format(self.message_path, request_id))
         return True
 
     def handle_translation(self, request_id):
@@ -284,7 +291,8 @@ class DummyWorker(AbstractWorkerServer):
         self.LOGGER.debug("Finalizing result for request {0}".format(
           request_id))
 
-        handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
+        handle = open('{0}/{1}.message'.format(self.message_path,
+          request_id), 'r+b')
         message = TranslationRequestMessage()
         message.ParseFromString(handle.read())
         message.target_text = message.source_text.upper()
