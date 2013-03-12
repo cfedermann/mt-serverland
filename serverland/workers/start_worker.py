@@ -8,7 +8,6 @@ from workers.worker import DummyWorker
 from workers.worker_bing import BingWorker
 from workers.worker_google import GoogleWorker
 from workers.worker_lucy import LucyWorker
-from workers.worker_yahoo import YahooWorker
 from workers.worker_moses import MosesWorker
 from workers.worker_moses_server import MosesServerWorker
 from workers.worker_accurat import AccuratWorker
