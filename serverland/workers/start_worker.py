@@ -22,7 +22,6 @@ REGISTERED_WORKERS = {
   'BingWorker': (BingWorker, '/tmp/workerserver-bing.log'),
   'GoogleWorker': (GoogleWorker, '/tmp/workerserver-google.log'),
   'LucyWorker': (LucyWorker, '/tmp/workerserver-lucy.log'),
-  'YahooWorker': (YahooWorker, '/tmp/workerserver-yahoo.log'),
   'MosesWorker': (MosesWorker, '/tmp/workerserver-moses.log'),
   'MosesServerWorker': (MosesServerWorker,
     '/tmp/workerserver-mosesserver.log'),
