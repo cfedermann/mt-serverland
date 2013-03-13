@@ -1,7 +1,6 @@
 """
 Implementation of a worker server that connects ACCURAT Moses instances.
 """
-import sys
 from subprocess import Popen, PIPE
 from time import sleep
 
@@ -14,6 +13,7 @@ class AccuratWorker(AbstractWorkerServer):
     Implementation of a worker server that connects ACCURAT Moses instances.
     """
     __name__ = 'AccuratWorker'
+    # pylint: disable-msg=C0103
     N_BEST = None
 
     @staticmethod
@@ -69,11 +69,13 @@ class AccuratWorker(AbstractWorkerServer):
         """
         Checks if the worker server is currently busy.
         """
+        # pylint: disable-msg=E1101
         if sum([p.is_alive() for p in self.jobs.values()]) >= self.N_BEST:
             return True
 
         return False
 
+    # pylint: disable-msg=E1002
     def start_translation(self, serialized):
         if self.is_busy():
             return False
