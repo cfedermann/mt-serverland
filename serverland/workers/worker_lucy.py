@@ -2,7 +2,6 @@
 Implementation of a worker server that connects to the Lucy RBMT system.
 """
 import re
-import sys
 import xmlrpclib
 
 from workers.worker import AbstractWorkerServer
@@ -80,8 +79,8 @@ class LucyWorker(AbstractWorkerServer):
         # while the "raw" translation as well as the trees are return inside
         # the TranslationRequestMessage's packet_data list.
         if result:
-            filter_exp = re.compile('<.\[(.+?)(\|.+?)?\]>', re.I|re.U)
-            filtered_result = filter_exp.sub('\g<1>', result)
+            filter_exp = re.compile(r'<.\[(.+?)(\|.+?)?\]>', re.I|re.U)
+            filtered_result = filter_exp.sub(r'\g<1>', result)
             message.target_text = unicode(filtered_result, 'utf-8')
             keyvalue = message.packet_data.add()
             keyvalue.key = 'RAW_RESULT'
