@@ -26,8 +26,8 @@ class MosesServerWorker(AbstractWorkerServer):
         """
         return ('MOSES_HOST=http://example.org',
           'MOSES_PORT=port_number',
-          'MOSES_SOURCE=source_language_iso639_2_code',
-          'MOSES_TARGET=target_language_iso639_2_code')
+          'MOSES_SOURCE=source_language_iso639_3_code',
+          'MOSES_TARGET=target_language_iso639_3_code')
     
     def parse_args(self, args):
         """
@@ -70,13 +70,13 @@ class MosesServerWorker(AbstractWorkerServer):
           (self.MOSES_SOURCE, self.MOSES_TARGET),
         )
 
-    def language_code(self, iso639_2_code):
+    def language_code(self, iso639_3_code):
         """
-        Converts a given ISO-639-2 code into the worker representation.
+        Converts a given ISO-639-3 code into the worker representation.
 
         Returns None for unknown languages.
         """
-        return iso639_2_code
+        return iso639_3_code
 
     def is_alive(self):
         """
