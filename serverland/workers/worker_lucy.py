@@ -27,22 +27,22 @@ class LucyWorker(AbstractWorkerServer):
         Returns a tuple of all supported language pairs for this worker.
         """
         return (
-          ('eng', 'fre'), ('eng', 'ger'), ('eng', 'spa'), ('eng', 'ita'),
-          ('fre', 'eng'), ('fre', 'ger'),
-          ('ger', 'eng'), ('ger', 'spa'), ('ger', 'fre'),
-          ('spa', 'eng'), ('spa', 'ger'),
+          ('eng', 'fra'), ('eng', 'deu'), ('eng', 'spa'), ('eng', 'ita'),
+          ('fra', 'eng'), ('fra', 'deu'),
+          ('deu', 'eng'), ('deu', 'spa'), ('deu', 'fra'),
+          ('spa', 'eng'), ('spa', 'deu'),
         )
 
-    def language_code(self, iso639_2_code):
+    def language_code(self, iso639_3_code):
         """
-        Converts a given ISO-639-2 code into the worker representation.
+        Converts a given ISO-639-3 code into the worker representation.
 
         Returns None for unknown languages.
         """
         mapping = {
-          'eng': 'ENGLISH', 'fre': 'FRENCH', 'ger': 'GERMAN', 'spa': 'SPANISH'
+          'eng': 'ENGLISH', 'fra': 'FRENCH', 'deu': 'GERMAN', 'spa': 'SPANISH'
         }
-        return mapping.get(iso639_2_code)
+        return mapping.get(iso639_3_code)
 
     def handle_translation(self, request_id):
         """
