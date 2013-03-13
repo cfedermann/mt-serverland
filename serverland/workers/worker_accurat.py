@@ -47,11 +47,11 @@ class AccuratWorker(AbstractWorkerServer):
         """
         Returns a tuple of all supported language pairs for this worker.
         """
-        return (('ger', 'eng'), ('gre', 'rum'), ('slv', 'eng'),
-          ('rum', 'eng'), ('rum', 'gre'), ('rum', 'ger'), ('lav', 'lit'),
-          ('lit', 'rum'), ('hrv', 'eng'), ('eng', 'slv'), ('eng', 'rum'),
+        return (('deu', 'eng'), ('ell', 'ron'), ('slv', 'eng'),
+          ('ron', 'eng'), ('ron', 'ell'), ('ron', 'deu'), ('lav', 'lit'),
+          ('lit', 'ron'), ('hrv', 'eng'), ('eng', 'slv'), ('eng', 'ron'),
           ('eng', 'lav'), ('eng', 'lit'), ('eng', 'hrv'), ('eng', 'est'),
-          ('eng', 'gre'), ('ger', 'rum'))
+          ('eng', 'ell'), ('deu', 'ron'))
     
     def language_code(self, iso639_2_code):
         """
@@ -60,7 +60,7 @@ class AccuratWorker(AbstractWorkerServer):
         Returns None for unknown languages.
         """
         mapping = {
-          'ger': 'de', 'eng': 'en', 'gre': 'el', 'rum': 'ro', 'slv': 'sl',
+          'deu': 'de', 'eng': 'en', 'ell': 'el', 'ron': 'ro', 'slv': 'sl',
           'lav': 'lv', 'lit': 'lt', 'hrv': 'hr', 'est': 'et'
         }
         return mapping.get(iso639_2_code)
