@@ -1,7 +1,6 @@
 """
 Implementation of a worker server that starts a Moses SMT system.
 """
-import sys
 from subprocess import Popen, PIPE
 from time import sleep
 
@@ -14,6 +13,7 @@ class MosesWorker(AbstractWorkerServer):
     Implementation of a worker server that starts a Moses SMT system.
     """
     __name__ = 'MosesWorker'
+    # pylint: disable-msg=C0103
     MOSES_CMD = None
     MOSES_CONFIG = None
     MOSES_SOURCE = None
