@@ -12,6 +12,7 @@ import xmlrpclib
 
 from base64 import b64decode, b64encode
 from django.db import models
+from django.db.models.signals import pre_delete
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from google.protobuf.message import DecodeError
@@ -25,6 +26,7 @@ logging.basicConfig(level=LOG_LEVEL)
 LOGGER = logging.getLogger('serverland.views')
 LOGGER.addHandler(LOG_HANDLER)
 
+# TODO: move this into settings.py using ROOT_PATH instead of getcwd()...
 # Serialized message files will be stored in this location.
 TRANSLATION_MESSAGE_PATH = '{0}/messages'.format(getcwd())
 
@@ -174,6 +176,7 @@ class TranslationRequest(models.Model):
 
     def clean(self):
         """Prevent object instantiation for corrupted, incomplete objects."""
+        return
         if self.is_corrupted():
             raise ValidationError("TranslationRequest objects cannot be " \
               "created inside Django's administration backend!")
@@ -280,3 +283,14 @@ class TranslationRequest(models.Model):
                       self.worker.shortname))
 
         return self.deleted
+
+
+def remove_message_file(sender, instance, **kwargs):
+    """Deletes a TranslationRequest's message file."""
+    LOGGER.info('Deleting {0}.message from {1}.'.format(instance.request_id,
+      TRANSLATION_MESSAGE_PATH))
+    remove('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
+      instance.request_id))
+
+# Connect pre_delete signal handler for TranslationRequest objects.
+pre_delete.connect(remove_message_file, sender=TranslationRequest)
