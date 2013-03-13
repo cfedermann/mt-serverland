@@ -304,5 +304,5 @@ class DummyWorker(AbstractWorkerServer):
         """
         The dummy worker server pretends to translate from English->German.
         """
-        return (('eng', 'ger'),)
+        return (('eng', 'deu'),)
 
