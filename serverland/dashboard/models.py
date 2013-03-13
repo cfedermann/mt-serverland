@@ -226,6 +226,7 @@ class TranslationRequest(models.Model):
 
             # Try to create TranslationRequestMessage object from String.
             instance = TranslationRequestMessage()
+            # pylint: disable-msg=E1101
             instance.ParseFromString(message)
             instance = None
 
@@ -259,6 +260,7 @@ class TranslationRequest(models.Model):
             handle.close()
 
             message = TranslationRequestMessage()
+            # pylint: disable-msg=E1101
             message.ParseFromString(serialized)
 
         except (IOError, DecodeError):
