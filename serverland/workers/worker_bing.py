@@ -2,8 +2,6 @@
 Implementation of a worker server that connects to Microsoft Translator.
 """
 import re
-import sys
-import urllib
 import urllib2
 
 from workers.worker import AbstractWorkerServer
@@ -25,7 +23,7 @@ class BingWorker(AbstractWorkerServer):
           'fin', 'fra', 'deu', 'ell', 'hat', 'heb', 'hun', 'ita', 'jpn',
           'kor', 'lav', 'lit', 'nor', 'pol', 'por', 'ron', 'rus', 'slk',
           'slv', 'spa', 'swe', 'tha', 'tur')
-        return tuple([(a,b) for a in languages for b in languages if a != b])
+        return tuple([(a, b) for a in languages for b in languages if a != b])
 
     def language_code(self, iso639_3_code):
         """
