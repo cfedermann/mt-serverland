@@ -17,24 +17,24 @@ logging.basicConfig(level=LOG_LEVEL)
 LOGGER = logging.getLogger('dashboard.forms')
 LOGGER.addHandler(LOG_HANDLER)
 
-# By definition, we use the ISO 639-2 "B" (bibliographic) codes defined at:
-# - http://www.loc.gov/standards/iso639-2/php/code_list.php
+# By definition, we use the ISO 639-3 codes defined at:
+# - http://www-01.sil.org/iso639%2D3/codes.asp
 LANGUAGE_CODES = {
-  'afr': 'Afrikaans', 'alb': 'Albanian', 'ara': 'Arabic', 'arm': 'Armenian',
-  'aze': 'Azerbaijani', 'baq': 'Basque', 'bel': 'Belarusian',
-  'bul': 'Bulgarian', 'cat': 'Catalan', 'chi': 'Chinese', 'hrv': 'Croatian',
-  'cze': 'Czech', 'dan': 'Danish', 'dut': 'Dutch', 'eng': 'English',
-  'est': 'Estonian', 'phi': 'Filipino', 'fin': 'Finnish', 'fre': 'French',
-  'glg': 'Galician', 'geo': 'Georgian', 'ger': 'German', 'gre': 'Greek',
+  'afr': 'Afrikaans', 'sqi': 'Albanian', 'ara': 'Arabic', 'hye': 'Armenian',
+  'aze': 'Azerbaijani', 'eus': 'Basque', 'bel': 'Belarusian',
+  'bul': 'Bulgarian', 'cat': 'Catalan', 'zho': 'Chinese', 'hrv': 'Croatian',
+  'ces': 'Czech', 'dan': 'Danish', 'nld': 'Dutch', 'eng': 'English',
+  'est': 'Estonian', 'tgl': 'Tagalog', 'fin': 'Finnish', 'fra': 'French',
+  'glg': 'Galician', 'kat': 'Georgian', 'deu': 'German', 'ell': 'Greek',
   'hat': 'Haitian Creole', 'heb': 'Hebrew', 'hin': 'Hindi',
-  'hun': 'Hungarian', 'ice': 'Icelandic', 'ind': 'Indonesian', 'gla': 'Irish',
+  'hun': 'Hungarian', 'isl': 'Icelandic', 'ind': 'Indonesian', 'gle': 'Irish',
   'ita': 'Italian', 'jpn': 'Japanese', 'kor': 'Korean', 'lav': 'Latvian',
-  'lit': 'Lithuanian', 'mac': 'Macedonian', 'may': 'Malay', 'mlt': 'Maltese',
-  'nor': 'Norwegian', 'per': 'Persian', 'pol': 'Polish', 'por': 'Portuguese',
-  'rum': 'Romanian', 'rus': 'Russian', 'srp': 'Serbian', 'slo': 'Slovak',
+  'lit': 'Lithuanian', 'mkd': 'Macedonian', 'msa': 'Malay', 'mlt': 'Maltese',
+  'nor': 'Norwegian', 'fas': 'Persian', 'pol': 'Polish', 'por': 'Portuguese',
+  'ron': 'Romanian', 'rus': 'Russian', 'srp': 'Serbian', 'slk': 'Slovak',
   'slv': 'Slovenian', 'spa': 'Spanish', 'swa': 'Swahili', 'swe': 'Swedish',
   'tha': 'Thai', 'tur': 'Turkish', 'ukr': 'Ukrainian', 'urd': 'Urdu',
-  'vie': 'Vietnamese', 'wel': 'Welsh', 'yid': 'Yiddish',
+  'vie': 'Vietnamese', 'cym': 'Welsh', 'yid': 'Yiddish',
 }
 
 
