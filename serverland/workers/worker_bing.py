@@ -42,7 +42,7 @@ class BingWorker(AbstractWorkerServer):
           'slk': 'sk', 'slv': 'sl', 'spa': 'es', 'swe': 'sv', 'tha': 'th',
           'tur': 'tr'
         }
-        return mapping.get(iso639_2_code)
+        return mapping.get(iso639_3_code)
 
     def _batch_translate(self, source, target, text):
         """Translates a text using Microsoft Translator."""
