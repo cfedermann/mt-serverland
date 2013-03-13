@@ -23,9 +23,9 @@ class GoogleWorker(AbstractWorkerServer):
         Returns a tuple of all supported language pairs for this worker.
         """
         languages = ('afr', 'sqi', 'ara', 'hye', 'aze', 'eus', 'bel', 'bul',
-          'cat', 'zho', 'hrv', 'ces', 'dan', 'nld', 'eng', 'est', 'phi',
+          'cat', 'zho', 'hrv', 'ces', 'dan', 'nld', 'eng', 'est', 'tgl',
           'fin', 'fra', 'glg', 'kat', 'deu', 'ell', 'hat', 'heb', 'hin',
-          'hun', 'isl', 'ind', 'gla', 'ita', 'jpn', 'kor', 'lav', 'lit',
+          'hun', 'isl', 'ind', 'gle', 'ita', 'jpn', 'kor', 'lav', 'lit',
           'mkd', 'msa', 'mlt', 'nor', 'fas', 'pol', 'por', 'ron', 'rus',
           'srp', 'slk', 'slv', 'spa', 'swa', 'swe', 'tha', 'tur', 'ukr',
           'urd', 'vie', 'cym', 'yid')
@@ -41,9 +41,9 @@ class GoogleWorker(AbstractWorkerServer):
           'afr': 'af', 'sqi': 'sq', 'ara': 'ar', 'hye': 'hy', 'aze': 'az',
           'eus': 'eu', 'bel': 'be', 'bul': 'bg', 'cat': 'ca', 'zho': 'zh-CN',
           'hrv': 'hr', 'ces': 'cs', 'dan': 'da', 'nld': 'nl', 'eng': 'en',
-          'est': 'et', 'phi': 'tl', 'fin': 'fi', 'fra': 'fr', 'glg': 'gl',
+          'est': 'et', 'tgl': 'tl', 'fin': 'fi', 'fra': 'fr', 'glg': 'gl',
           'kat': 'ka', 'deu': 'de', 'ell': 'el', 'hat': 'ht', 'heb': 'iw',
-          'hin': 'hi', 'hun': 'hu', 'isl': 'is', 'ind': 'id', 'gla': 'ir',
+          'hin': 'hi', 'hun': 'hu', 'isl': 'is', 'ind': 'id', 'gle': 'ir',
           'ita': 'it', 'jpn': 'ja', 'kor': 'ko', 'lav': 'lv', 'lit': 'lt',
           'mkd': 'mk', 'msa': 'ms', 'mlt': 'mt', 'nor': 'no', 'das': 'fa',
           'pol': 'pl', 'por': 'pt', 'ron': 'ro', 'rus': 'ru', 'srp': 'sr',
