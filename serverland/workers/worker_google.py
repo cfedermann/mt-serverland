@@ -22,36 +22,36 @@ class GoogleWorker(AbstractWorkerServer):
         """
         Returns a tuple of all supported language pairs for this worker.
         """
-        languages = ('afr', 'alb', 'ara', 'arm', 'aze', 'baq', 'bel', 'bul',
-          'cat', 'chi', 'hrv', 'cze', 'dan', 'dut', 'eng', 'est', 'phi',
-          'fin', 'fre', 'glg', 'geo', 'ger', 'gre', 'hat', 'heb', 'hin',
-          'hun', 'ice', 'ind', 'gla', 'ita', 'jpn', 'kor', 'lav', 'lit',
-          'mac', 'may', 'mlt', 'nor', 'per', 'pol', 'por', 'rum', 'rus',
-          'srp', 'slo', 'slv', 'spa', 'swa', 'swe', 'tha', 'tur', 'ukr',
-          'urd', 'vie', 'wel', 'yid')
+        languages = ('afr', 'sqi', 'ara', 'hye', 'aze', 'eus', 'bel', 'bul',
+          'cat', 'zho', 'hrv', 'ces', 'dan', 'nld', 'eng', 'est', 'phi',
+          'fin', 'fra', 'glg', 'kat', 'deu', 'ell', 'hat', 'heb', 'hin',
+          'hun', 'isl', 'ind', 'gla', 'ita', 'jpn', 'kor', 'lav', 'lit',
+          'mkd', 'msa', 'mlt', 'nor', 'fas', 'pol', 'por', 'ron', 'rus',
+          'srp', 'slk', 'slv', 'spa', 'swa', 'swe', 'tha', 'tur', 'ukr',
+          'urd', 'vie', 'cym', 'yid')
         return tuple([(a,b) for a in languages for b in languages if a != b])
 
-    def language_code(self, iso639_2_code):
+    def language_code(self, iso639_3_code):
         """
-        Converts a given ISO-639-2 code into the worker representation.
+        Converts a given ISO-639-3 code into the worker representation.
 
         Returns None for unknown languages.
         """
         mapping = {
-          'afr': 'af', 'alb': 'sq', 'ara': 'ar', 'arm': 'hy', 'aze': 'az',
-          'baq': 'eu', 'bel': 'be', 'bul': 'bg', 'cat': 'ca', 'chi': 'zh-CN',
-          'hrv': 'hr', 'cze': 'cs', 'dan': 'da', 'dut': 'nl', 'eng': 'en',
-          'est': 'et', 'phi': 'tl', 'fin': 'fi', 'fre': 'fr', 'glg': 'gl',
-          'geo': 'ka', 'ger': 'de', 'gre': 'el', 'hat': 'ht', 'heb': 'iw',
-          'hin': 'hi', 'hun': 'hu', 'ice': 'is', 'ind': 'id', 'gla': 'ir',
+          'afr': 'af', 'sqi': 'sq', 'ara': 'ar', 'hye': 'hy', 'aze': 'az',
+          'eus': 'eu', 'bel': 'be', 'bul': 'bg', 'cat': 'ca', 'zho': 'zh-CN',
+          'hrv': 'hr', 'ces': 'cs', 'dan': 'da', 'nld': 'nl', 'eng': 'en',
+          'est': 'et', 'phi': 'tl', 'fin': 'fi', 'fra': 'fr', 'glg': 'gl',
+          'kat': 'ka', 'deu': 'de', 'ell': 'el', 'hat': 'ht', 'heb': 'iw',
+          'hin': 'hi', 'hun': 'hu', 'isl': 'is', 'ind': 'id', 'gla': 'ir',
           'ita': 'it', 'jpn': 'ja', 'kor': 'ko', 'lav': 'lv', 'lit': 'lt',
-          'mac': 'mk', 'may': 'ms', 'mlt': 'mt', 'nor': 'no', 'per': 'fa',
-          'pol': 'pl', 'por': 'pt', 'rum': 'ro', 'rus': 'ru', 'srp': 'sr',
-          'slo': 'sk', 'slv': 'sl', 'spa': 'es', 'swa': 'sw', 'swe': 'sv',
+          'mkd': 'mk', 'msa': 'ms', 'mlt': 'mt', 'nor': 'no', 'das': 'fa',
+          'pol': 'pl', 'por': 'pt', 'ron': 'ro', 'rus': 'ru', 'srp': 'sr',
+          'slk': 'sk', 'slv': 'sl', 'spa': 'es', 'swa': 'sw', 'swe': 'sv',
           'tha': 'th', 'tur': 'tr', 'ukr': 'uk', 'urd': 'ur', 'vie': 'vi',
-          'wel': 'cy', 'yid': 'yi'
+          'cym': 'cy', 'yid': 'yi'
         }
-        return mapping.get(iso639_2_code)
+        return mapping.get(iso639_3_code)
 
     def _batch_translate(self, source, target, text):
         """Translates a text using Google Translate."""
