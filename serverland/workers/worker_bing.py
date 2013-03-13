@@ -21,25 +21,25 @@ class BingWorker(AbstractWorkerServer):
         """
         Returns a tuple of all supported language pairs for this worker.
         """
-        languages = ('ara', 'bul', 'chi', 'cze', 'dan', 'dut', 'eng', 'est',
-          'fin', 'fre', 'ger', 'gre', 'hat', 'heb', 'hun', 'ita', 'jpn',
-          'kor', 'lav', 'lit', 'nor', 'pol', 'por', 'rum', 'rus', 'slo',
+        languages = ('ara', 'bul', 'zho', 'ces', 'dan', 'nld', 'eng', 'est',
+          'fin', 'fra', 'deu', 'ell', 'hat', 'heb', 'hun', 'ita', 'jpn',
+          'kor', 'lav', 'lit', 'nor', 'pol', 'por', 'ron', 'rus', 'slk',
           'slv', 'spa', 'swe', 'tha', 'tur')
         return tuple([(a,b) for a in languages for b in languages if a != b])
 
-    def language_code(self, iso639_2_code):
+    def language_code(self, iso639_3_code):
         """
-        Converts a given ISO-639-2 code into the worker representation.
+        Converts a given ISO-639-3 code into the worker representation.
 
         Returns None for unknown languages.
         """
         mapping = {
-          'ara': 'ar', 'bul': 'bg', 'chi': 'zh-CHS', 'cze': 'cs', 'dan': 'da',
-          'dut': 'nl', 'eng': 'en', 'est': 'et', 'fin': 'fi', 'fre': 'fr',
-          'ger': 'de', 'gre': 'el', 'hat': 'ht', 'heb': 'he', 'hun': 'hu',
+          'ara': 'ar', 'bul': 'bg', 'zho': 'zh-CHS', 'ces': 'cs', 'dan': 'da',
+          'nld': 'nl', 'eng': 'en', 'est': 'et', 'fin': 'fi', 'fra': 'fr',
+          'deu': 'de', 'ell': 'el', 'hat': 'ht', 'heb': 'he', 'hun': 'hu',
           'ita': 'it', 'jpn': 'ja', 'kor': 'ko', 'lav': 'lv', 'lit': 'lt',
-          'nor': 'no', 'pol': 'pl', 'por': 'pt', 'rum': 'ro', 'rus': 'ru',
-          'slo': 'sk', 'slv': 'sl', 'spa': 'es', 'swe': 'sv', 'tha': 'th',
+          'nor': 'no', 'pol': 'pl', 'por': 'pt', 'ron': 'ro', 'rus': 'ru',
+          'slk': 'sk', 'slv': 'sl', 'spa': 'es', 'swe': 'sv', 'tha': 'th',
           'tur': 'tr'
         }
         return mapping.get(iso639_2_code)
