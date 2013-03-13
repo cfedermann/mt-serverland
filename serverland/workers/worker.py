@@ -258,9 +258,9 @@ class AbstractWorkerServer(object):
         """
         raise NotImplementedError
 
-    def language_code(self, iso639_2_code):
+    def language_code(self, iso639_3_code):
         """
-        Converts a given ISO-639-2 code into the worker representation.
+        Converts a given ISO-639-3 code into the worker representation.
 
         Returns None for unknown languages.
         """
