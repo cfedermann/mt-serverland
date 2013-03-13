@@ -171,13 +171,6 @@ class TranslationRequest(models.Model):
     ready = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
-    def clean(self):
-        """Prevent object instantiation for corrupted, incomplete objects."""
-        return
-        if self.is_corrupted():
-            raise ValidationError("TranslationRequest objects cannot be " \
-              "created inside Django's administration backend!")
-
     def __unicode__(self):
         """Returns a Unicode String representation of the request."""
         return u"{0} (request_id={1}, worker={2})".format(self.shortname,
