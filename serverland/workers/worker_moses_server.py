@@ -1,8 +1,6 @@
 """
 Implementation of a worker server that connects to a Moses SMT server system.
 """
-import re
-import sys
 import xmlrpclib
 
 from workers.worker import AbstractWorkerServer
@@ -14,6 +12,7 @@ class MosesServerWorker(AbstractWorkerServer):
     Implementation of a worker server connecting to a Moses SMT server system.
     """
     __name__ = 'MosesServerWorker'
+    # pylint: disable-msg=C0103
     MOSES_HOST = None
     MOSES_PORT = None
     MOSES_SOURCE = None
