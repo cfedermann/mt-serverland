@@ -2,7 +2,6 @@
 Implementation of a worker server that connects to Google Translate.
 """
 import re
-import sys
 import urllib
 import urllib2
 
@@ -29,7 +28,7 @@ class GoogleWorker(AbstractWorkerServer):
           'mkd', 'msa', 'mlt', 'nor', 'fas', 'pol', 'por', 'ron', 'rus',
           'srp', 'slk', 'slv', 'spa', 'swa', 'swe', 'tha', 'tur', 'ukr',
           'urd', 'vie', 'cym', 'yid')
-        return tuple([(a,b) for a in languages for b in languages if a != b])
+        return tuple([(a, b) for a in languages for b in languages if a != b])
 
     def language_code(self, iso639_3_code):
         """
