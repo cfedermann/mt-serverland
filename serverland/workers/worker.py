@@ -273,7 +273,7 @@ class DummyWorker(AbstractWorkerServer):
     then writes out an all-uppercase "translation" of the input text.
     """
     __name__ = "DummyWorker"
-
+    
     def handle_translation(self, request_id):
         """
         Dummy translation handler that blocks for a random amount of time.
@@ -299,3 +299,10 @@ class DummyWorker(AbstractWorkerServer):
         handle.seek(0)
         handle.write(message.SerializeToString())
         handle.close()
+
+    def language_pairs(self):
+        """
+        The dummy worker server pretends to translate from English->German.
+        """
+        return (('eng', 'ger'),)
+
