@@ -173,6 +173,7 @@ class TranslationRequest(models.Model):
     deleted = models.BooleanField(default=False)
 
     def clean(self):
+        """Prevent object instantiation for corrupted, incomplete objects."""
         if self.is_corrupted():
             raise ValidationError("TranslationRequest objects cannot be " \
               "created inside Django's administration backend!")
