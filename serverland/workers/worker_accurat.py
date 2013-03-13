@@ -2,7 +2,7 @@
 Implementation of a worker server that connects ACCURAT Moses instances.
 """
 import sys
-from subprocess import Popen
+from subprocess import Popen, PIPE
 from time import sleep
 
 from workers.worker import AbstractWorkerServer
@@ -87,7 +87,7 @@ class AccuratWorker(AbstractWorkerServer):
         handle = open('/tmp/{0}.message'.format(request_id), 'r+b')
         message = TranslationRequestMessage()
         message.ParseFromString(handle.read())
-
+        
         # First, we write out the source text to file.
         source = open('/tmp/{0}.source'.format(request_id), 'w')
         source.write(message.source_text.encode('utf-8'))
@@ -116,18 +116,27 @@ class AccuratWorker(AbstractWorkerServer):
         # the Moses process finishes.
         shell_cmd = "{0} -f {1} < /tmp/{2}.source > /tmp/{3}.target".format(
           MOSES_CMD, MOSES_CONFIG, request_id, request_id)
-        process = Popen(shell_cmd, shell=True)
-        process.wait()
-
+        
+        proc_stdout, proc_stderr = Popen(shell_cmd, shell=True, stdout=PIPE,
+          stderr=PIPE).communicate()
+        
         # Wait for some time to ensure file I/O is completed.
         sleep(2)
-
+        
         # We can now load the translation from the target file.
         target = open('/tmp/{0}.target'.format(request_id), 'r')
         target_text = target.read()
         message.target_text = unicode(target_text, 'utf-8')
         target.close()
-
+        
+        keyvalue = message.packet_data.add()
+        keyvalue.key = 'STDOUT'
+        keyvalue.value = proc_stdout
+        
+        keyvalue = message.packet_data.add()
+        keyvalue.key = 'STDERR'
+        keyvalue.value = proc_stderr
+        
         handle.seek(0)
         handle.write(message.SerializeToString())
         handle.close()
