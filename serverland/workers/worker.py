@@ -10,7 +10,7 @@ from base64 import b64encode, b64decode
 from google.protobuf.message import DecodeError
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process
-from os import chmod, remove, popen
+from os import chmod, remove
 from time import sleep
 from random import random
 from SimpleXMLRPCServer import SimpleXMLRPCServer
@@ -18,6 +18,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 
 
+# pylint: disable-msg=R0922
 class AbstractWorkerServer(object):
     """
     Abstract worker server defining the basic worker server interface.
@@ -35,6 +36,7 @@ class AbstractWorkerServer(object):
         """
         self.message_path = message_path
 
+        # pylint: disable-msg=C0103
         LOG_LEVEL = logging.DEBUG
         LOG_FILENAME = logfile
         LOG_FORMAT = '[%(asctime)s] %(name)s::%(levelname)s %(message)s'
@@ -306,3 +308,8 @@ class DummyWorker(AbstractWorkerServer):
         """
         return (('eng', 'deu'),)
 
+    def language_code(self, iso639_3_code):
+        """
+        The dummy worker server understands ISO 639-3 ;)
+        """
+        return iso639_3_code
