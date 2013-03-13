@@ -7,9 +7,12 @@ import os
 ROOT_PATH = os.getcwd()
 DEPLOYMENT_PREFIX = '/mt-serverland'
 
-# Assert that a local `messages` folder exists inside ROOT_PATH.
-assert os.path.exists("{0}/messages".format(ROOT_PATH)), \
-  "Folder {0}/messages does not exist!".format(ROOT_PATH)
+# Serialized message files will be stored in this location.
+TRANSLATION_MESSAGE_PATH = '{0}/messages'.format(ROOT_PATH)
+
+# Assert that TRANSLATION_MESSAGE_PATH actually exists.
+assert os.path.exists(TRANSLATION_MESSAGE_PATH), \
+  "Folder {0} does not exist!".format(TRANSLATION_MESSAGE_PATH)
 
 import logging
 from logging.handlers import RotatingFileHandler

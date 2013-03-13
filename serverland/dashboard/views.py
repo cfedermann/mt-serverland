@@ -11,9 +11,9 @@ from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from serverland.dashboard.models import TranslationRequest, WorkerServer
-from serverland.dashboard.models import TRANSLATION_MESSAGE_PATH
 from serverland.dashboard.forms import TranslationRequestForm
-from serverland.settings import LOG_LEVEL, LOG_HANDLER, DEPLOYMENT_PREFIX
+from serverland.settings import LOG_LEVEL, LOG_HANDLER, DEPLOYMENT_PREFIX, \
+  TRANSLATION_MESSAGE_PATH
 from serverland.protobuf.TranslationRequestMessage_pb2 import \
   TranslationRequestMessage
 

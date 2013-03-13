@@ -12,10 +12,10 @@ from django.shortcuts import get_object_or_404
 from piston.handler import BaseHandler
 from piston.utils import rc, throttle
 from serverland.dashboard.models import WorkerServer, TranslationRequest
-from serverland.dashboard.models import TRANSLATION_MESSAGE_PATH
 from serverland.dashboard.forms import TranslationRequestForm
 from serverland.protobuf.TranslationRequestMessage_pb2 import \
      TranslationRequestMessage
+from serverland.settings import TRANSLATION_MESSAGE_PATH
 import uuid
 
 MAX_REQUESTS_PER_MINUTE = 250
