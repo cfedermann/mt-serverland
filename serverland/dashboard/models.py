@@ -13,6 +13,7 @@ import xmlrpclib
 from base64 import b64decode, b64encode
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from google.protobuf.message import DecodeError
 from os import getcwd
 from serverland.settings import LOG_LEVEL, LOG_HANDLER
@@ -170,6 +171,11 @@ class TranslationRequest(models.Model):
     # Cache attributes that save the request's "state" inside the Django DB.
     ready = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+
+    def clean(self):
+        if self.is_corrupted():
+            raise ValidationError("TranslationRequest objects cannot be " \
+              "created inside Django's administration backend!")
 
     def __unicode__(self):
         """Returns a Unicode String representation of the request."""
