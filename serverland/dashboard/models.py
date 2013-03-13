@@ -16,8 +16,9 @@ from django.db.models.signals import pre_delete
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from google.protobuf.message import DecodeError
-from os import getcwd
-from serverland.settings import LOG_LEVEL, LOG_HANDLER
+from os import remove
+from serverland.settings import LOG_LEVEL, LOG_HANDLER, \
+  TRANSLATION_MESSAGE_PATH
 from serverland.protobuf.TranslationRequestMessage_pb2 import \
   TranslationRequestMessage
 
@@ -25,10 +26,6 @@ from serverland.protobuf.TranslationRequestMessage_pb2 import \
 logging.basicConfig(level=LOG_LEVEL)
 LOGGER = logging.getLogger('serverland.views')
 LOGGER.addHandler(LOG_HANDLER)
-
-# TODO: move this into settings.py using ROOT_PATH instead of getcwd()...
-# Serialized message files will be stored in this location.
-TRANSLATION_MESSAGE_PATH = '{0}/messages'.format(getcwd())
 
 
 class WorkerServer(models.Model):
