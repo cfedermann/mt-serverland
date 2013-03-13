@@ -63,7 +63,7 @@ class AccuratWorker(AbstractWorkerServer):
           'deu': 'de', 'eng': 'en', 'ell': 'el', 'ron': 'ro', 'slv': 'sl',
           'lav': 'lv', 'lit': 'lt', 'hrv': 'hr', 'est': 'et'
         }
-        return mapping.get(iso639_2_code)
+        return mapping.get(iso639_3_code)
 
     def is_busy(self):
         """
