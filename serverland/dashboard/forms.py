@@ -38,6 +38,7 @@ LANGUAGE_CODES = {
 }
 
 
+# pylint: disable-msg=R0924
 class TranslationRequestForm(ModelForm):
     """
     Form class for a translation request object
