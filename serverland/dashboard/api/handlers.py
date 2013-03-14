@@ -6,7 +6,7 @@ Project: MT Server Land prototype code
 '''
 
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+#from django.core.urlresolvers import reverse
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from piston.handler import BaseHandler
@@ -100,6 +100,7 @@ class RequestHandler(BaseHandler):
 
         handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
                                                new.request_id), 'w+b')
+        # pylint: disable-msg=E1101
         handle.write(message.SerializeToString())
         handle.close()
 
@@ -125,8 +126,8 @@ class RequestHandler(BaseHandler):
         # NOTE: this overwrites the "Location" header field set above.
         # See piston.resource.__call__()
         
-        object = RequestHandler.request_to_dict(new, include_results=False)
-        return object
+        _object = RequestHandler.request_to_dict(new, include_results=False)
+        return _object
 
     @throttle(MAX_REQUESTS_PER_MINUTE, 60)
     def delete(self, request, shortname = None, results = False):
