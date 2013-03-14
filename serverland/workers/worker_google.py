@@ -17,6 +17,7 @@ class GoogleWorker(AbstractWorkerServer):
     __splitter__ = '[[GOOGLE_SPLITTER]]'
     __batch__ = 200
 
+    # TODO: update language pairs to all 66 base languages.
     def language_pairs(self):
         """
         Returns a tuple of all supported language pairs for this worker.
