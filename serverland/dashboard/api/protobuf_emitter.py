@@ -25,7 +25,7 @@ class ProtobufEmitter(Emitter):
         TranslationRequestObject protobuf.
         '''
         tr_obj = TranslationRequestObject()
-        # TODO: check if we really need "blah" which is questionable ;)
+        # TODO: check if we really need "blah" which is questionable ;
         defined_keys = set(['blah', 'shortname', 'request_id',
                             'worker', 'owner', 'created', 'ready',
                             'result', 'source_language',
@@ -43,6 +43,8 @@ class ProtobufEmitter(Emitter):
             result_obj.target_language = dict_obj['target_language']
             result_obj.source_text = ''
             result_obj.target_text = dict_obj['result']
+
+            # pylint: disable-msg=E1101
             for key in set(dict_obj.keys()) - defined_keys:
                 kv_pair = result_obj.packet_data.add()
                 kv_pair.key = key
@@ -68,6 +70,7 @@ class ProtobufEmitter(Emitter):
             ws_obj.is_busy = False
         if 'language_pairs' in dict_obj:
             for (source_lang, target_lang) in dict_obj['language_pairs']:
+                # pylint: disable-msg=E1101
                 langpair = ws_obj.language_pairs.add()
                 langpair.source = source_lang
                 langpair.target = target_lang
@@ -83,6 +86,7 @@ class ProtobufEmitter(Emitter):
         if ( isinstance(value, list) and
              len(value) > 0 and
              isinstance(value[0], dict) ):
+            # pylint: disable-msg=E1101
             if 'is_alive' in value[0]:
                 pbuf = WorkerServerList()
                 for listitem in value:
@@ -100,6 +104,7 @@ class ProtobufEmitter(Emitter):
                 pbuf = ProtobufEmitter.dict_to_tro(value)
 
         if pbuf:
+            # pylint: disable-msg=E1101
             return b64encode(pbuf.SerializeToString())
         else:
             return ''
