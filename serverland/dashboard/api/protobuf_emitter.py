@@ -25,6 +25,7 @@ class ProtobufEmitter(Emitter):
         TranslationRequestObject protobuf.
         '''
         tr_obj = TranslationRequestObject()
+        # TODO: check if we really need "blah" which is questionable ;)
         defined_keys = set(['blah', 'shortname', 'request_id',
                             'worker', 'owner', 'created', 'ready',
                             'result', 'source_language',
