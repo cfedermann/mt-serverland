@@ -50,21 +50,21 @@
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
-      <a class="brand" href="#">MT Server Land</a>
+      <a class="brand" href="{{PREFIX}}/">MT Server Land</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li><a href="/dashboard/">Dashboard</a></li>
+          <li><a href="{{PREFIX}}/dashboard/">Dashboard</a></li>
         </ul>
       </div>
       </div>
     </div>
   </div>
-  <div class="container">
+  <div class="container" style="margin-top: 60px;">
 {% block body %}{% endblock %}
 
     <section id="footer">
       <footer>
-        <p><small>This is a <code>BETA</code> version of the MT Server Land software. &copy; DFKI GmbH 2010-2011, all rights reserved. Valid <a href="http://validator.w3.org/check/referer" title="Valid XHTML 1.1">XHTML 1.0</a> and <a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS">CSS 2.0</a>. Powered by <a href="http://www.djangoproject.com/">Django</a>.</small></p>
+        <p><small>This is a <code>BETA</code> version of the MT Server Land software. &copy; Christian Federmann 2010-2013, some rights reserved. Valid <a href="http://validator.w3.org/check/referer" title="Valid XHTML 1.1">XHTML 1.0</a> and <a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS">CSS 2.0</a>. Powered by <a href="http://www.djangoproject.com/">Django</a>.</small></p>
       </footer>
     </section>
   </div>
