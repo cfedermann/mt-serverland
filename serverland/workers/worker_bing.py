@@ -11,10 +11,18 @@ from protobuf.TranslationRequestMessage_pb2 import TranslationRequestMessage
 class BingWorker(AbstractWorkerServer):
     """
     Implementation of a worker server that connects to Microsoft Translator.
+    
+    MSDN reference information is available here:
+    - http://msdn.microsoft.com/en-us/library/dd576287.aspx
+    
+    Microsoft Translator allows free translation of 2M characters/month.
+    - https://datamarket.azure.com/dataset/1899a118-d202-492c-aa16-ba21c33c06cb
+    
     """
     __name__ = 'BingWorker'
     __batch__ = 100
 
+    # TODO: update language pairs to all 39 base languages.
     def language_pairs(self):
         """
         Returns a tuple of all supported language pairs for this worker.
@@ -25,6 +33,8 @@ class BingWorker(AbstractWorkerServer):
           'slv', 'spa', 'swe', 'tha', 'tur')
         return tuple([(a, b) for a in languages for b in languages if a != b])
 
+    # MSDN gives a list of available language codes:
+    # - http://msdn.microsoft.com/en-us/library/hh456380.aspx
     def language_code(self, iso639_3_code):
         """
         Converts a given ISO-639-3 code into the worker representation.
