@@ -12,7 +12,16 @@
   <p>This service allows users and external applications to make use of DFKI's machine translation (MT) technology to translate text between various languages. Think of it as a research version of similar services such as <a href="http://translate.google.com/">Google Translate</a> or <a href="http://www.microsofttranslator.com/">Microsoft Translator</a>...</p>
 
   {% if user.is_authenticated %}
-  <p>You are logged in as <b>{{ user.username }}</b>. You can <a href="{{PREFIX}}/dashboard/">access your dashboard</a> or logout by <a href="{{PREFIX}}/logout/">clicking here</a>.</p>
+  <br/>
+  <p>You are logged in as <b>{{ user.username }}</b>. You can <a href="{{PREFIX}}/dashboard/">access your dashboard</a> or sign out by <a href="{{PREFIX}}/logout/">clicking here</a>.</p>
+  <br/>
+
+  <!--  TODO: use URL reversal for views! //-->
+
+  <!--
+  <p><a class="btn btn-primary btn-large" href="{{PREFIX}}/dashboard/"><i class="icon-tasks icon-white"></i> Dashboard</a> <a class="btn btn-primary btn-large" href="{{PREFIX}}/dashboard/"><i class="icon-remove-sign icon-white"></i> Sign out</a></p>
+  -->
+
   {% else %}
   <p><a class="btn btn-primary btn-large" href="{{PREFIX}}/dashboard/">Access your translation dashboard &raquo;</a></p>
   {% endif %}
