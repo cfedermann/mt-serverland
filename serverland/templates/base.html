@@ -50,8 +50,9 @@
               <li {% ifequal active_page "home" %}class="active"{% endifequal %}><a href="{{PREFIX}}/">Home</a></li>
               {% if user.is_authenticated %}
               <li {% ifequal active_page "dashboard" %}class="active"{% endifequal %}><a href="{{PREFIX}}/dashboard/">Dashboard</a></li>
+              <li><a href="{{PREFIX}}/logout/">Sign out</a></li>
               {% else %}
-              <li {% ifequal active_page "login" %}class="active"{% endifequal %}><a href="{{PREFIX}}/login/">Login</a></li>
+              <li {% ifequal active_page "login" %}class="active"{% endifequal %}><a href="{{PREFIX}}/login/">Sign in</a></li>
               {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
