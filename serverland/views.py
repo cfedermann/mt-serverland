@@ -18,7 +18,7 @@ def frontpage(request):
     LOGGER.info('Rendering frontpage view for user "{0}".'.format(
       request.user.username or "Anonymous"))
     
-    dictionary = {'title': 'MT Server Land (prototype)',
+    dictionary = {'title': 'Welcome to MT Server Land', 'active_page': 'home',
       'PREFIX': DEPLOYMENT_PREFIX}
     return render_to_response('frontpage.html', dictionary,
       context_instance=RequestContext(request))
@@ -28,6 +28,9 @@ def login(request):
     """Renders login view by connecting to django.contrib.auth.views."""
     LOGGER.info('Rendering login view for user "{0}".'.format(
       request.user.username or "Anonymous"))
+    
+    # TODO: add proper context dictionaries to login/logout views.
+    #       Also, make sure to use proper "Sign in" and "Sign out" labels.
     
     return LOGIN(request)
 
