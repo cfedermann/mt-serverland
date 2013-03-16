@@ -14,9 +14,9 @@ function confirm_delete(name, url) {
 {% endblock %}
 
 {% block body %}
-<div id="summary">
-  <h1>{{ user.username }}'s Dashboard</h1>
-  <h2>Create, view, and manage your translation requests...</h2>
+
+<div class="page-header">
+  <h1>{{ user.username }}'s Dashboard <small>Manage your translation tasks</small></h1>
 </div>
 
 {% if messages %}
@@ -30,10 +30,9 @@ function confirm_delete(name, url) {
 {% endif %}
 
 <div id="instructions">
-  <img src="{{PREFIX}}/site_media/dashboard.png" style="float: right; padding-right: 20px;" />
   
   <h2>User actions</h2>
-  <p>You are logged in as <b>{{ user.username }}</b>. You can create a <a href="{{PREFIX}}/dashboard/create/">new translation request</a> or logout by <a href="{{PREFIX}}/logout/">clicking here</a>.</p>
+  <p>You are logged in as <b>{{ user.username }}</b>. You can create a <a href="{{PREFIX}}/dashboard/create/">new translation request</a> or sign out by <a href="{{PREFIX}}/logout/">clicking here</a>.</p>
   <br/>
   
   <h2>Finished translation requests</h2>
