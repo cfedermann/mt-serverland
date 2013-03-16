@@ -41,7 +41,8 @@ def dashboard(request):
     invalid = [r for r in requests if not r.is_valid() and not r in finished]
     active = [r for r in requests if not r in finished and not r in invalid]
 
-    dictionary = {'title': 'MT Server Land (prototype) -- Dashboard',
+    dictionary = {'title': 'MT Server Land -- Dashboard',
+      'active_page': 'dashboard',
       'PREFIX': DEPLOYMENT_PREFIX, 'finished_requests': finished,
       'active_requests': active, 'invalid_requests': invalid}
     return render_to_response('dashboard/dashboard.html', dictionary,
