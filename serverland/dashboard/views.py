@@ -105,7 +105,13 @@ def create(request):
               DEPLOYMENT_PREFIX))
 
     else:
-        form = TranslationRequestForm(user=request.user)
+        try:
+            form = TranslationRequestForm(user=request.user)
+        
+        except AssertionError, msg:
+            messages.add_message(request, messages.ERROR, msg)
+            return HttpResponseRedirect('{0}/dashboard/'.format(
+              DEPLOYMENT_PREFIX))
 
     #from serverland.dashboard.models import WorkerServer
     #workers = WorkerServer.objects.all()
