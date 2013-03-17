@@ -1,7 +1,9 @@
 """
-URL resources for the serverland dashboard Web API.
-Project: MT Server Land prototype code
+Project: MT Server Land
  Author: Will Roberts <William.Roberts@dfki.de>
+
+URL resources for the serverland dashboard Web API.
+
 """
 
 from django.conf.urls.defaults import patterns, url

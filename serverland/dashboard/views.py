@@ -1,5 +1,5 @@
 """
-Project: MT Server Land prototype code
+Project: MT Server Land
  Author: Christian Federmann <cfedermann@dfki.de>
 """
 import logging
@@ -117,7 +117,7 @@ def create(request):
     #workers = WorkerServer.objects.all()
     #active_workers = [w for w in workers if w.is_alive()]
 
-    dictionary = {'title': 'MT Server Land (prototype) -- Create translation',
+    dictionary = {'title': 'MT Server Land -- Create translation',
       'PREFIX': DEPLOYMENT_PREFIX, 'form': form}
     return render_to_response('dashboard/create.html', dictionary,
       context_instance=RequestContext(request))
@@ -173,7 +173,7 @@ def result(request, request_id):
         translation_packet_data = [(x.key, x.value) for x in 
           translation_message.packet_data]
 
-    dictionary = {'title': 'MT Server Land (prototype) -- {0}'.format(
+    dictionary = {'title': 'MT Server Land -- {0}'.format(
       req.shortname), 'request': req, 'result': translation_result,
       'packet_data': translation_packet_data, 'PREFIX': DEPLOYMENT_PREFIX}
     return render_to_response('dashboard/result.html', dictionary,

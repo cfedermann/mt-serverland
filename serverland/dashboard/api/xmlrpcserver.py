@@ -1,18 +1,18 @@
 #!/usr/bin/env python
+"""
+Project: MT Server Land
+ Author: Will Roberts <William.Roberts@dfki.de>
 
-'''
 XML-RPC interface to the serverland dashboard API.
-Project: MT Server Land prototype code
-Author: Will Roberts <William.Roberts@dfki.de>
 
 Syntax:
-   python xmlrpcserver.py hostname portnum dashboard_api_url
+    python xmlrpcserver.py hostname portnum dashboard_api_url
 
 hostname          -- the address to bind to
 portnum           -- the port number to bind to
 dashboard_api_url -- the URL of the serverland dashboard API
 
-'''
+"""
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 import httplib

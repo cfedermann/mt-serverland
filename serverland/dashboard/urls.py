@@ -1,5 +1,5 @@
 """
-Project: MT Server Land prototype code
+Project: MT Server Land
  Author: Christian Federmann <cfedermann@dfki.de>
 """
 from django.conf.urls.defaults import patterns, include

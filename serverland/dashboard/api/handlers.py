@@ -1,9 +1,10 @@
-'''
-Web API handlers for the serverland dashboard.
-Project: MT Server Land prototype code
+"""
+Project: MT Server Land
  Author: Will Roberts <William.Roberts@dfki.de>
 
-'''
+Web API handlers for the serverland dashboard.
+
+"""
 
 from django.contrib import messages
 #from django.core.urlresolvers import reverse

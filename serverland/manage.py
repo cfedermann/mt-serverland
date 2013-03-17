@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Project: MT Server Land prototype code
+Project: MT Server Land
  Author: Christian Federmann <cfedermann@dfki.de>
 """
 from django.core.management import execute_manager

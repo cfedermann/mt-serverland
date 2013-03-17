@@ -1,8 +1,10 @@
 """
+Project: MT Server Land
+ Author: Will Roberts <William.Roberts@dfki.de>
+
 Database model for authentication tokens used for the serverland
 dashboard Web API.
-Project: MT Server Land prototype code
- Author: Will Roberts <William.Roberts@dfki.de>
+
 """
 
 import uuid

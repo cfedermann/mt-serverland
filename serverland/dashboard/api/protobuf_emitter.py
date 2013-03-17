@@ -1,9 +1,10 @@
-'''
-Google Protobuf emitter the serverland dashboard API.
-Project: MT Server Land prototype code
+"""
+Project: MT Server Land
  Author: Will Roberts <William.Roberts@dfki.de>
 
-'''
+Google Protobuf emitter the serverland dashboard API.
+
+"""
 
 from base64 import b64encode
 from piston.emitters import Emitter
