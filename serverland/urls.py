@@ -2,10 +2,13 @@
 Project: MT Server Land
  Author: Christian Federmann <cfedermann@dfki.de>
 """
-from django.conf.urls.defaults import patterns, include, handler404, \
-  handler500
+from django.conf.urls.defaults import patterns, include
 from django.contrib import admin
-from serverland.settings import MEDIA_ROOT, DEPLOYMENT_PREFIX
+from serverland.settings import DEBUG, MEDIA_ROOT, DEPLOYMENT_PREFIX
+
+if not DEBUG:
+    # pylint: disable-msg=W0611
+    from django.conf.urls.defaults import handler404, handler500
 
 admin.autodiscover()
 
