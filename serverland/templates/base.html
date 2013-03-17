@@ -44,15 +44,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="{{PREFIX}}/">MT Server Land</a>
+          <a class="brand" href="{% url frontpage %}">MT Server Land</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li {% ifequal active_page "home" %}class="active"{% endifequal %}><a href="{{PREFIX}}/">Home</a></li>
+              <li {% ifequal active_page "home" %}class="active"{% endifequal %}><a href="{% url frontpage %}">Home</a></li>
               {% if user.is_authenticated %}
-              <li {% ifequal active_page "dashboard" %}class="active"{% endifequal %}><a href="{{PREFIX}}/dashboard/">Dashboard</a></li>
-              <li><a href="{{PREFIX}}/logout/">Sign out</a></li>
+              <li {% ifequal active_page "dashboard" %}class="active"{% endifequal %}><a href="{% url dashboard %}">Dashboard</a></li>
+              <li><a href="{% url logout %}">Sign out</a></li>
               {% else %}
-              <li {% ifequal active_page "login" %}class="active"{% endifequal %}><a href="{{PREFIX}}/login/">Sign in</a></li>
+              <li {% ifequal active_page "login" %}class="active"{% endifequal %}><a href="{% url login %}">Sign in</a></li>
               {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
