@@ -23,7 +23,7 @@ function confirm_delete(name, url) {
 <div class="alert alert-block">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
 {% for message in messages %}
-  {{ message }}<br/>
+  <strong>{{ message.tags|capfirst }}:</strong> {{ message }}<br/>
 {% endfor %}
 </div>
 {% endif %}
