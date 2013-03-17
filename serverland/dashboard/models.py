@@ -14,7 +14,7 @@ from base64 import b64decode, b64encode
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+# pylint: disable-msg=F0401
 from google.protobuf.message import DecodeError
 from os import remove
 from serverland.settings import LOG_LEVEL, LOG_HANDLER, \

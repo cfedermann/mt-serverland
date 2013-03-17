@@ -87,6 +87,7 @@ def create(request):
 
             handle = open('{0}/{1}.message'.format(TRANSLATION_MESSAGE_PATH,
               new.request_id), 'w+b')
+            # pylint: disable-msg=E1101
             handle.write(message.SerializeToString())
             handle.close()
 
