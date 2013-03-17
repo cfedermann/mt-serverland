@@ -6,7 +6,7 @@ import logging
 from django.contrib.auth.views import login as LOGIN, logout as LOGOUT
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from serverland.settings import LOG_LEVEL, LOG_HANDLER, DEPLOYMENT_PREFIX
+from serverland.settings import LOG_LEVEL, LOG_HANDLER
 
 # Setup logging support.
 logging.basicConfig(level=LOG_LEVEL)
@@ -18,8 +18,8 @@ def frontpage(request):
     LOGGER.info('Rendering frontpage view for user "{0}".'.format(
       request.user.username or "Anonymous"))
     
-    dictionary = {'title': 'Welcome to MT Server Land', 'active_page': 'home',
-      'PREFIX': DEPLOYMENT_PREFIX}
+    dictionary = {'title': 'Welcome to MT Server Land',
+      'active_page': 'home'}
     return render_to_response('frontpage.html', dictionary,
       context_instance=RequestContext(request))
 

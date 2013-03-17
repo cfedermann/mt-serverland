@@ -8,6 +8,7 @@ import socket
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from serverland.dashboard.models import TranslationRequest, WorkerServer
@@ -42,8 +43,7 @@ def dashboard(request):
     active = [r for r in requests if not r in finished and not r in invalid]
 
     dictionary = {'title': 'MT Server Land -- Dashboard',
-      'active_page': 'dashboard',
-      'PREFIX': DEPLOYMENT_PREFIX, 'finished_requests': finished,
+      'active_page': 'dashboard', 'finished_requests': finished,
       'active_requests': active, 'invalid_requests': invalid}
     return render_to_response('dashboard/dashboard.html', dictionary,
       context_instance=RequestContext(request))
@@ -102,8 +102,7 @@ def create(request):
 
             messages.add_message(request, messages.SUCCESS, 'Successfully ' \
               'started translation request "{0}".'.format(new.shortname))
-            return HttpResponseRedirect('{0}/dashboard/'.format(
-              DEPLOYMENT_PREFIX))
+            return HttpResponseRedirect(reverse('dashboard'))
 
     else:
         try:
@@ -111,15 +110,14 @@ def create(request):
         
         except AssertionError, msg:
             messages.add_message(request, messages.ERROR, msg)
-            return HttpResponseRedirect('{0}/dashboard/'.format(
-              DEPLOYMENT_PREFIX))
+            return HttpResponseRedirect(reverse('dashboard'))
 
     #from serverland.dashboard.models import WorkerServer
     #workers = WorkerServer.objects.all()
     #active_workers = [w for w in workers if w.is_alive()]
 
     dictionary = {'title': 'MT Server Land -- Create translation',
-      'PREFIX': DEPLOYMENT_PREFIX, 'form': form}
+      'form': form}
     return render_to_response('dashboard/create.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -134,8 +132,7 @@ def delete(request, request_id):
         LOGGER.warning('Illegal delete request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('{0}/dashboard/'.format(
-          DEPLOYMENT_PREFIX))
+        return HttpResponseRedirect(reverse('dashboard'))
 
     LOGGER.info('Deleting translation request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
@@ -143,7 +140,7 @@ def delete(request, request_id):
 
     messages.add_message(request, messages.SUCCESS, 'Successfully deleted' \
       ' request "{0}".'.format(req.shortname))
-    return HttpResponseRedirect('{0}/dashboard/'.format(DEPLOYMENT_PREFIX))
+    return HttpResponseRedirect(reverse('dashboard'))
 
 @login_required
 def result(request, request_id):
@@ -156,8 +153,7 @@ def result(request, request_id):
         LOGGER.warning('Illegal result request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('{0}/dashboard/'.format(
-          DEPLOYMENT_PREFIX))
+        return HttpResponseRedirect(reverse('dashboard'))
 
     # cfedermann: Make sure that the request is marked as finished once the
     #   result has been transferred to the local hard disk!!!  We are trying
@@ -176,7 +172,7 @@ def result(request, request_id):
 
     dictionary = {'title': 'MT Server Land -- {0}'.format(
       req.shortname), 'request': req, 'result': translation_result,
-      'packet_data': translation_packet_data, 'PREFIX': DEPLOYMENT_PREFIX}
+      'packet_data': translation_packet_data}
     return render_to_response('dashboard/result.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -191,8 +187,7 @@ def download(request, request_id):
         LOGGER.warning('Illegal download request from user "{0}".'.format(
           request.user.username or "Anonymous"))
 
-        return HttpResponseRedirect('{0}/dashboard/'.format(
-          DEPLOYMENT_PREFIX))
+        return HttpResponseRedirect(reverse('dashboard'))
 
     LOGGER.info('Downloading request "{0}" for user "{1}".'.format(
       request_id, request.user.username or "Anonymous"))
