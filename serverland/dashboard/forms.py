@@ -68,7 +68,8 @@ class TranslationRequestForm(ModelForm):
                   'worker "{0}"'.format(worker))
                 continue
 
-        assert(language_pairs), "Translation language pairs set is empty."
+        assert(language_pairs), "Translation language pairs set is empty. " \
+          "Have you started any translation worker servers?"
 
         # TODO: clean that up...
         source_languages = [(x[0], LANGUAGE_CODES[x[0]])
