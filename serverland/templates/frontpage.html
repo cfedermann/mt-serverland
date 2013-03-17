@@ -13,17 +13,15 @@
 
   {% if user.is_authenticated %}
   <br/>
-  <p>You are logged in as <b>{{ user.username }}</b>. You can <a href="{{PREFIX}}/dashboard/">access your dashboard</a> or sign out by <a href="{{PREFIX}}/logout/">clicking here</a>.</p>
+  <p>You are logged in as <b>{{ user.username }}</b>. You can <a href="{% url dashboard %}">access your dashboard</a> or sign out by <a href="{% url logout %}">clicking here</a>.</p>
   <br/>
-
-  <!--  TODO: use URL reversal for views! //-->
 
   <!--
   <p><a class="btn btn-primary btn-large" href="{{PREFIX}}/dashboard/"><i class="icon-tasks icon-white"></i> Dashboard</a> <a class="btn btn-primary btn-large" href="{{PREFIX}}/dashboard/"><i class="icon-remove-sign icon-white"></i> Sign out</a></p>
   -->
 
   {% else %}
-  <p><a class="btn btn-primary btn-large" href="{{PREFIX}}/dashboard/">Access your translation dashboard &raquo;</a></p>
+  <p><a class="btn btn-primary btn-large" href="{% url dashboard %}">Access your translation dashboard &raquo;</a></p>
   {% endif %}
           
   </div>
