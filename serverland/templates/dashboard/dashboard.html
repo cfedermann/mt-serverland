@@ -40,7 +40,7 @@ function confirm_delete(name, url) {
   <thead>
   <tr>
   <th class="shortname" width="60%">Description</th>
-  <th class="created" width="15%">Created</th>
+  <th class="created">Created</th>
   <th class="actions">Actions</th>
   </tr>
   </thead>
@@ -48,7 +48,7 @@ function confirm_delete(name, url) {
   {% for request in finished_requests %}
   <tr>
   <td>{{ request.shortname }}</td>
-  <td>{{ request.created|date:"Y/m/d" }}</td>
+  <td>{{ request.created|date:"Y/m/d @ H:i" }}</td>
   <td>
     <a class="btn btn-mini btn-danger" href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');"><i class="icon-remove icon-white"></i> Delete</a>
     <a class="btn btn-mini" href="{% url result request_id=request.request_id %}"><i class="icon-file"></i>Results</a>
@@ -71,7 +71,7 @@ function confirm_delete(name, url) {
   <thead>
   <tr>
   <th class="shortname" width="60%">Description</th>
-  <th class="created" width="15%">Created</th>
+  <th class="created">Created</th>
   <th class="actions">Actions</th>
   </tr>
   </thead>
@@ -79,7 +79,7 @@ function confirm_delete(name, url) {
   {% for request in active_requests %}
   <tr>
   <td>{{ request.shortname }}</td>
-  <td>{{ request.created|date:"Y/m/d" }}</td>
+  <td>{{ request.created|date:"Y/m/d @ H:i" }}</td>
   <td>
     <a class="btn btn-mini btn-danger" href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');"><i class="icon-remove icon-white"></i> Delete</a>
   </td>
@@ -100,7 +100,7 @@ function confirm_delete(name, url) {
   <thead>
   <tr>
   <th class="shortname" width="60%">Description</th>
-  <th class="created" width="15%">Created</th>
+  <th class="created">Created</th>
   <th class="actions">Actions</th>
   </tr>
   </thead>
@@ -108,7 +108,7 @@ function confirm_delete(name, url) {
   {% for request in invalid_requests %}
   <tr>
   <td>{{ request.shortname }}</td>
-  <td>{{ request.created|date:"Y/m/d" }}</td>
+  <td>{{ request.created|date:"Y/m/d @ H:i" }}</td>
   <td><a class="btn btn-mini btn-danger" href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');"><i class="icon-remove icon-white"></i> Delete</a>
   </td>
   </tr>
