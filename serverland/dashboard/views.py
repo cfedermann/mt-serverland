@@ -14,7 +14,7 @@ from django.template import RequestContext
 from serverland.dashboard.models import TranslationRequest, WorkerServer
 from serverland.dashboard.forms import TranslationRequestForm
 from serverland.settings import LOG_LEVEL, LOG_HANDLER, DEPLOYMENT_PREFIX, \
-  TRANSLATION_MESSAGE_PATH
+  TRANSLATION_MESSAGE_PATH, COMMIT_TAG
 from serverland.protobuf.TranslationRequestMessage_pb2 import \
   TranslationRequestMessage
 
@@ -44,6 +44,7 @@ def dashboard(request):
     active = [r for r in requests if not r in finished and not r in invalid]
 
     dictionary = {'title': 'MT Server Land -- Dashboard',
+      'commit_tag': COMMIT_TAG,
       'active_page': 'dashboard', 'finished_requests': finished,
       'active_requests': active, 'invalid_requests': invalid}
     return render_to_response('dashboard/dashboard.html', dictionary,
@@ -118,7 +119,7 @@ def create(request):
     #active_workers = [w for w in workers if w.is_alive()]
 
     dictionary = {'title': 'MT Server Land -- Create translation',
-      'form': form}
+      'form': form, 'commit_tag': COMMIT_TAG}
     return render_to_response('dashboard/create.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -173,7 +174,7 @@ def result(request, request_id):
 
     dictionary = {'title': 'MT Server Land -- {0}'.format(
       req.shortname), 'request': req, 'result': translation_result,
-      'packet_data': translation_packet_data}
+      'packet_data': translation_packet_data, 'commit_tag': COMMIT_TAG}
     return render_to_response('dashboard/result.html', dictionary,
       context_instance=RequestContext(request))
 

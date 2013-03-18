@@ -6,7 +6,7 @@ import logging
 from django.contrib.auth.views import login as LOGIN, logout as LOGOUT
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from serverland.settings import LOG_LEVEL, LOG_HANDLER
+from serverland.settings import LOG_LEVEL, LOG_HANDLER, COMMIT_TAG
 
 # Setup logging support.
 logging.basicConfig(level=LOG_LEVEL)
@@ -19,7 +19,7 @@ def frontpage(request):
       request.user.username or "Anonymous"))
     
     dictionary = {'title': 'Welcome to MT Server Land',
-      'active_page': 'home'}
+      'active_page': 'home', 'commit_tag': COMMIT_TAG}
     return render_to_response('frontpage.html', dictionary,
       context_instance=RequestContext(request))
 
@@ -29,7 +29,8 @@ def login(request):
     LOGGER.info('Rendering login view for user "{0}".'.format(
       request.user.username or "Anonymous"))
     
-    dictionary = {'title': 'Please sign in', 'active_page': 'sign-in'}
+    dictionary = {'title': 'Please sign in', 'active_page': 'sign-in',
+      'commit_tag': COMMIT_TAG}
     return LOGIN(request, extra_context=dictionary)
 
 

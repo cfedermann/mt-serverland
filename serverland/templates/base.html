@@ -66,7 +66,7 @@
       <hr/>
 
       <footer>
-        <p><small>This is a <code>BETA</code> version of the MT Server Land software. &copy; Christian Federmann 2010-2013, some rights reserved. Valid <a href="http://validator.w3.org/check/referer" title="Valid XHTML 1.1">XHTML 1.0</a> and <a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS">CSS 2.0</a>. Powered by <a href="http://www.djangoproject.com/">Django</a>.</small></p>
+        <p><small>This is the GitHub version {% if commit_tag %}<code><a href="https://github.com/cfedermann/mt-serverland/commit/{{commit_tag}}">{{commit_tag|stringformat:".8s"}}</a></code>{% endif %} of the MT Server Land software. &copy; Christian Federmann 2010-2013, some rights reserved. Valid <a href="http://validator.w3.org/check/referer" title="Valid XHTML 1.1">XHTML 1.0</a> and <a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS">CSS 2.0</a>. Powered by <a href="http://www.djangoproject.com/">Django</a>.</small></p>
       </footer>
 
     </div> <!-- /container -->

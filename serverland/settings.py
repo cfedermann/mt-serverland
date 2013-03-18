@@ -7,6 +7,16 @@ import os
 ROOT_PATH = os.getcwd()
 DEPLOYMENT_PREFIX = '/mt-serverland'
 
+from subprocess import check_output
+try:
+    commit_log = check_output(['git', 'log', '--pretty=oneline'])
+    # pylint: disable-msg=E1103
+    COMMIT_TAG = commit_log.split('\n')[0].split()[0]
+
+# pylint: disable-msg=W0703
+except Exception, e:
+    COMMIT_TAG = None
+
 # Serialized message files will be stored in this location.
 TRANSLATION_MESSAGE_PATH = '{0}/messages'.format(ROOT_PATH)
 
