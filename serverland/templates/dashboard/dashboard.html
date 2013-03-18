@@ -50,6 +50,7 @@ function confirm_delete(name, url) {
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
+    <!-- TODO: use Bootstrap buttons with proper glyphicons instead. //-->
     <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');">Delete?</a>
     <a href="{% url result request_id=request.request_id %}">View Results</a>
     <a href="{% url download request_id=request.request_id %}">Download</a>
