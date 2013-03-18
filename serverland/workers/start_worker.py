@@ -52,7 +52,7 @@ if __name__ == "__main__":
     
     # Prepare XML-RPC server instance running on host:port.
     LOGFILE = None
-    MESSAGE_PATH = None
+    MESSAGE_PATH = '/tmp'
     kwargs = sys.argv[4:]
     for arg in kwargs:
         if arg.startswith('LOGFILE='):
@@ -80,7 +80,8 @@ if __name__ == "__main__":
     ready = SERVER.parse_args(kwargs)
     if not ready:
         print "\n\tusage: {0} <worker> <host> <port> " \
-          "LOGFILE=/path/to/logfile\n".format(sys.argv[0])
+          "LOGFILE=/path/to/logfile MESSAGE_PATH={1}\n".format(sys.argv[0],
+          MESSAGE_PATH)
         print "\t- {0}".format(sys.argv[1])
         usage = WORKER_IMPLEMENTATION.usage()
         
