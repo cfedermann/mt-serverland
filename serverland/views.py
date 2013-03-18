@@ -29,10 +29,8 @@ def login(request):
     LOGGER.info('Rendering login view for user "{0}".'.format(
       request.user.username or "Anonymous"))
     
-    # TODO: add proper context dictionaries to login/logout views.
-    #       Also, make sure to use proper "Sign in" and "Sign out" labels.
-    
-    return LOGIN(request)
+    dictionary = {'title': 'Please sign in', 'active_page': 'sign-in'}
+    return LOGIN(request, extra_context=dictionary)
 
 
 def logout(request, next_page):

@@ -52,7 +52,7 @@
               <li {% ifequal active_page "dashboard" %}class="active"{% endifequal %}><a href="{% url dashboard %}">Dashboard</a></li>
               <li><a href="{% url logout %}">Sign out</a></li>
               {% else %}
-              <li {% ifequal active_page "login" %}class="active"{% endifequal %}><a href="{% url login %}">Sign in</a></li>
+              <li {% ifequal active_page "sign-in" %}class="active"{% endifequal %}><a href="{% url login %}">Sign in</a></li>
               {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
