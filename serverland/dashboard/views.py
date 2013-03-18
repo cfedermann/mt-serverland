@@ -33,6 +33,7 @@ def dashboard(request):
     LOGGER.info('Rendering dashboard for user "{0}".'.format(
       request.user.username))
 
+    # Change timeout for sockets to avoid waiting for slow worker servers.
     socket.setdefaulttimeout(0.2)
 
     ordered = TranslationRequest.objects.all().order_by('-created')
