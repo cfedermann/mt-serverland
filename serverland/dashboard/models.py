@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Project: MT Server Land
- Author: Christian Federmann <cfedermann@dfki.de>
+ Author: Christian Federmann <cfedermann@gmail.com>
 """
 import datetime
 import logging

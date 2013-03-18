@@ -23,4 +23,4 @@ The software can easily be extended to run other translation workers.
 
 h3. Feedback
 
-In case of problems, drop me an email: @cfedermann<at>dfki<dot>de@.
+In case of problems, drop me an email: @cfedermann<at>gmail<dot>com@.

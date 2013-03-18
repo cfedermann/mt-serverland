@@ -1,7 +1,7 @@
 # Django settings for serverland project.
 """
 Project: MT Server Land
- Author: Christian Federmann <cfedermann@dfki.de>
+ Author: Christian Federmann <cfedermann@gmail.com>
 """
 import os
 ROOT_PATH = os.getcwd()

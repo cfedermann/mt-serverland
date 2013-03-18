@@ -1,6 +1,6 @@
 """
 Project: MT Server Land
- Author: Christian Federmann <cfedermann@dfki.de>
+ Author: Christian Federmann <cfedermann@gmail.com>
 """
 import logging
 from django.contrib.auth.views import login as LOGIN, logout as LOGOUT
