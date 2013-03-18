@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div id="summary">
-  <h1>Translation Result</h1>
-  <h2>For request &raquo;{{ request.shortname }}&laquo; created at {{ request.created|date:"Y/m/d" }}</h2>
+<div class="page-header">
+  <h1>Result &raquo;{{ request.shortname }}&laquo; <small>created at {{ request.created|date:"Y/m/d" }}</small></h1>
 </div>
 
 <div id="instructions">
   <h2>User actions</h2>
-  <p>You are logged in as <b>{{ user.username }}</b>. You can <a href="{% url dashboard %}">return to your dashboard</a> or sign out by <a href="{% url logout %}">clicking here</a>.</p>
+  <p>You are logged in as <b>{{ user.username }}</b>. You can create a <a href="{% url create %}">new translation request</a> or sign out by <a href="{% url logout %}">clicking here</a>.</p>
   <br/>
 
   <h2>Request Result</h2>
-  <div id="result">{{ result|safe|linebreaks }}</div>
+  <div class="well well-small">{{ result|safe|linebreaks }}</div>
 {% if packet_data %}
   <div id="packet_data">
   {% for k,v in packet_data %}
@@ -20,12 +19,5 @@
   {% endfor %}
   </div>
 {% endif %}
-  <br/><br/><br/><br/><br/>
-</div>
-
-<div id="explanation">
-  <p>
-    This is a <code>BETA</code> version of the MT Server Land software. &copy; Christian Federmann 2010-2013, some rights reserved.
-  </p>
 </div>
 {% endblock %}
