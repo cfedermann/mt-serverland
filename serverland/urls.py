@@ -26,8 +26,8 @@ urlpatterns = patterns('',
   
   # TODO: do we actually need this anymore?  We have to move to static files
   #   anyway, so this seems superfluous at the moment...
-  (r'^{0}/site_media/(?P<path>.*)$'.format(PREFIX),
-    'django.views.static.serve', {'document_root': MEDIA_ROOT}),
+  # (r'^{0}/site_media/(?P<path>.*)$'.format(PREFIX),
+  #  'django.views.static.serve', {'document_root': MEDIA_ROOT}),
   
   (r'^{0}/admin/'.format(PREFIX), include(admin.site.urls)),
 )
