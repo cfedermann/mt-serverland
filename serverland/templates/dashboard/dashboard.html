@@ -36,11 +36,11 @@ function confirm_delete(name, url) {
   
   <h2>Finished translation requests</h2>
   {% if finished_requests %}
-  <table class="dashboard">
+  <table class="table table-bordered table-striped">
   <thead>
   <tr>
-  <th class="shortname">Description</th>
-  <th class="created">Created</th>
+  <th class="shortname" width="60%">Description</th>
+  <th class="created" width="15%">Created</th>
   <th class="actions">Actions</th>
   </tr>
   </thead>
@@ -50,27 +50,28 @@ function confirm_delete(name, url) {
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
-    <!-- TODO: use Bootstrap buttons with proper glyphicons instead. //-->
-    <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');">Delete?</a>
-    <a href="{% url result request_id=request.request_id %}">View Results</a>
-    <a href="{% url download request_id=request.request_id %}">Download</a>
+    <a class="btn btn-mini btn-danger" href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');"><i class="icon-remove icon-white"></i> Delete</a>
+    <a class="btn btn-mini" href="{% url result request_id=request.request_id %}"><i class="icon-file"></i>Results</a>
+    <a class="btn btn-mini" href="{% url download request_id=request.request_id %}"><i class="icon-download"></i>Download</a>
   </td>
   </tr>
   {% endfor %}
   </tbody>
   </table>
   {% else %}
-  <p>There are no finished translation requests at the moment.</p>
+  <div class="well well-small">
+    There are no finished translation requests at the moment.
+  </div>
   {% endif %}
   <br/>
 
   <h2>Active translation requests</h2>
   {% if active_requests %}
-  <table class="dashboard">
+  <table class="table table-bordered table-striped">
   <thead>
   <tr>
-  <th class="shortname">Description</th>
-  <th class="created">Created</th>
+  <th class="shortname" width="60%">Description</th>
+  <th class="created" width="15%">Created</th>
   <th class="actions">Actions</th>
   </tr>
   </thead>
@@ -80,24 +81,26 @@ function confirm_delete(name, url) {
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
   <td>
-    <a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');">Delete?</a>
+    <a class="btn btn-mini btn-danger" href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');"><i class="icon-remove icon-white"></i> Delete</a>
   </td>
   </tr>
   {% endfor %}
   </tbody>
   </table>
   {% else %}
-  <p>There are no active translation requests at the moment.</p>
+  <div class="well well-small">
+    There are no active translation requests at the moment.
+  </div>
   {% endif %}
   <br/>
 
   <h2>Invalid translation requests</h2>
   {% if invalid_requests %}
-  <table class="dashboard">
+  <table class="table table-bordered table-striped">
   <thead>
   <tr>
-  <th class="shortname">Description</th>
-  <th class="created">Created</th>
+  <th class="shortname" width="60%">Description</th>
+  <th class="created" width="15%">Created</th>
   <th class="actions">Actions</th>
   </tr>
   </thead>
@@ -106,15 +109,16 @@ function confirm_delete(name, url) {
   <tr>
   <td>{{ request.shortname }}</td>
   <td>{{ request.created|date:"Y/m/d" }}</td>
-  <td><a href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');">Delete?</a>
+  <td><a class="btn btn-mini btn-danger" href="javascript:confirm_delete('{{request.shortname|escapejs}}', '{% url delete request_id=request.request_id %}');"><i class="icon-remove icon-white"></i> Delete</a>
   </td>
   </tr>
   {% endfor %}
   </tbody>
   </table>
   {% else %}
-  <p>There are no invalid translation requests at the moment.</p>
+  <div class="well well-small">
+    There are no invalid translation requests at the moment.
+  </div>
   {% endif %}
-  <br/><br/><br/><br/><br/>
 </div>
 {% endblock %}
